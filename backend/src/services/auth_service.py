@@ -5,7 +5,10 @@ from async_fastapi_jwt_auth import AuthJWT
 from pydantic import EmailStr
 
 from src.core import settings
-from src.core.redis import user_ids_to_email_verification_codes, user_ids_to_email_and_change_verification_codes
+from src.core.redis import (
+    user_ids_to_email_verification_codes, user_ids_to_email_and_change_verification_codes,
+    user_ids_to_password_and_change_verification_codes,
+)
 from src.models import UserModel
 from src.utils import email_utils
 
@@ -48,7 +51,9 @@ def remove_email_verification_code(user_id: int):
 
 
 def create_and_save_email_change_verification_code(user_id: int, new_email: EmailStr):
-    user_ids_to_email_and_change_verification_codes[user_id] = (_generate_verification_code(), new_email)
+    user_ids_to_email_and_change_verification_codes[user_id] = (
+        _generate_verification_code(), new_email
+    )
 
 
 def get_email_and_change_verification_code(user_id: int) -> Optional[tuple[int, EmailStr]]:
@@ -91,5 +96,35 @@ async def send_email_with_email_change_request(
         title='Запрос на смену Email',
         content=f'Для подтверждения смены Email на {new_email} перейдите по ссылке: '
                 f'{settings.BASE_URL}/verify-email-change?user_id={user_id}&code={verification_code}',
+        recipient_email=recipient_email
+    )
+
+
+def create_and_save_password_change_verification_code(user_id: int, new_password: str):
+    user_ids_to_password_and_change_verification_codes[user_id] = (
+        _generate_verification_code(), new_password
+    )
+
+
+def get_password_and_change_verification_code(user_id: int) -> Optional[tuple[int, str]]:
+    return user_ids_to_password_and_change_verification_codes.get(user_id)
+
+
+def remove_password_change_verification_code(user_id: int):
+    try:
+        del user_ids_to_password_and_change_verification_codes[user_id]
+    except KeyError:
+        pass
+
+
+async def send_email_with_password_change_request(
+        user_id: int,
+        recipient_email: EmailStr,
+        verification_code: int,
+):
+    await email_utils.send_email(
+        title='Запрос на смену пароля',
+        content=f'Для подтверждения смены пароля перейдите по ссылке: '
+                f'{settings.BASE_URL}/verify-password-change?user_id={user_id}&code={verification_code}',
         recipient_email=recipient_email
     )

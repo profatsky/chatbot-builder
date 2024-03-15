@@ -93,11 +93,26 @@ async def change_user_email_and_set_unverified_status(
 
 async def get_user_by_id(
         user_id: int,
-        session: AsyncSession
+        session: AsyncSession,
 ) -> Optional[UserModel]:
     user = await session.execute(
         select(UserModel)
         .where(UserModel.user_id == user_id)
     )
     user = user.scalar()
+    return user
+
+
+async def change_user_password(
+        user_id: int,
+        new_password: str,
+        session: AsyncSession,
+) -> Optional[UserModel]:
+    user = await get_user_by_id(user_id, session)
+    if user is None:
+        return
+
+    user.hashed_password = _hash_password(new_password)
+    await session.commit()
+
     return user

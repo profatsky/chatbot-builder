@@ -66,7 +66,7 @@ async def request_email_verification(
     await auth_service.send_email_with_email_verification(
         user_id=user_id,
         recipient_email=user.email,
-        verification_code=verification_code
+        verification_code=verification_code,
     )
 
     # TODO remove print
@@ -118,7 +118,7 @@ async def request_email_change(
         user = await users_service.change_user_email_and_set_unverified_status(
             user_id=user_id,
             new_email=new_email,
-            session=session
+            session=session,
         )
         await auth_service.set_auth_tokens(user, auth_jwt)
         return {'message': 'Your last email was not verified. Email change was successful.'}
@@ -130,7 +130,7 @@ async def request_email_change(
         user_id=user_id,
         recipient_email=user.email,
         verification_code=verification_code,
-        new_email=new_email
+        new_email=new_email,
     )
 
     # TODO remove print
@@ -160,11 +160,71 @@ async def verify_email_change(
     user = await users_service.change_user_email_and_set_unverified_status(
         user_id=user_id,
         new_email=new_email,
-        session=session
+        session=session,
     )
     await auth_service.set_auth_tokens(user, auth_jwt)
 
     return {'message': 'Email change was successful.'}
+
+
+# Нужно отправлять csrf_access_token в заголовке X-CSRF-Token
+@router.post('/request-change-password')
+async def request_change_password(
+        new_password: str = Body(embed=True),
+        session: AsyncSession = Depends(get_async_session),
+        auth_jwt: AuthJWT = Depends(auth_dep),
+):
+    await auth_jwt.jwt_required()
+    user_id = await auth_jwt.get_jwt_subject()
+
+    user = await users_service.get_user_by_id(user_id, session)
+    if not user.is_verified:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You can not change your password until you confirm your email'
+        )
+
+    auth_service.create_and_save_password_change_verification_code(user_id, new_password)
+    verification_code, _ = auth_service.get_password_and_change_verification_code(user_id)
+
+    await auth_service.send_email_with_password_change_request(
+        user_id=user_id,
+        recipient_email=user.email,
+        verification_code=verification_code,
+    )
+
+    # TODO remove print
+    print(f'{settings.BASE_URL}/verify-password-change?user_id={user_id}&code={verification_code}')
+    return {'message': 'Password change was requested.'}
+
+
+@router.get('/verify-password-change')
+async def verify_password_change(
+        user_id: int,
+        code: int,
+        session: AsyncSession = Depends(get_async_session),
+        auth_jwt: AuthJWT = Depends(auth_dep),
+):
+    try:
+        saved_code, new_password = auth_service.get_password_and_change_verification_code(user_id)
+        if saved_code != code:
+            raise ValueError
+    except (TypeError, ValueError):
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Invalid code specified.'
+        )
+
+    auth_service.remove_password_change_verification_code(user_id)
+
+    user = await users_service.change_user_password(
+        user_id=user_id,
+        new_password=new_password,
+        session=session,
+    )
+    await auth_service.set_auth_tokens(user, auth_jwt)
+
+    return {'message': 'Password change was successful.'}
 
 
 @router.post('/login')
