@@ -10,6 +10,7 @@ from src.core.redis import (
     user_ids_to_password_and_change_verification_codes,
 )
 from src.models import UserModel
+from src.schemas.auth_schemas import Password
 from src.utils import email_utils
 
 
@@ -100,7 +101,7 @@ async def send_email_with_email_change_request(
     )
 
 
-def create_and_save_password_change_verification_code(user_id: int, new_password: str):
+def create_and_save_password_change_verification_code(user_id: int, new_password: Password):
     user_ids_to_password_and_change_verification_codes[user_id] = (
         _generate_verification_code(), new_password
     )

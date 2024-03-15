@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core import settings
 from src.core.db import get_async_session
-from src.schemas.users_schemas import UserCredentialsSchema
+from src.schemas.auth_schemas import AuthCredentialsSchema, Password
 from src.services import auth_service, users_service
 
 router = APIRouter(tags=['auth'])
@@ -29,7 +29,7 @@ def get_config():
 
 @router.post('/register', status_code=status.HTTP_201_CREATED)
 async def register(
-        credentials: UserCredentialsSchema,
+        credentials: AuthCredentialsSchema,
         session: AsyncSession = Depends(get_async_session),
         auth_jwt: AuthJWT = Depends(auth_dep),
 ):
@@ -170,7 +170,7 @@ async def verify_email_change(
 # Нужно отправлять csrf_access_token в заголовке X-CSRF-Token
 @router.post('/request-change-password')
 async def request_change_password(
-        new_password: str = Body(embed=True),
+        new_password: Password = Body(embed=True),
         session: AsyncSession = Depends(get_async_session),
         auth_jwt: AuthJWT = Depends(auth_dep),
 ):
@@ -229,7 +229,7 @@ async def verify_password_change(
 
 @router.post('/login')
 async def login(
-        credentials: UserCredentialsSchema,
+        credentials: AuthCredentialsSchema,
         session: AsyncSession = Depends(get_async_session),
         auth_jwt: AuthJWT = Depends(auth_dep),
 ):

@@ -7,11 +7,11 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models import UserModel
-from src.schemas.users_schemas import UserCredentialsSchema
+from src.schemas.auth_schemas import AuthCredentialsSchema, Password
 
 
 async def create_new_user(
-        credentials: UserCredentialsSchema,
+        credentials: AuthCredentialsSchema,
         session: AsyncSession,
 ) -> Optional[UserModel]:
     user = UserModel(
@@ -42,7 +42,7 @@ async def get_user_by_email(
 
 
 async def get_user_by_credentials(
-        credentials: UserCredentialsSchema,
+        credentials: AuthCredentialsSchema,
         session: AsyncSession,
 ) -> Optional[UserModel]:
     user = await get_user_by_email(credentials.email, session)
@@ -53,11 +53,11 @@ async def get_user_by_credentials(
     return user
 
 
-def _verify_password(plain_password: str, hashed_password: str) -> bool:
+def _verify_password(plain_password: Password, hashed_password: str) -> bool:
     return bcrypt.verify(plain_password, hashed_password)
 
 
-def _hash_password(password: str) -> str:
+def _hash_password(password: Password) -> str:
     return bcrypt.hash(password)
 
 
@@ -105,7 +105,7 @@ async def get_user_by_id(
 
 async def change_user_password(
         user_id: int,
-        new_password: str,
+        new_password: Password,
         session: AsyncSession,
 ) -> Optional[UserModel]:
     user = await get_user_by_id(user_id, session)
