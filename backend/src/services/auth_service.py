@@ -1,140 +1,95 @@
-from email.message import EmailMessage
+import random
 from typing import Optional
 
-import jwt
-from aiosmtplib import SMTP
-from fastapi import Depends
-from fastapi_users import BaseUserManager, IntegerIDMixin, models, exceptions
-from fastapi.requests import Request
-from fastapi_users.exceptions import FastAPIUsersException
-from fastapi_users.jwt import generate_jwt, decode_jwt
+from async_fastapi_jwt_auth import AuthJWT
+from pydantic import EmailStr
 
 from src.core import settings
-from src.models import UserModel, get_user_db
+from src.core.redis import user_ids_to_email_verification_codes, user_ids_to_email_and_change_verification_codes
+from src.models import UserModel
+from src.utils import email_utils
 
 
-class InvalidEmailChangeToken(FastAPIUsersException):
-    pass
+async def set_auth_tokens(user: UserModel, auth_jwt: AuthJWT):
+    access_token = await auth_jwt.create_access_token(subject=user.user_id)
+    refresh_token = await auth_jwt.create_refresh_token(subject=user.user_id)
+
+    await auth_jwt.set_access_cookies(access_token)
+    await auth_jwt.set_refresh_cookies(refresh_token)
 
 
-class AuthService(IntegerIDMixin, BaseUserManager[UserModel, int]):
-    reset_password_token_secret = settings.SECRET
-    verification_token_secret = settings.SECRET
-    change_email_token_secret = settings.SECRET
+async def refresh_access_token(auth_jwt: AuthJWT):
+    await auth_jwt.jwt_refresh_token_required()
 
-    change_email_token_lifetime_seconds: int = 3600
-    change_email_token_audience: str = 'fastapi-users:change-email'
+    user_id = await auth_jwt.get_jwt_subject()
+    new_access_token = await auth_jwt.create_access_token(subject=user_id)
 
-    async def on_after_register(self, user: UserModel, request: Optional[Request] = None):
+    await auth_jwt.set_access_cookies(new_access_token)
+
+
+async def unset_auth_tokens(auth_jwt: AuthJWT):
+    await auth_jwt.jwt_required()
+    await auth_jwt.unset_jwt_cookies()
+
+
+def create_and_save_email_verification_code(user_id: int):
+    user_ids_to_email_verification_codes[user_id] = _generate_verification_code()
+
+
+def get_email_verification_code(user_id: int) -> Optional[int]:
+    return user_ids_to_email_verification_codes.get(user_id)
+
+
+def remove_email_verification_code(user_id: int):
+    try:
+        del user_ids_to_email_verification_codes[user_id]
+    except KeyError:
         pass
 
-    async def on_after_forgot_password(
-        self, user: UserModel, token: str, request: Optional[Request] = None
-    ):
-        await send_email(
-            title='Смена пароля в конструкторе чат-ботов',
-            content=f'Ваш код для смены пароля: {token}',
-            recipient_email=user.email
-        )
-        # TODO remove print
-        print(f'User ID: {user.id}; Verification token: {token}')
 
-    async def on_after_request_verify(
-        self, user: UserModel, token: str, request: Optional[Request] = None
-    ):
-        await send_email(
-            title='Регистрация в конструкторе чат-ботов',
-            content=f'Ваш код для подтверждения электронной почты: {token}',
-            recipient_email=user.email
-        )
-        # TODO remove print
-        print(f'User ID: {user.id}; Verification token: {token}')
-
-    async def request_email_change(self, user: models.UP, request: Optional[Request] = None):
-        if not user.is_active:
-            raise exceptions.UserInactive(
-                f'User with ID {user.id} is inactive'
-            )
-
-        token_data = {
-            "sub": str(user.id),
-            "email": user.email,
-            "aud": self.change_email_token_audience,
-        }
-        token = generate_jwt(
-            token_data,
-            self.change_email_token_secret,
-            self.change_email_token_lifetime_seconds,
-        )
-        await self.on_after_request_email_change(user, token, request)
-
-    async def on_after_request_email_change(
-        self, user: UserModel, token: str, request: Optional[Request] = None
-    ):
-        await send_email(
-            title='Смена почты в конструкторе чат-ботов',
-            content=f'Ваш код для смены электронной почты: {token}',
-            recipient_email=user.email
-        )
-
-    async def change_email(
-            self, token: str, new_email: str, request: Optional[Request] = None
-    ) -> models.UP:
-        try:
-            data = decode_jwt(
-                token,
-                self.change_email_token_secret,
-                [self.change_email_token_audience],
-            )
-        except jwt.PyJWTError as e:
-            raise InvalidEmailChangeToken(
-                f'An error occurred while processing the token: {e}'
-            )
-
-        try:
-            user_id = data["sub"]
-        except KeyError as e:
-            raise InvalidEmailChangeToken(
-                f'An error occurred while processing the token: {e}'
-            )
-
-        try:
-            parsed_id = self.parse_id(user_id)
-        except exceptions.InvalidID as e:
-            raise InvalidEmailChangeToken(
-                f'An error occurred while processing the token: {e}'
-            )
-
-        user = await self.get(parsed_id)
-
-        if not user.is_active:
-            raise exceptions.UserInactive(f'User with ID {user.id} is inactive')
-
-        updated_user = await self._update(user, {"email": new_email})
-
-        return updated_user
+def create_and_save_email_change_verification_code(user_id: int, new_email: EmailStr):
+    user_ids_to_email_and_change_verification_codes[user_id] = (_generate_verification_code(), new_email)
 
 
-async def get_auth_service(user_db=Depends(get_user_db)):
-    yield AuthService(user_db)
+def get_email_and_change_verification_code(user_id: int) -> Optional[tuple[int, EmailStr]]:
+    return user_ids_to_email_and_change_verification_codes.get(user_id)
 
 
-async def send_email(title: str, content: str, recipient_email: str, ):
-    smtp = SMTP(
-        hostname=settings.EMAIL_HOST,
-        port=settings.EMAIL_PORT,
-        start_tls=False,
-        use_tls=False,
+def remove_email_change_verification_code(user_id: int):
+    try:
+        del user_ids_to_email_and_change_verification_codes[user_id]
+    except KeyError:
+        pass
+
+
+def _generate_verification_code() -> int:
+    return random.randint(100000, 999999)
+
+
+# TODO replace parameters with UserDTO
+async def send_email_with_email_verification(
+        user_id: int,
+        recipient_email: EmailStr,
+        verification_code: int
+):
+    await email_utils.send_email(
+        title='Подтверждение Email',
+        content='Для подтверждения Email перейдите по ссылке: '
+                f'{settings.BASE_URL}/verify-email?user_id={user_id}&code={verification_code}',
+        recipient_email=recipient_email
     )
-    await smtp.connect()
-    await smtp.starttls()
-    await smtp.login(settings.EMAIL_HOST_USER, settings.EMAIL_GOOGLE_APP_PASSWORD)
 
-    message = EmailMessage()
-    message['From'] = settings.EMAIL_HOST_USER
-    message['To'] = recipient_email
-    message['Subject'] = title
-    message.set_content(content)
 
-    await smtp.send_message(message)
-    await smtp.quit()
+# TODO replace parameters with UserDTO
+async def send_email_with_email_change_request(
+        user_id: int,
+        recipient_email: EmailStr,
+        verification_code: int,
+        new_email: EmailStr
+):
+    await email_utils.send_email(
+        title='Запрос на смену Email',
+        content=f'Для подтверждения смены Email на {new_email} перейдите по ссылке: '
+                f'{settings.BASE_URL}/verify-email-change?user_id={user_id}&code={verification_code}',
+        recipient_email=recipient_email
+    )

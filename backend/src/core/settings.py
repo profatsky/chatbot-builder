@@ -1,11 +1,14 @@
 import os
 
 from dotenv import load_dotenv
-from fastapi_users.authentication import CookieTransport
 
 load_dotenv()
 
-DEBUG = os.getenv('DEBUG')
+DEBUG = os.environ.get('DEBUG')
+
+BASE_URL = os.environ.get('BASE_URL')
+
+JWT_SECRET = os.environ.get('JWT_SECRET')
 
 # Database
 DB_HOST = os.environ.get('DB_HOST')
@@ -13,10 +16,6 @@ DB_PORT = os.environ.get('DB_PORT')
 DB_NAME = os.environ.get('DB_NAME')
 DB_USER = os.environ.get('DB_USER')
 DB_PASS = os.environ.get('DB_PASS')
-
-# Auth
-TRANSPORT = CookieTransport(cookie_name='auth', cookie_max_age=36000)
-SECRET = os.environ.get('SECRET')
 
 # Email sender
 EMAIL_HOST = os.environ.get('EMAIL_HOST')

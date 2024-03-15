@@ -1,23 +1,23 @@
 import datetime
 
-from fastapi import Depends
-from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase, SQLAlchemyBaseUserTable
-from sqlalchemy import Integer, DateTime, func
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import DateTime, func, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from src.core.db import Base, get_async_session
+from src.core.db import Base
 
 
-class UserModel(SQLAlchemyBaseUserTable[int], Base):
+class UserModel(Base):
     __tablename__ = 'users'
 
-    id: Mapped[int] = mapped_column('user_id', Integer, primary_key=True)
+    user_id: Mapped[int] = mapped_column(primary_key=True)
+
+    email: Mapped[str] = mapped_column(String(256), unique=True)
+    hashed_password: Mapped[str] = mapped_column(String(256))
+
+    is_superuser: Mapped[bool] = mapped_column(default=False)
+    is_verified: Mapped[bool] = mapped_column(default=False)
+
     registered_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
-        server_default=func.now()
+        server_default=func.now(),
     )
-
-
-async def get_user_db(session: AsyncSession = Depends(get_async_session)):
-    yield SQLAlchemyUserDatabase(session, UserModel)
