@@ -1,30 +1,16 @@
 from async_fastapi_jwt_auth import AuthJWT
-from async_fastapi_jwt_auth.auth_jwt import AuthJWTBearer
 from fastapi import APIRouter, HTTPException, status, Depends
 from fastapi.params import Body
-from pydantic import BaseModel, EmailStr
+from pydantic import EmailStr
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core import settings
+from src.core.auth import auth_dep
 from src.core.db import get_async_session
 from src.schemas.auth_schemas import AuthCredentialsSchema, Password
 from src.services import auth_service, users_service
 
 router = APIRouter(tags=['auth'])
-
-auth_dep = AuthJWTBearer()
-
-
-class Settings(BaseModel):
-    authjwt_secret_key: str = settings.JWT_SECRET
-    authjwt_token_location: set = {"cookies"}
-    authjwt_cookie_secure: bool = False
-    authjwt_cookie_csrf_protect: bool = True
-
-
-@AuthJWT.load_config
-def get_config():
-    return Settings()
 
 
 @router.post('/register', status_code=status.HTTP_201_CREATED)
