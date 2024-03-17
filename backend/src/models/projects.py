@@ -19,3 +19,5 @@ class ProjectModel(Base):
 
     user_id: Mapped[int] = mapped_column(ForeignKey('users.user_id', ondelete='CASCADE'))
     user: Mapped['UserModel'] = relationship(back_populates='projects')
+
+    dialogues: Mapped[list['DialogueModel']] = relationship(back_populates='project')

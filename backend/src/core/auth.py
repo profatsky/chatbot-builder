@@ -10,7 +10,7 @@ class Settings(BaseModel):
     authjwt_secret_key: str = settings.JWT_SECRET
     authjwt_token_location: set = {"cookies"}
     authjwt_cookie_secure: bool = False
-    authjwt_cookie_csrf_protect: bool = True
+    authjwt_cookie_csrf_protect: bool = False
 
 
 @AuthJWT.load_config
