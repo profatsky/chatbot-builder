@@ -1,7 +1,7 @@
 import datetime
 
 from sqlalchemy import DateTime, func, String
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.db import Base
 
@@ -21,3 +21,5 @@ class UserModel(Base):
         DateTime(timezone=True),
         server_default=func.now(),
     )
+
+    projects: Mapped[list['ProjectModel']] = relationship(back_populates='user')
