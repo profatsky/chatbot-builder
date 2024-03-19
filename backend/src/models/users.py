@@ -11,7 +11,7 @@ class UserModel(Base):
 
     user_id: Mapped[int] = mapped_column(primary_key=True)
 
-    email: Mapped[str] = mapped_column(String(256), unique=True)
+    email: Mapped[str] = mapped_column(String(254), unique=True)
     hashed_password: Mapped[str] = mapped_column(String(256))
 
     is_superuser: Mapped[bool] = mapped_column(default=False)

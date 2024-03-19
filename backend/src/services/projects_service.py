@@ -19,7 +19,7 @@ async def create_project(
     session.add(project)
     await session.commit()
 
-    project = await _get_project_by_id(project.project_id, session)
+    project = await get_project_by_id(project.project_id, session)
     return project
 
 
@@ -45,7 +45,7 @@ async def update_project(
         project_data: ProjectUpdateSchema,
         session: AsyncSession,
 ) -> Optional[ProjectModel]:
-    project = await _get_project_by_id(project_id, session)
+    project = await get_project_by_id(project_id, session)
     if project.user_id != user_id:
         return
 
@@ -54,7 +54,7 @@ async def update_project(
     return project
 
 
-async def _get_project_by_id(
+async def get_project_by_id(
         project_id: int,
         session: AsyncSession,
 ) -> Optional[ProjectModel]:
@@ -83,4 +83,3 @@ async def delete_project(
         )
     )
     await session.commit()
-

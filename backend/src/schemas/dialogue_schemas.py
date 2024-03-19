@@ -2,7 +2,7 @@ import datetime
 
 from pydantic import BaseModel
 
-from src.models import TriggerEventType
+from src.enums import TriggerEventType
 
 
 class DialogueCreateSchema(BaseModel):

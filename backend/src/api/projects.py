@@ -39,7 +39,7 @@ async def get_projects(
     return projects
 
 
-@router.patch('/{project_id}', response_model=ProjectReadSchema)
+@router.put('/{project_id}', response_model=ProjectReadSchema)
 async def update_project(
         project_id: int,
         project_data: ProjectUpdateSchema,
