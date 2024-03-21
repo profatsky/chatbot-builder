@@ -2,7 +2,7 @@ import datetime
 
 from pydantic import BaseModel, Field
 
-from src.schemas.dialogue_schemas import DialogueReadSchema
+from src.schemas.dialogues_schemas import DialogueReadSchema
 
 
 class ProjectReadSchema(BaseModel):

@@ -5,8 +5,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.auth import auth_dep
 from src.core.db import get_async_session
-from src.schemas.block_schemas import UnionBlockCreateSchema, UnionBlockReadSchema
-from src.schemas.dialogue_schemas import DialogueCreateSchema, DialogueReadSchema
+from src.schemas.blocks_schemas import UnionBlockCreateSchema, UnionBlockReadSchema
+from src.schemas.dialogues_schemas import DialogueCreateSchema, DialogueReadSchema
 from src.services import dialogues_service, projects_service
 
 router = APIRouter(
@@ -26,6 +26,12 @@ async def create_dialogue(
     user_id = await auth_jwt.get_jwt_subject()
 
     project = await projects_service.get_project_by_id(project_id, session)
+    if project is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Project does not exist',
+        )
+
     if project.user_id != user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

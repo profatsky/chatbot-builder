@@ -1,0 +1,222 @@
+{% from 'triggers_template.j2' import get_decorator_by_trigger %}
+{% from 'blocks_template.j2' import get_block_code %}
+import asyncio
+import os
+import re
+import logging
+import sys
+from email.message import EmailMessage
+
+from aiogram import Bot, Dispatcher, types, filters, F
+from aiogram.fsm.state import StatesGroup, State
+from aiogram.fsm.context import FSMContext
+from aiosmtplib import SMTP
+from dotenv import load_dotenv
+
+load_dotenv()
+
+BOT_TOKEN = os.environ.get('BOT_TOKEN')
+
+EMAIL_HOST = os.environ.get('EMAIL_HOST')
+EMAIL_PORT = os.environ.get('EMAIL_PORT')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+EMAIL_GOOGLE_APP_PASSWORD = os.environ.get('EMAIL_GOOGLE_APP_PASSWORD')
+
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher()
+
+
+# utils funcs
+def is_email(string: str) -> bool:
+    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    return bool(re.fullmatch(pattern, string))
+
+
+def is_phone_number(string: str) -> bool:
+    pattern = r'^8[0-9]{10}$'
+    return bool(re.fullmatch(pattern, string))
+
+
+async def send_email(title: str, content: str, recipient_email: str):
+    smtp = SMTP(
+        hostname=EMAIL_HOST,
+        port=EMAIL_PORT,
+        start_tls=False,
+        use_tls=False,
+    )
+    await smtp.connect()
+    await smtp.starttls()
+    await smtp.login(EMAIL_HOST_USER, EMAIL_GOOGLE_APP_PASSWORD)
+
+    message = EmailMessage()
+    message['From'] = EMAIL_HOST_USER
+    message['To'] = recipient_email
+    message['Subject'] = title
+    message.set_content(content)
+
+    await smtp.send_message(message)
+    await smtp.quit()
+
+
+def is_answer_from_user(string: str) -> bool:
+    pattern = r'^answer\[\d+\]$'
+    return bool(re.fullmatch(pattern, string))
+
+{% for states_group in states_groups +%}
+class {{ states_group.name }}(StatesGroup):
+    {% for state in states_group.states %}
+    {{ state.name }} = State()
+    {% endfor +%}
+{% endfor -%}
+
+{% set global_current_states_group = namespace(value=0) %}
+{% for dialogue in dialogues +%}
+    {% set states_storage = namespace(current_states_group=global_current_states_group.value , current_state=0, answer_counter=1) %}
+
+    {%- if dialogue.trigger.event_type.value == 'text' -%}
+        @dp.message(filters.StateFilter(None), F.text == "{{ dialogue.trigger.value }}")
+    {% elif dialogue.trigger.event_type.value == 'button' -%}
+        @dp.message(filters.StateFilter(None), F.text == "{{ dialogue.trigger.value }}")
+    {% elif dialogue.trigger.event_type.value == 'command' -%}
+        @dp.message(filters.StateFilter(None), filters.Command("{{ dialogue.trigger.value }}"))
+    {% endif %}
+
+    {%- if dialogue.has_states -%}
+        async def handler_{{ dialogue.trigger.event_type.value }}_dialogue{{ dialogue.dialogue_id }}(message: types.Message, state: FSMContext):
+    {% else -%}
+        async def handler_{{ dialogue.trigger.event_type.value }}_dialogue{{ dialogue.dialogue_id }}(message: types.Message):
+    {% endif %}
+
+    {%- if not dialogue.blocks %}
+    pass
+    {% endif %}
+
+    {%- for block in dialogue.blocks -%}
+
+{% if block.type == 'text_block' %}
+    await message.answer('{{ block.message_text }}')
+{% elif block.type == 'image_block' %}
+    try:
+        image = types.FSInputFile('{{ block.image_path }}')
+        await message.answer_photo(image)
+    except Exception as e:
+        logging.info(f'Ошибка при отправке изображения {{ block.image_path }}: {e}')
+{% elif block.type == 'question_block' %}
+{% if states_storage.current_state == 0 %}
+    {% set states_storage.current_state = block.sequence_number %}
+    {% set states_storage.current_states_group = states_storage.current_states_group + 1 %}
+    await message.answer('{{ block.message_text }}', reply_markup=types.ReplyKeyboardRemove())
+    await state.set_state(StatesGroup{{ states_storage.current_states_group }}.state_from_block{{ block.sequence_number }})
+{% else %}
+    {% set states_storage.current_state = block.sequence_number %}
+    await message.answer('{{ block.message_text }}', reply_markup=types.ReplyKeyboardRemove())
+    await state.set_state(StatesGroup{{ states_storage.current_states_group }}.state_from_block{{ block.sequence_number }})
+{% endif %}
+
+
+@dp.message(filters.StateFilter(StatesGroup{{ states_storage.current_states_group }}.state_from_block{{ states_storage.current_state }}))
+async def handler_state{{ states_storage.current_state }}_dialogue{{ dialogue.dialogue_id }}(message: types.Message, state: FSMContext):
+{% if block.answer_type.value == 'text' %}
+    if not isinstance(message.text, str):
+        return await message.answer('Неверный тип сообщения! Необходимо ввести текст!')
+{% elif block.answer_type.value == 'int' %}
+    if not message.text.isdigit():
+        return await message.answer('Неверный тип сообщения! Необходимо ввести целое число!')
+{% elif block.answer_type.value == 'email' %}
+    if not is_email(message.text):
+        return await message.answer('Неверный тип сообщения! Необходимо ввести email!')
+{% elif block.answer_type.value == 'phone_number' %}
+if not is_phone_number(message.text):
+    return await message.answer('Неверный тип сообщения! Необходимо ввести номер телефона!')
+{% endif %}
+    await state.update_data(answer{{ states_storage.answer_counter }}=message.text)
+{% set states_storage.answer_counter = states_storage.answer_counter + 1 %}
+{% elif block.type == 'email_block' %}
+    recipient_email = '{{ block.recipient_email }}'
+    if is_answer_from_user(recipient_email):
+        recipient_email = (await state.get_data()).get(recipient_email)
+    try:
+        await send_email(
+            title='{{ block.subject }}',
+            content='{{ block.text }}',
+            recipient_email=recipient_email
+        )
+    except Exception as e:
+        logger.info(f'Ошибка при отправке письма на email {recipient_email}: {e}')
+{% endif %}
+    {% endfor %}
+
+{%- if states_storage.current_state != 0 %}
+    await state.clear()
+{% endif %}
+    await handler_command_start(message)
+
+    {% set global_current_states_group.value = states_storage.current_states_group %}
+{% endfor %}
+
+{% if buttons_values %}
+main_menu_keyboard_buttons = [
+{% for i in range(0, buttons_values|length, 3) %}
+    {% set values_slice = buttons_values[i:i+3] %}
+    [
+    {% for value in values_slice %}
+        types.KeyboardButton(text='{{ value }}'),
+    {% endfor %}
+    ],
+{% endfor %}
+]
+main_menu_keyboard = types.ReplyKeyboardMarkup(
+    keyboard=main_menu_keyboard_buttons,
+    resize_keyboard=True,
+)
+{% endif %}
+
+
+@dp.message(filters.CommandStart())
+async def handler_command_start(message: types.Message):
+{% if buttons_values %}
+    keyboard = main_menu_keyboard
+{% else %}
+    keyboard = None
+{% endif %}
+
+{% if commands_values %}
+    message_text = 'Главное меню\n\nВведите /help для просмотра доступных команд'
+{% else %}
+    message_text = 'Главное меню'
+{% endif %}
+    await message.answer(
+        message_text,
+        reply_markup=keyboard
+    )
+
+
+{% if commands_values %}
+@dp.message(F.text, filters.Command('/help'))
+async def handler_get_commands(message: types.Message):
+    message_text = 'Список доступных команд:\n\n'
+    commands = {{ commands_values }}
+    for command in commands:
+        message_text += f'- {command}'
+
+{% if buttons_values %}
+    keyboard = main_menu_keyboard
+{% else %}
+    keyboard = None
+{% endif %}
+
+    await message.answer(
+        message_text,
+        reply_markup=keyboard
+    )
+{% endif -%}
+
+
+async def main():
+    await dp.start_polling(bot)
+
+
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    asyncio.run(main())
