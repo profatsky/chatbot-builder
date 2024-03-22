@@ -26,7 +26,7 @@ async def get_projects(user_id: int, session: AsyncSession) -> list[ProjectReadS
 
 
 async def get_project(user_id: int, project_id: int, session: AsyncSession):
-    project = await projects_persistence.get_project_by_id(project_id, session)
+    project = await projects_persistence.get_project(project_id, session)
     if project is None:
         raise ProjectNotFound
 
