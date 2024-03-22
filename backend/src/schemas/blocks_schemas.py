@@ -7,7 +7,7 @@ from src.enums import BlockType, AnswerMessageType, HTTPMethod
 
 class BlockReadSchema(BaseModel):
     block_id: int
-    sequence_number: int
+    sequence_number: int = Field(ge=1)
 
     class Config:
         from_attributes = True

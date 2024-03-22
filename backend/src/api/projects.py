@@ -10,7 +10,8 @@ from src.core.auth import auth_dep
 from src.core.db import get_async_session
 from src.schemas.dialogues_schemas import DialogueReadSchemaWithBlocks
 from src.schemas.projects_schemas import ProjectReadSchema, ProjectCreateSchema, ProjectUpdateSchema
-from src.services import projects_service, dialogues_service
+from src.services import projects_service
+from src.services.exceptions import projects_exceptions, dialogues_exceptions
 
 router = APIRouter(
     prefix='/projects',
@@ -53,16 +54,22 @@ async def update_project(
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
-    project = await projects_service.update_project(
-        user_id=user_id,
-        project_id=project_id,
-        project_data=project_data,
-        session=session,
-    )
-    if project is None:
+    try:
+        project = await projects_service.update_project(
+            user_id=user_id,
+            project_id=project_id,
+            project_data=project_data,
+            session=session,
+        )
+    except projects_exceptions.ProjectNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Project does not exist',
+        )
+    except projects_exceptions.NoPermissionForProject:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Don\t have permission',
         )
 
     return project
@@ -77,7 +84,19 @@ async def delete_project(
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
-    await projects_service.delete_project(user_id, project_id, session)
+    try:
+        await projects_service.delete_project(user_id, project_id, session)
+    except projects_exceptions.ProjectNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Project does not exist',
+        )
+    except projects_exceptions.NoPermissionForProject:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Don\t have permission',
+        )
+
     return {'message': 'Project was successfully deleted'}
 
 
@@ -90,26 +109,23 @@ async def get_bot_code(
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
-    project = await projects_service.get_project_by_id(project_id, session)
-    if project is None:
+    try:
+        bot_code = await projects_service.get_bot_code(user_id, project_id, session)
+    except projects_exceptions.ProjectNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Project does not exist',
         )
-
-    if project.user_id != user_id:
+    except projects_exceptions.NoPermissionForProject:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\'t have permission'
+            detail='Don\t have permission',
         )
-
-    dialogues = await dialogues_service.get_dialogues(project_id, session)
-    if not dialogues:
-        HTTPException(
+    except dialogues_exceptions.NoDialoguesInProject:
+        raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='There are no dialogues in the project!'
+            detail='No dialogues in the project'
         )
 
-    file_data = await projects_service.get_code(dialogues)
-    in_memory_file = io.BytesIO(str.encode(file_data))
+    in_memory_file = io.BytesIO(str.encode(bot_code))
     return StreamingResponse(io.BytesIO(in_memory_file.read()), media_type='text/plain')

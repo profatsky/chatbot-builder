@@ -1,44 +1,39 @@
-from collections.abc import Sequence
 from typing import Optional
 
-from jinja2 import Environment, FileSystemLoader
-from sqlalchemy import select, delete
-from sqlalchemy.orm import selectinload
+from jinja2 import Environment, FileSystemLoader, Template
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models import DialogueModel
-from src.models.projects import ProjectModel
-from src.schemas.dialogues_schemas import DialogueToCodeSchema, StateSchema, StatesGroupSchema
-from src.schemas.projects_schemas import ProjectCreateSchema, ProjectUpdateSchema
+from src.persistence import projects_persistence
+from src.schemas.dialogues_schemas import DialogueToCodeSchema, StateSchema, StatesGroupSchema, DialogueReadSchema
+from src.schemas.projects_schemas import ProjectCreateSchema, ProjectUpdateSchema, ProjectReadSchema
+from src.services import dialogues_service
+from src.services.exceptions.dialogues_exceptions import NoDialoguesInProject
+from src.services.exceptions.projects_exceptions import ProjectNotFound, NoPermissionForProject
 
 
 async def create_project(
         user_id: int,
         project_data: ProjectCreateSchema,
         session: AsyncSession,
-) -> ProjectModel:
-    project = ProjectModel(**project_data.model_dump(), user_id=user_id)
-    session.add(project)
-    await session.commit()
-
-    project = await get_project_by_id(project.project_id, session)
+) -> ProjectReadSchema:
+    project = await projects_persistence.create_project(user_id, project_data, session)
     return project
 
 
-async def get_projects(
-        user_id: int,
-        session: AsyncSession,
-) -> Sequence[ProjectModel]:
-    projects = await session.execute(
-        select(ProjectModel)
-        .options(
-            selectinload(ProjectModel.dialogues)
-            .joinedload(DialogueModel.trigger),
-        )
-        .where(ProjectModel.user_id == user_id)
-    )
-    projects = projects.unique().scalars().all()
+async def get_projects(user_id: int, session: AsyncSession) -> list[ProjectReadSchema]:
+    projects = await projects_persistence.get_projects(user_id, session)
     return projects
+
+
+async def get_project(user_id: int, project_id: int, session: AsyncSession):
+    project = await projects_persistence.get_project_by_id(project_id, session)
+    if project is None:
+        raise ProjectNotFound
+
+    if project.user_id != user_id:
+        raise NoPermissionForProject
+
+    return project
 
 
 async def update_project(
@@ -46,50 +41,33 @@ async def update_project(
         project_id: int,
         project_data: ProjectUpdateSchema,
         session: AsyncSession,
-) -> Optional[ProjectModel]:
-    project = await get_project_by_id(project_id, session)
-    if project is None or project.user_id != user_id:
-        return
-
-    project.name = project_data.name
-    await session.commit()
+) -> Optional[ProjectReadSchema]:
+    _ = await get_project(user_id, project_id, session)
+    project = await projects_persistence.update_project(project_id, project_data, session)
     return project
 
 
-async def get_project_by_id(
-        project_id: int,
-        session: AsyncSession,
-) -> Optional[ProjectModel]:
-    project = await session.execute(
-        select(ProjectModel)
-        .options(
-            selectinload(ProjectModel.dialogues)
-            .joinedload(DialogueModel.trigger),
-        )
-        .where(ProjectModel.project_id == project_id)
-    )
-    project = project.scalar()
-    return project
+async def delete_project(user_id: int, project_id: int, session: AsyncSession):
+    _ = await get_project(user_id, project_id, session)
+    await projects_persistence.delete_project(project_id, session)
 
 
-async def delete_project(
+async def get_bot_code(
         user_id: int,
         project_id: int,
         session: AsyncSession,
-):
-    await session.execute(
-        delete(ProjectModel)
-        .where(
-            ProjectModel.user_id == user_id,
-            ProjectModel.project_id == project_id,
-        )
-    )
-    await session.commit()
-
-
-async def get_code(
-        dialogues: list[DialogueModel],
 ) -> str:
+    _ = await get_project(user_id, project_id, session)
+
+    dialogues = await dialogues_service.get_dialogues_with_blocks(project_id, session)
+    if not dialogues:
+        raise NoDialoguesInProject
+
+    code = _generate_bot_code(dialogues)
+    return code
+
+
+def _generate_bot_code(dialogues: list[DialogueReadSchema]) -> str:
     states_groups_to_code = []
     dialogues_to_code = []
     commands_values = []
@@ -104,9 +82,7 @@ async def get_code(
             buttons_values.append(dialogue.trigger.value)
 
         for block in dialogue.blocks:
-
             if block.type == 'question_block':
-
                 if not dialogue_to_code.has_states:
                     state = StateSchema(
                         name=f'state_from_block{block.sequence_number}'
@@ -125,18 +101,24 @@ async def get_code(
 
         dialogues_to_code.append(dialogue_to_code)
 
-    with open('src/templates/bot_template.py.j2', 'r', encoding='utf-8') as f:
-        template_str = f.read()
-
-    template = Environment(
-        loader=FileSystemLoader('src/templates/'),
-        trim_blocks=True,
-        lstrip_blocks=True
-    ).from_string(template_str)
-    file_data = template.render({
+    template = _get_bot_template()
+    bot_code = template.render({
         'dialogues': dialogues_to_code,
         'states_groups': states_groups_to_code,
         'commands_values': commands_values,
         'buttons_values': buttons_values,
     })
-    return file_data
+    return bot_code
+
+
+def _get_bot_template() -> Template:
+    with open('src/templates/bot_template.py.j2', 'r', encoding='utf-8') as f:
+        template_str = f.read()
+
+    env = Environment(
+        loader=FileSystemLoader('src/templates/'),
+        trim_blocks=True,
+        lstrip_blocks=True
+    )
+    template = env.from_string(template_str)
+    return template
