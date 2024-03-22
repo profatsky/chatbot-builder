@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.auth import auth_dep
 from src.core.db import get_async_session
-from src.schemas.dialogues_schemas import DialogueReadSchemaWithBlocks
+from src.schemas.dialogues_schemas import DialogueWithBlocksReadSchema
 from src.schemas.projects_schemas import ProjectReadSchema, ProjectCreateSchema, ProjectUpdateSchema
 from src.services import projects_service
 from src.services.exceptions import projects_exceptions, dialogues_exceptions
@@ -55,7 +55,7 @@ async def update_project(
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        project = await projects_service.update_project(
+        project = await projects_service.check_access_and_update_project(
             user_id=user_id,
             project_id=project_id,
             project_data=project_data,
@@ -100,7 +100,7 @@ async def delete_project(
     return {'message': 'Project was successfully deleted'}
 
 
-@router.get('/{project_id}/code', response_model=list[DialogueReadSchemaWithBlocks])
+@router.get('/{project_id}/code', response_model=list[DialogueWithBlocksReadSchema])
 async def get_bot_code(
         project_id: int,
         session: AsyncSession = Depends(get_async_session),

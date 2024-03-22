@@ -4,7 +4,7 @@ from jinja2 import Environment, FileSystemLoader, Template
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.persistence import projects_persistence
-from src.schemas.dialogues_schemas import DialogueToCodeSchema, StateSchema, StatesGroupSchema, DialogueReadSchema
+from src.schemas.dialogues_schemas import DialogueToCodeSchemaReadSchema, StateSchema, StatesGroupSchema, DialogueWithoutBlocksReadSchema
 from src.schemas.projects_schemas import ProjectCreateSchema, ProjectUpdateSchema, ProjectReadSchema
 from src.services import dialogues_service
 from src.services.exceptions.dialogues_exceptions import NoDialoguesInProject
@@ -25,7 +25,7 @@ async def get_projects(user_id: int, session: AsyncSession) -> list[ProjectReadS
     return projects
 
 
-async def get_project(user_id: int, project_id: int, session: AsyncSession):
+async def check_access_and_get_project(user_id: int, project_id: int, session: AsyncSession):
     project = await projects_persistence.get_project(project_id, session)
     if project is None:
         raise ProjectNotFound
@@ -36,19 +36,19 @@ async def get_project(user_id: int, project_id: int, session: AsyncSession):
     return project
 
 
-async def update_project(
+async def check_access_and_update_project(
         user_id: int,
         project_id: int,
         project_data: ProjectUpdateSchema,
         session: AsyncSession,
 ) -> Optional[ProjectReadSchema]:
-    _ = await get_project(user_id, project_id, session)
+    _ = await check_access_and_get_project(user_id, project_id, session)
     project = await projects_persistence.update_project(project_id, project_data, session)
     return project
 
 
 async def delete_project(user_id: int, project_id: int, session: AsyncSession):
-    _ = await get_project(user_id, project_id, session)
+    _ = await check_access_and_get_project(user_id, project_id, session)
     await projects_persistence.delete_project(project_id, session)
 
 
@@ -57,7 +57,7 @@ async def get_bot_code(
         project_id: int,
         session: AsyncSession,
 ) -> str:
-    _ = await get_project(user_id, project_id, session)
+    _ = await check_access_and_get_project(user_id, project_id, session)
 
     dialogues = await dialogues_service.get_dialogues_with_blocks(project_id, session)
     if not dialogues:
@@ -67,14 +67,14 @@ async def get_bot_code(
     return code
 
 
-def _generate_bot_code(dialogues: list[DialogueReadSchema]) -> str:
+def _generate_bot_code(dialogues: list[DialogueWithoutBlocksReadSchema]) -> str:
     states_groups_to_code = []
     dialogues_to_code = []
     commands_values = []
     buttons_values = []
 
     for dialogue in dialogues:
-        dialogue_to_code = DialogueToCodeSchema.model_validate(dialogue)
+        dialogue_to_code = DialogueToCodeSchemaReadSchema.model_validate(dialogue)
 
         if dialogue.trigger.event_type.value == 'command':
             commands_values.append(dialogue.trigger.value)

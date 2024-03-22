@@ -2,7 +2,7 @@ import datetime
 
 from pydantic import BaseModel, Field
 
-from src.schemas.dialogues_schemas import DialogueReadSchema
+from src.schemas.dialogues_schemas import DialogueWithoutBlocksReadSchema
 
 
 class ProjectReadSchema(BaseModel):
@@ -10,7 +10,7 @@ class ProjectReadSchema(BaseModel):
     name: str
     user_id: int
     created_at: datetime.datetime
-    dialogues: list[DialogueReadSchema] = Field(default_factory=list)
+    dialogues: list[DialogueWithoutBlocksReadSchema] = Field(default_factory=list)
 
     class Config:
         from_attributes = True
