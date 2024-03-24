@@ -1,7 +1,7 @@
 from jinja2 import Template, Environment, FileSystemLoader
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.enums import KeyboardType, HandlerType
+from src.enums import KeyboardType, HandlerType, BlockType, TriggerEventType, AnswerMessageType
 from src.schemas.code_generation_schemas import HandlerSchema, StateSchema, StatesGroupSchema, KeyboardSchema
 from src.schemas.projects_schemas import ProjectWithDialoguesAndBlocksReadSchema
 from src.services import projects_service
@@ -48,11 +48,11 @@ def _generate_bot_code(project: ProjectWithDialoguesAndBlocksReadSchema) -> str:
             dialogue_id=dialogue.dialogue_id,
         )
 
-        if dialogue.trigger.event_type.value == 'command':
+        if dialogue.trigger.event_type == TriggerEventType.COMMAND:
             commands_values.append(dialogue.trigger.value)
             handler.decorator = code.command_decorator.format(trigger_value=dialogue.trigger.value)
 
-        elif dialogue.trigger.event_type.value == 'button':
+        elif dialogue.trigger.event_type == TriggerEventType.BUTTON:
             if project.start_keyboard_type == KeyboardType.INLINE_KEYBOARD:
                 start_keyboard.add_to_buttons(
                     code.inline_keyboard_button.format(text=dialogue.trigger.value)
@@ -70,26 +70,27 @@ def _generate_bot_code(project: ProjectWithDialoguesAndBlocksReadSchema) -> str:
                 )
                 handler.decorator = code.text_button_decorator.format(trigger_value=dialogue.trigger.value)
 
-        elif dialogue.trigger.event_type.value == 'text':
+        elif dialogue.trigger.event_type == TriggerEventType.TEXT:
             handler.decorator = code.text_decorator.format(trigger_value=dialogue.trigger.value)
 
         if not dialogue.blocks:
             handler.add_to_body('pass')
 
         for block in dialogue.blocks:
-            if block.type == 'text_block':
+
+            if block.type == BlockType.TEXT_BLOCK.value:
                 if handler.type == HandlerType.CALLBACK:
                     handler.add_to_body(code.callback_message_answer.format(message_text=block.message_text))
                 elif handler.type == HandlerType.MESSAGE:
                     handler.add_to_body(code.message_answer.format(message_text=block.message_text))
 
-            elif block.type == 'image_block':
+            elif block.type == BlockType.IMAGE_BLOCK.value:
                 if handler.type == HandlerType.CALLBACK:
                     handler.add_to_body(code.callback_image_block.format(image_path=block.image_path))
                 elif handler.type == HandlerType.MESSAGE:
                     handler.add_to_body(code.image_block.format(image_path=block.image_path))
 
-            elif block.type == 'question_block':
+            elif block.type == BlockType.QUESTION_BLOCK.value:
                 if states_group is None:
                     state = StateSchema(name=f'state_from_block{block.sequence_number}')
                     states_group = StatesGroupSchema(
@@ -145,25 +146,25 @@ def _generate_bot_code(project: ProjectWithDialoguesAndBlocksReadSchema) -> str:
                     dialogue_id=dialogue.dialogue_id,
                 )
 
-                if block.answer_type.value == 'text':
+                if block.answer_type == AnswerMessageType.TEXT:
                     handler.add_to_body(code.answer_text_type_check)
 
-                elif block.answer_type.value == 'int':
+                elif block.answer_type == AnswerMessageType.INT:
                     handler.add_to_body(code.answer_int_type_check)
 
-                elif block.answer_type.value == 'email':
+                elif block.answer_type == AnswerMessageType.EMAIL:
                     handler.add_to_body(code.answer_email_type_check)
 
                     utils_funcs.add(code.is_email.strip())
 
-                elif block.answer_type.value == 'phone_number':
+                elif block.answer_type == AnswerMessageType.PHONE_NUMBER:
                     handler.add_to_body(code.answer_phone_number_type_check)
 
                     utils_funcs.add(code.is_phone_number.strip())
 
                 handler.add_to_body(code.update_state.format(answer_num=len(states_group.states)))
 
-            elif block.type == 'email_block':
+            elif block.type == BlockType.EMAIL_BLOCK.value:
                 handler.add_to_body(
                     code.email_block.format(
                         recipient_email=block.recipient_email,
