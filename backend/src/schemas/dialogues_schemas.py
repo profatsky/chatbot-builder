@@ -1,6 +1,6 @@
 import datetime
 
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, field_validator
 
 from src.enums import TriggerEventType
 from src.schemas.blocks_schemas import UnionBlockReadSchema
@@ -45,19 +45,3 @@ class DialogueWithBlocksReadSchema(DialogueWithoutBlocksReadSchema):
     @classmethod
     def transform_blocks(cls, blocks_to_transform):
         return [blocks_utils.validate_block_from_db(block) for block in blocks_to_transform]
-
-
-class DialogueToCodeSchemaReadSchema(DialogueWithBlocksReadSchema):
-    has_states: bool = Field(default=False)
-
-    class Config:
-        from_attributes = True
-
-
-class StateSchema(BaseModel):
-    name: str
-
-
-class StatesGroupSchema(BaseModel):
-    name: str
-    states: list[StateSchema] = Field(default_factory=list)

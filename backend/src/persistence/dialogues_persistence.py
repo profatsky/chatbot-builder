@@ -6,8 +6,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models import DialogueModel, TriggerModel, BlockModel
 from src.schemas.blocks_schemas import UnionBlockCreateSchema, UnionBlockReadSchema
-from src.schemas.dialogues_schemas import DialogueCreateSchema, DialogueWithoutBlocksReadSchema, DialogueWithBlocksReadSchema, \
-    TriggerUpdateSchema
+from src.schemas.dialogues_schemas import (
+    DialogueCreateSchema,
+    DialogueWithoutBlocksReadSchema,
+    DialogueWithBlocksReadSchema,
+    TriggerUpdateSchema,
+)
 from src.utils import blocks_utils
 
 
