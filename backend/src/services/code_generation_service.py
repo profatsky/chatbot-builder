@@ -1,11 +1,11 @@
 from jinja2 import Template, Environment, FileSystemLoader
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.schemas.code_generation_schemas import HandlerSchema, StateSchema, StatesGroupSchema
-from src.schemas.dialogues_schemas import DialogueWithoutBlocksReadSchema
-from src.services import dialogues_service
+from src.enums import KeyboardType, HandlerType
+from src.schemas.code_generation_schemas import HandlerSchema, StateSchema, StatesGroupSchema, KeyboardSchema
+from src.schemas.projects_schemas import ProjectWithDialoguesAndBlocksReadSchema
+from src.services import projects_service
 from src.services.exceptions.dialogues_exceptions import NoDialoguesInProject
-from src.services.projects_service import check_access_and_get_project
 from src.templates import code
 
 
@@ -14,27 +14,31 @@ async def get_bot_code(
         project_id: int,
         session: AsyncSession,
 ) -> str:
-    _ = await check_access_and_get_project(user_id, project_id, session)
+    project = await projects_service.check_access_and_get_project_with_dialogues_and_blocks(
+        user_id=user_id,
+        project_id=project_id,
+        session=session,
+    )
 
-    dialogues = await dialogues_service.get_dialogues_with_blocks(project_id, session)
-    if not dialogues:
+    if not project.dialogues:
         raise NoDialoguesInProject
 
-    code = _generate_bot_code(dialogues)
-    return code
+    bot_code = _generate_bot_code(project)
+    return bot_code
 
 
 # TODO refactoring
 # TODO add customize env variables
 # TODO changed start func call
-def _generate_bot_code(dialogues: list[DialogueWithoutBlocksReadSchema]) -> str:
+def _generate_bot_code(project: ProjectWithDialoguesAndBlocksReadSchema) -> str:
     utils_funcs = set()
-    states_groups = []
-    handlers = []
-    commands_values = []
-    buttons_values = []
+    states_groups: list[StatesGroupSchema] = []
+    handlers: list[HandlerSchema] = []
+    commands_values: list[str] = []
 
-    for dialogue in dialogues:
+    start_keyboard = _get_start_keyboard(project.start_keyboard_type)
+
+    for dialogue in project.dialogues:
 
         states_group = None
 
@@ -49,8 +53,22 @@ def _generate_bot_code(dialogues: list[DialogueWithoutBlocksReadSchema]) -> str:
             handler.decorator = code.command_decorator.format(trigger_value=dialogue.trigger.value)
 
         elif dialogue.trigger.event_type.value == 'button':
-            buttons_values.append(dialogue.trigger.value)
-            handler.decorator = code.button_decorator.format(trigger_value=dialogue.trigger.value)
+            if project.start_keyboard_type == KeyboardType.INLINE_KEYBOARD:
+                start_keyboard.add_to_buttons(
+                    code.inline_keyboard_button.format(text=dialogue.trigger.value)
+                )
+                handler.decorator = code.callback_button_decorator.format(trigger_value=dialogue.trigger.value)
+                handler.signature = code.func_signature_for_callback_handler_with_callback.format(
+                    trigger_event_type=dialogue.trigger.event_type.value,
+                    dialogue_id=dialogue.dialogue_id,
+                )
+                handler.type = HandlerType.CALLBACK
+                handler.add_to_body(code.callback_answer)
+            else:
+                start_keyboard.add_to_buttons(
+                    code.reply_keyboard_button.format(text=dialogue.trigger.value)
+                )
+                handler.decorator = code.text_button_decorator.format(trigger_value=dialogue.trigger.value)
 
         elif dialogue.trigger.event_type.value == 'text':
             handler.decorator = code.text_decorator.format(trigger_value=dialogue.trigger.value)
@@ -60,9 +78,17 @@ def _generate_bot_code(dialogues: list[DialogueWithoutBlocksReadSchema]) -> str:
 
         for block in dialogue.blocks:
             if block.type == 'text_block':
-                handler.add_to_body(code.text_block_code.format(message_text=block.message_text))
+                if handler.type == HandlerType.CALLBACK:
+                    handler.add_to_body(code.callback_message_answer.format(message_text=block.message_text))
+                elif handler.type == HandlerType.MESSAGE:
+                    handler.add_to_body(code.message_answer.format(message_text=block.message_text))
+
             elif block.type == 'image_block':
-                handler.add_to_body(code.image_block.format(image_path=block.image_path))
+                if handler.type == HandlerType.CALLBACK:
+                    handler.add_to_body(code.callback_image_block.format(image_path=block.image_path))
+                elif handler.type == HandlerType.MESSAGE:
+                    handler.add_to_body(code.image_block.format(image_path=block.image_path))
+
             elif block.type == 'question_block':
                 if states_group is None:
                     state = StateSchema(name=f'state_from_block{block.sequence_number}')
@@ -72,17 +98,29 @@ def _generate_bot_code(dialogues: list[DialogueWithoutBlocksReadSchema]) -> str:
                     )
                     states_groups.append(states_group)
 
-                    handler.add_to_body(
-                        code.text_block_code_with_reply_kb_remove.format(message_text=block.message_text)
-                    )
+                    if handler.type == HandlerType.CALLBACK:
+                        handler.add_to_body(
+                            code.callback_message_answer_with_reply_kb_remove.format(message_text=block.message_text)
+                        )
+                    elif handler.type == HandlerType.MESSAGE:
+                        handler.add_to_body(
+                            code.message_answer_with_reply_kb_remove.format(message_text=block.message_text)
+                        )
+
                     handler.add_to_body(
                         code.set_state.format(states_group_name=states_group.name, state_name=state.name)
                     )
 
-                    handler.signature = code.func_signature_for_common_handler_with_msg_and_state.format(
-                        trigger_event_type=dialogue.trigger.event_type.value,
-                        dialogue_id=dialogue.dialogue_id,
-                    )
+                    if handler.type == HandlerType.CALLBACK:
+                        handler.signature = code.func_signature_for_callback_handler_with_callback_and_state.format(
+                            trigger_event_type=dialogue.trigger.event_type.value,
+                            dialogue_id=dialogue.dialogue_id,
+                        )
+                    elif handler.type == HandlerType.MESSAGE:
+                        handler.signature = code.func_signature_for_common_handler_with_msg_and_state.format(
+                            trigger_event_type=dialogue.trigger.event_type.value,
+                            dialogue_id=dialogue.dialogue_id,
+                        )
 
                     handlers.append(handler)
                 else:
@@ -90,7 +128,7 @@ def _generate_bot_code(dialogues: list[DialogueWithoutBlocksReadSchema]) -> str:
                     states_groups[-1].states.append(state)
 
                     handler.add_to_body(
-                        code.text_block_code_with_reply_kb_remove.format(message_text=block.message_text)
+                        code.message_answer_with_reply_kb_remove.format(message_text=block.message_text)
                     )
                     handler.add_to_body(
                         code.set_state.format(states_group_name=states_group.name, state_name=state.name)
@@ -142,15 +180,28 @@ def _generate_bot_code(dialogues: list[DialogueWithoutBlocksReadSchema]) -> str:
             handler.add_to_body(code.call_start_func)
         handlers.append(handler)
 
+    if not start_keyboard.buttons:
+        start_keyboard = None
+
     template = _get_bot_template()
     bot_code = template.render({
         'utils_funcs': utils_funcs,
         'states_groups': states_groups,
         'handlers': handlers,
         'commands_values': commands_values,
-        'buttons_values': buttons_values,
+        'start_keyboard': start_keyboard,
+        'start_message': project.start_message,
     })
     return bot_code
+
+
+def _get_start_keyboard(keyboard_type: KeyboardType) -> KeyboardSchema:
+    start_keyboard = KeyboardSchema()
+    if keyboard_type == KeyboardType.INLINE_KEYBOARD:
+        start_keyboard.declaration = code.inline_keyboard_declaration
+    else:
+        start_keyboard.declaration = code.reply_keyboard_declaration
+    return start_keyboard
 
 
 def _get_bot_template() -> Template:

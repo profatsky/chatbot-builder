@@ -11,7 +11,7 @@ class DialogueCreateSchema(BaseModel):
     trigger: 'TriggerCreateSchema'
 
 
-class DialogueWithoutBlocksReadSchema(BaseModel):
+class DialogueReadSchema(BaseModel):
     dialogue_id: int
     trigger: 'TriggerReadSchema'
     created_at: datetime.datetime
@@ -38,7 +38,7 @@ class TriggerReadSchema(BaseModel):
         from_attributes = True
 
 
-class DialogueWithBlocksReadSchema(DialogueWithoutBlocksReadSchema):
+class DialogueWithBlocksReadSchema(DialogueReadSchema):
     blocks: list[UnionBlockReadSchema]
 
     @field_validator('blocks')

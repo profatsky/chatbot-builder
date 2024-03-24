@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.core.auth import auth_dep
 from src.core.db import get_async_session
 from src.schemas.blocks_schemas import UnionBlockCreateSchema, UnionBlockReadSchema
-from src.schemas.dialogues_schemas import DialogueCreateSchema, DialogueWithoutBlocksReadSchema, TriggerUpdateSchema
+from src.schemas.dialogues_schemas import DialogueCreateSchema, DialogueReadSchema, TriggerUpdateSchema
 from src.services import dialogues_service
 from src.services.exceptions import projects_exceptions, dialogues_exceptions
 
@@ -16,7 +16,7 @@ router = APIRouter(
 )
 
 
-@router.post('', response_model=DialogueWithoutBlocksReadSchema, status_code=status.HTTP_201_CREATED)
+@router.post('', response_model=DialogueReadSchema, status_code=status.HTTP_201_CREATED)
 async def create_dialogue(
         project_id: int,
         dialogue_data: DialogueCreateSchema,
@@ -46,7 +46,7 @@ async def create_dialogue(
     return dialogue
 
 
-@router.put('/{dialogue_id}', response_model=DialogueWithoutBlocksReadSchema)
+@router.put('/{dialogue_id}', response_model=DialogueReadSchema)
 async def update_dialogue_trigger(
         project_id: int,
         dialogue_id: int,

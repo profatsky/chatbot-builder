@@ -1,6 +1,16 @@
 import enum
 
 
+class KeyboardType(enum.Enum):
+    INLINE_KEYBOARD = 'inline_keyboard'
+    REPLY_KEYBOARD = 'reply_keyboard'
+
+
+class HandlerType(enum.Enum):
+    CALLBACK = 'callback'
+    MESSAGE = 'message'
+
+
 class TriggerEventType(enum.Enum):
     TEXT = 'text'
     COMMAND = 'command'

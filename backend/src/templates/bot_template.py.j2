@@ -45,44 +45,32 @@ class {{ states_group.name }}(StatesGroup):
     {% endfor +%}
 {% endfor %}
 
-{% if buttons_values %}
-main_menu_keyboard_buttons = [
-{% for i in range(0, buttons_values|length, 3) %}
-    {% set values_slice = buttons_values[i:i+3] %}
-    [
-    {% for value in values_slice %}
-        types.KeyboardButton(text='{{ value }}'),
-    {% endfor %}
-    ],
-{% endfor %}
-]
-main_menu_keyboard = types.ReplyKeyboardMarkup(
-    keyboard=main_menu_keyboard_buttons,
-    resize_keyboard=True,
-)
-{% endif +%}
-
 @dp.message(filters.CommandStart())
 async def handler_command_start(message: types.Message):
-{% if buttons_values %}
-    keyboard = main_menu_keyboard
+{% if start_keyboard %}
+    buttons = [
+    {% for i in range(0, start_keyboard.buttons|length, 3) %}
+        {% set buttons_slice = start_keyboard.buttons[i:i+3] %}
+        [
+        {% for button in buttons_slice %}
+            {{ button }},
+        {% endfor %}
+        ],
+    {% endfor %}
+    ]
+    start_keyboard = {{ start_keyboard.declaration }}
 {% else %}
-    keyboard = None
+    start_keyboard = None
 {% endif %}
 
-{% if commands_values %}
-    message_text = 'Главное меню\n\nВведите /help для просмотра доступных команд'
-{% else %}
-    message_text = 'Главное меню'
-{% endif %}
     await message.answer(
-        message_text,
-        reply_markup=keyboard
+        "{{ start_message }}",
+        reply_markup=start_keyboard
     )
 
 
 {% if commands_values %}
-@dp.message(F.text, filters.Command('/help'))
+@dp.message(F.text, filters.Command('help'))
 async def handler_get_commands(message: types.Message):
     message_text = 'Список доступных команд:\n\n'
     commands = {{ commands_values }}
@@ -99,7 +87,7 @@ async def handler_get_commands(message: types.Message):
         message_text,
         reply_markup=keyboard
     )
-{% endif -%}
+{% endif %}
 
 
 async def main():

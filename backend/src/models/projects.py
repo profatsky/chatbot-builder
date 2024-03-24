@@ -1,9 +1,10 @@
 import datetime
 
-from sqlalchemy import String, DateTime, func, ForeignKey
+from sqlalchemy import String, DateTime, func, ForeignKey, Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.db import Base
+from src.enums import KeyboardType
 
 
 class ProjectModel(Base):
@@ -12,6 +13,8 @@ class ProjectModel(Base):
     project_id: Mapped[int] = mapped_column(primary_key=True)
 
     name: Mapped[str] = mapped_column(String(256))
+    start_message: Mapped[str] = mapped_column(String(4098))
+    start_keyboard_type: Mapped[KeyboardType] = mapped_column(Enum(KeyboardType).values_callable, nullable=False)
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

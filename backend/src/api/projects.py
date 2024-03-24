@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.auth import auth_dep
 from src.core.db import get_async_session
-from src.schemas.projects_schemas import ProjectReadSchema, ProjectCreateSchema, ProjectUpdateSchema
+from src.schemas.projects_schemas import ProjectCreateSchema, ProjectUpdateSchema, ProjectWithDialoguesReadSchema
 from src.services import projects_service
 from src.services.exceptions import projects_exceptions
 
@@ -15,7 +15,7 @@ router = APIRouter(
 )
 
 
-@router.post('', response_model=ProjectReadSchema, status_code=status.HTTP_201_CREATED)
+@router.post('', response_model=ProjectWithDialoguesReadSchema, status_code=status.HTTP_201_CREATED)
 async def create_project(
         project_data: ProjectCreateSchema,
         session: AsyncSession = Depends(get_async_session),
@@ -28,8 +28,8 @@ async def create_project(
     return project
 
 
-@router.get('', response_model=list[ProjectReadSchema])
-async def get_projects(
+@router.get('', response_model=list[ProjectWithDialoguesReadSchema])
+async def get_projects_with_dialogues(
         session: AsyncSession = Depends(get_async_session),
         auth_jwt: AuthJWT = Depends(auth_dep),
 ):
@@ -40,7 +40,7 @@ async def get_projects(
     return projects
 
 
-@router.put('/{project_id}', response_model=ProjectReadSchema)
+@router.put('/{project_id}', response_model=ProjectWithDialoguesReadSchema)
 async def update_project(
         project_id: int,
         project_data: ProjectUpdateSchema,
