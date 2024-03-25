@@ -1,3 +1,5 @@
+from typing import Optional
+
 from jinja2 import Template, Environment, FileSystemLoader
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -146,21 +148,13 @@ def _generate_bot_code(project: ProjectWithDialoguesAndBlocksReadSchema) -> str:
                     dialogue_id=dialogue.dialogue_id,
                 )
 
-                if block.answer_type == AnswerMessageType.TEXT:
-                    handler.add_to_body(code.answer_text_type_check)
+                answer_type_check_code = _get_answer_type_check_code(block.answer_type)
+                if answer_type_check_code is not None:
+                    handler.add_to_body(answer_type_check_code)
 
-                elif block.answer_type == AnswerMessageType.INT:
-                    handler.add_to_body(code.answer_int_type_check)
-
-                elif block.answer_type == AnswerMessageType.EMAIL:
-                    handler.add_to_body(code.answer_email_type_check)
-
-                    utils_funcs.add(code.is_email.strip())
-
-                elif block.answer_type == AnswerMessageType.PHONE_NUMBER:
-                    handler.add_to_body(code.answer_phone_number_type_check)
-
-                    utils_funcs.add(code.is_phone_number.strip())
+                utils_func_code_for_type_check = _get_utils_func_code_for_answer_type_check(block.answer_type)
+                if utils_func_code_for_type_check is not None:
+                    utils_funcs.add(utils_func_code_for_type_check)
 
                 handler.add_to_body(code.update_state.format(answer_num=len(states_group.states)))
 
@@ -203,6 +197,28 @@ def _get_start_keyboard(keyboard_type: KeyboardType) -> KeyboardSchema:
     else:
         start_keyboard.declaration = code.reply_keyboard_declaration
     return start_keyboard
+
+
+def _get_answer_type_check_code(answer_type: AnswerMessageType) -> Optional[str]:
+    types_to_code = {
+        AnswerMessageType.ANY: None,
+        AnswerMessageType.TEXT: code.answer_text_type_check,
+        AnswerMessageType.INT: code.answer_int_type_check,
+        AnswerMessageType.EMAIL: code.answer_email_type_check,
+        AnswerMessageType.PHONE_NUMBER: code.answer_phone_number_type_check,
+    }
+    return types_to_code[answer_type]
+
+
+def _get_utils_func_code_for_answer_type_check(answer_type: AnswerMessageType) -> Optional[str]:
+    types_to_code = {
+        AnswerMessageType.ANY: None,
+        AnswerMessageType.TEXT: None,
+        AnswerMessageType.INT: None,
+        AnswerMessageType.EMAIL: code.is_email.strip(),
+        AnswerMessageType.PHONE_NUMBER: code.is_phone_number.strip(),
+    }
+    return types_to_code[answer_type]
 
 
 def _get_bot_template() -> Template:
