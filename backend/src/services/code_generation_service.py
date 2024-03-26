@@ -152,11 +152,12 @@ def _generate_bot_code(project: ProjectWithDialoguesAndBlocksReadSchema) -> str:
                 if answer_type_check_code is not None:
                     handler.add_to_body(answer_type_check_code)
 
-                utils_func_code_for_type_check = _get_utils_func_code_for_answer_type_check(block.answer_type)
-                if utils_func_code_for_type_check is not None:
-                    utils_funcs.add(utils_func_code_for_type_check)
+                utils_func_code_for_answer_type_check = _get_utils_func_code_for_answer_type_check(block.answer_type)
+                if utils_func_code_for_answer_type_check is not None:
+                    utils_funcs.add(utils_func_code_for_answer_type_check)
 
-                handler.add_to_body(code.update_state.format(answer_num=len(states_group.states)))
+                handler.add_to_body(code.update_state_data.format(answer_num=len(states_group.states)))
+                handler.add_to_body(code.get_state_data)
 
             elif block.type == BlockType.EMAIL_BLOCK.value:
                 handler.add_to_body(

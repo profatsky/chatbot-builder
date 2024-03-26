@@ -1,3 +1,5 @@
+# Only double quotes must be used in string values
+
 # decorators
 text_decorator = '@dp.message(filters.StateFilter(None), F.text == "{trigger_value}")'
 command_decorator = '@dp.message(filters.StateFilter(None), filters.Command("{trigger_value}"))'
@@ -68,11 +70,12 @@ email_block = '''
             recipient_email=recipient_email
         )
     except Exception as e:
-        logging.info(f'Ошибка при отправке письма на email {{recipient_email}}: {{e}}')
+        logging.info(f"Ошибка при отправке письма на email {{recipient_email}}: {{e}}")
 '''
 
 set_state = 'await state.set_state({states_group_name}.{state_name})'
-update_state = 'await state.update_data(answer{answer_num}=message.text)'
+update_state_data = 'await state.update_data(answer{answer_num}=message.text)'
+get_state_data = 'answers = await state.get_data()'
 clear_state = 'await state.clear()'
 
 call_start_func = 'await handler_command_start(message)'
@@ -101,13 +104,13 @@ answer_phone_number_type_check = '''
 # funcs
 is_email = '''
 def is_email(string: str) -> bool:
-    pattern = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
+    pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
     return bool(re.fullmatch(pattern, string))
 '''
 
 is_phone_number = '''
 def is_phone_number(string: str) -> bool:
-    pattern = r'^8[0-9]{10}$'
+    pattern = r"^8[0-9]{10}$"
     return bool(re.fullmatch(pattern, string))
 '''
 
@@ -124,9 +127,9 @@ async def send_email(title: str, content: str, recipient_email: str):
     await smtp.login(EMAIL_HOST_USER, EMAIL_GOOGLE_APP_PASSWORD)
 
     message = EmailMessage()
-    message['From'] = EMAIL_HOST_USER
-    message['To'] = recipient_email
-    message['Subject'] = title
+    message["From"] = EMAIL_HOST_USER
+    message["To"] = recipient_email
+    message["Subject"] = title
     message.set_content(content)
 
     await smtp.send_message(message)
@@ -135,7 +138,7 @@ async def send_email(title: str, content: str, recipient_email: str):
 
 is_answer_from_user = '''
 def is_answer_from_user(string: str) -> bool:
-    pattern = r'^answer\[\d+\]$'
+    pattern = r"^answer\[\d+\]$"
     return bool(re.fullmatch(pattern, string))
 '''
 
