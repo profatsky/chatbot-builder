@@ -78,10 +78,26 @@ csv_block = '''
     # Сохранение данных в csv
     with open("{file_path}", "a", encoding="utf-8", newline="") as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames={data}.keys())
-    
         if csv_file.tell() == 0:
             writer.writeheader()
         writer.writerow({data})
+'''
+
+
+api_block = '''
+    # Отправка API-запроса
+    url = "{url}"
+    response_data = {{}}
+    async with aiohttp.ClientSession() as session:
+        try:
+            async with session.{aiohttp_session_method}(
+                    url=url,
+                    headers={headers},
+                    data={body}
+            ) as response:
+                response_data = await response.json()
+        except aiohttp.ClientError as e:
+            logging.info(f"Ошибка при отправке API-запроса на {{url}}: {{e}}")
 '''
 
 

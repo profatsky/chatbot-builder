@@ -43,3 +43,14 @@ class HTTPMethod(enum.Enum):
     CONNECT = 'CONNECT'
     HEAD = 'HEAD'
     OPTIONS = 'OPTIONS'
+
+
+class AiohttpSessionMethod(enum.Enum):
+    GET = 'get'
+    POST = 'post'
+    PUT = 'put'
+    DELETE = 'delete'
+    PATCH = 'patch'
+    CONNECT = 'ws_connect'
+    HEAD = 'head'
+    OPTIONS = 'options'

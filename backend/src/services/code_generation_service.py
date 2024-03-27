@@ -3,7 +3,15 @@ from typing import Optional
 from jinja2 import Template, Environment, FileSystemLoader
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.enums import KeyboardType, HandlerType, BlockType, TriggerEventType, AnswerMessageType
+from src.enums import (
+    KeyboardType,
+    HandlerType,
+    BlockType,
+    TriggerEventType,
+    AnswerMessageType,
+    HTTPMethod,
+    AiohttpSessionMethod,
+)
 from src.schemas.code_generation_schemas import HandlerSchema, StateSchema, StatesGroupSchema, KeyboardSchema
 from src.schemas.projects_schemas import ProjectWithDialoguesAndBlocksReadSchema
 from src.services import projects_service
@@ -179,6 +187,18 @@ def _generate_bot_code(project: ProjectWithDialoguesAndBlocksReadSchema) -> str:
                     )
                 )
 
+            elif block.type == BlockType.API_BLOCK.value:
+                aiohttp_session_method = _get_aiohttp_session_method(block.http_method)
+
+                handler.add_to_body(
+                    code.api_block.format(
+                        aiohttp_session_method=aiohttp_session_method.value,
+                        url=block.url,
+                        headers=block.headers,
+                        body=block.body
+                    )
+                )
+
         if states_group:
             handler.add_to_body(code.clear_state)
             handler.add_to_body(code.call_start_func)
@@ -228,6 +248,20 @@ def _get_utils_func_code_for_answer_type_check(answer_type: AnswerMessageType) -
         AnswerMessageType.PHONE_NUMBER: code.is_phone_number.strip(),
     }
     return types_to_code[answer_type]
+
+
+def _get_aiohttp_session_method(http_method: HTTPMethod) -> AiohttpSessionMethod:
+    http_methods_to_aiohttp_methods = {
+        http_method.GET: AiohttpSessionMethod.GET,
+        http_method.POST: AiohttpSessionMethod.POST,
+        http_method.PUT: AiohttpSessionMethod.PUT,
+        http_method.DELETE: AiohttpSessionMethod.DELETE,
+        http_method.PATCH: AiohttpSessionMethod.PATCH,
+        http_method.CONNECT: AiohttpSessionMethod.CONNECT,
+        http_method.HEAD: AiohttpSessionMethod.HEAD,
+        http_method.OPTIONS: AiohttpSessionMethod.OPTIONS,
+    }
+    return http_methods_to_aiohttp_methods[http_method]
 
 
 def _get_bot_template() -> Template:

@@ -22,14 +22,37 @@ class HandlerSchema(BaseModel):
     body: list[str] = Field(default_factory=list)
 
     def add_to_body(self, code: str):
-        code = self._process_user_answers_in_code(code)
+        code = code.replace('\'', '"')
+        code = self._process_access_to_user_answers_in_code(code)
+        code = self._process_access_to_api_response_in_code(code)
         self.body.append(code.strip())
 
-    @staticmethod
-    def _process_user_answers_in_code(code: str):
-        code = code.replace('\'', '"')
-        pattern = r"answers\[(\d+)\]"
+    def _process_access_to_user_answers_in_code(self, code: str):
+        pattern = r'answers\[(\d+)\]'
 
+        code = self._format_string_if_pattern_found(pattern, code)
+
+        def replace_match(match):
+            return "{answers['answer" + match.group(1) + "']}"
+
+        result = re.sub(pattern, replace_match, code)
+
+        return result
+
+    def _process_access_to_api_response_in_code(self, code: str):
+        pattern = r'response_data\["([a-zA-Z0-9_-]+)"\]'
+
+        code = self._format_string_if_pattern_found(pattern, code)
+
+        def replace_match(match):
+            return "{response_data.get('" + match.group(1) + "')}"
+
+        result = re.sub(pattern, replace_match, code)
+
+        return result
+
+    @staticmethod
+    def _format_string_if_pattern_found(pattern, code):
         search_from = 0
         while match := re.search(pattern, code[search_from:]):
             quote_index = code.rfind('"', 0, match.start() + search_from)
@@ -39,12 +62,7 @@ class HandlerSchema(BaseModel):
 
             search_from += match.end()
 
-        def replace_match(match):
-            return "{answers['answer" + match.group(1) + "']}"
-
-        result = re.sub(pattern, replace_match, code)
-
-        return result
+        return code
 
 
 class KeyboardSchema(BaseModel):
