@@ -27,17 +27,17 @@ class HandlerSchema(BaseModel):
 
     @staticmethod
     def _process_user_answers_in_code(code: str):
+        code = code.replace('\'', '"')
         pattern = r"answers\[(\d+)\]"
 
-        match = re.search(pattern, code)
-        if match:
-            start_index = match.start()
-            quote_index = code.rfind('"', 0, start_index)
+        search_from = 0
+        while match := re.search(pattern, code[search_from:]):
+            quote_index = code.rfind('"', 0, match.start() + search_from)
+            if quote_index != -1 and code[quote_index - 1] != 'f':
+                code = code[:quote_index] + 'f' + code[quote_index:]
+                search_from += 1
 
-            while quote_index != 0 and code[quote_index - 1] == '\\':
-                quote_index = code.rfind('"', 0, quote_index - 1)
-
-            code = code[:quote_index] + 'f' + code[quote_index:]
+            search_from += match.end()
 
         def replace_match(match):
             return "{answers['answer" + match.group(1) + "']}"

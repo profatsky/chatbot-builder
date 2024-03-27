@@ -171,6 +171,14 @@ def _generate_bot_code(project: ProjectWithDialoguesAndBlocksReadSchema) -> str:
                 utils_funcs.add(code.send_email.strip())
                 utils_funcs.add(code.is_answer_from_user.strip())
 
+            elif block.type == BlockType.CSV_BLOCK.value:
+                handler.add_to_body(
+                    code.csv_block.format(
+                        file_path=block.file_path,
+                        data=block.data,
+                    )
+                )
+
         if states_group:
             handler.add_to_body(code.clear_state)
             handler.add_to_body(code.call_start_func)

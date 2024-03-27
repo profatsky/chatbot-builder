@@ -73,6 +73,18 @@ email_block = '''
         logging.info(f"Ошибка при отправке письма на email {{recipient_email}}: {{e}}")
 '''
 
+
+csv_block = '''
+    # Сохранение данных в csv
+    with open("{file_path}", "a", encoding="utf-8", newline="") as csv_file:
+        writer = csv.DictWriter(csv_file, fieldnames={data}.keys())
+    
+        if csv_file.tell() == 0:
+            writer.writeheader()
+        writer.writerow({data})
+'''
+
+
 set_state = 'await state.set_state({states_group_name}.{state_name})'
 update_state_data = 'await state.update_data(answer{answer_num}=message.text)'
 get_state_data = 'answers = await state.get_data()'
