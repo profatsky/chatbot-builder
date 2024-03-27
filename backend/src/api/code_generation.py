@@ -1,4 +1,5 @@
 import io
+import zipfile
 
 from async_fastapi_jwt_auth import AuthJWT
 from fastapi import APIRouter, status, HTTPException
@@ -45,5 +46,18 @@ async def get_bot_code(
             detail='No dialogues in the project'
         )
 
+    # TODO refactor after finishing bot-plugins
     in_memory_file = io.BytesIO(str.encode(bot_code))
-    return StreamingResponse(io.BytesIO(in_memory_file.read()), media_type='text/plain')
+
+    zip_data = io.BytesIO()
+
+    with zipfile.ZipFile(zip_data, mode='w') as zipf:
+        zipf.writestr('bot_code.py', in_memory_file.getvalue())
+
+    zip_data.seek(0)
+
+    return StreamingResponse(
+        zip_data,
+        media_type='application/zip',
+        headers={'Content-Disposition': 'attachment; filename=bot.zip'}
+    )
