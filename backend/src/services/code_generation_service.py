@@ -16,7 +16,7 @@ from src.schemas.code_generation_schemas import HandlerSchema, StateSchema, Stat
 from src.schemas.projects_schemas import ProjectWithDialoguesAndBlocksReadSchema
 from src.services import projects_service
 from src.services.exceptions.dialogues_exceptions import NoDialoguesInProject
-from src.templates import code
+from src.bot_templates import code
 
 
 async def get_bot_code(
@@ -207,7 +207,7 @@ def _generate_bot_code(project: ProjectWithDialoguesAndBlocksReadSchema) -> str:
     if not start_keyboard.buttons:
         start_keyboard = None
 
-    template = _get_bot_template()
+    template = _get_custom_handlers_template()
     bot_code = template.render({
         'utils_funcs': utils_funcs,
         'states_groups': states_groups,
@@ -264,12 +264,12 @@ def _get_aiohttp_session_method(http_method: HTTPMethod) -> AiohttpSessionMethod
     return http_methods_to_aiohttp_methods[http_method]
 
 
-def _get_bot_template() -> Template:
-    with open('src/templates/bot_template.py.j2', 'r', encoding='utf-8') as f:
+def _get_custom_handlers_template() -> Template:
+    with open('src/bot_templates/project_structure/handlers/custom.py.j2', 'r', encoding='utf-8') as f:
         template_str = f.read()
 
     env = Environment(
-        loader=FileSystemLoader('src/templates/'),
+        loader=FileSystemLoader('src/bot_templates/'),
         trim_blocks=True,
         lstrip_blocks=True,
     )

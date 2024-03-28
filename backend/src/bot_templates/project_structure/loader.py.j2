@@ -1,0 +1,9 @@
+from aiogram import Bot, Dispatcher
+
+from config import BOT_TOKEN
+from db import DatabaseConnector
+
+bot = Bot(token=BOT_TOKEN)
+dp = Dispatcher()
+
+db_connector = DatabaseConnector('bot.db')

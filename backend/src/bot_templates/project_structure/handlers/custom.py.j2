@@ -1,30 +1,17 @@
-import asyncio
 import csv
-import os
 import re
 import logging
-import sys
 from email.message import EmailMessage
 
 import aiohttp
-from aiogram import Bot, Dispatcher, types, filters, F
+from aiogram import types, filters, F, Router
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from aiosmtplib import SMTP
-from dotenv import load_dotenv
 
-load_dotenv()
+import config
 
-BOT_TOKEN = os.environ.get('BOT_TOKEN')
-
-EMAIL_HOST = os.environ.get('EMAIL_HOST')
-EMAIL_PORT = os.environ.get('EMAIL_PORT')
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
-EMAIL_GOOGLE_APP_PASSWORD = os.environ.get('EMAIL_GOOGLE_APP_PASSWORD')
-
-bot = Bot(token=BOT_TOKEN)
-dp = Dispatcher()
+router = Router()
 
 {% for func in utils_funcs +%}
 {{ func }}
@@ -47,7 +34,7 @@ class {{ states_group.name }}(StatesGroup):
     {% endfor +%}
 {% endfor %}
 
-@dp.message(filters.CommandStart())
+@router.message(filters.CommandStart())
 async def handler_command_start(message: types.Message):
 {% if start_keyboard %}
     buttons = [
@@ -72,7 +59,7 @@ async def handler_command_start(message: types.Message):
 
 
 {% if commands_values %}
-@dp.message(F.text, filters.Command('help'))
+@router.message(F.text, filters.Command('help'))
 async def handler_get_commands(message: types.Message):
     message_text = 'Список доступных команд:\n\n'
     commands = {{ commands_values }}
@@ -91,11 +78,3 @@ async def handler_get_commands(message: types.Message):
     )
 {% endif %}
 
-
-async def main():
-    await dp.start_polling(bot)
-
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
-    asyncio.run(main())

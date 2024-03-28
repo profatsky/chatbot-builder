@@ -1,11 +1,11 @@
 # Only double quotes must be used in string values
 
 # decorators
-text_decorator = '@dp.message(filters.StateFilter(None), F.text == "{trigger_value}")'
-command_decorator = '@dp.message(filters.StateFilter(None), filters.Command("{trigger_value}"))'
-callback_button_decorator = '@dp.callback_query(filters.StateFilter(None), F.data == "callback_{trigger_value}")'
-text_button_decorator = '@dp.message(filters.StateFilter(None), F.text == "{trigger_value}")'
-state_decorator = '@dp.message(filters.StateFilter({states_group_name}.{state_name}))'
+text_decorator = '@router.message(filters.StateFilter(None), F.text == "{trigger_value}")'
+command_decorator = '@router.message(filters.StateFilter(None), filters.Command("{trigger_value}"))'
+callback_button_decorator = '@router.callback_query(filters.StateFilter(None), F.data == "callback_{trigger_value}")'
+text_button_decorator = '@router.message(filters.StateFilter(None), F.text == "{trigger_value}")'
+state_decorator = '@router.message(filters.StateFilter({states_group_name}.{state_name}))'
 
 # funcs signatures
 func_signature_for_common_handler_with_msg = (
@@ -145,17 +145,17 @@ def is_phone_number(string: str) -> bool:
 send_email = '''
 async def send_email(title: str, content: str, recipient_email: str):
     smtp = SMTP(
-        hostname=EMAIL_HOST,
-        port=EMAIL_PORT,
+        hostname=config.EMAIL_HOST,
+        port=config.EMAIL_PORT,
         start_tls=False,
         use_tls=False,
     )
     await smtp.connect()
     await smtp.starttls()
-    await smtp.login(EMAIL_HOST_USER, EMAIL_GOOGLE_APP_PASSWORD)
+    await smtp.login(config.EMAIL_HOST_USER, config.EMAIL_GOOGLE_APP_PASSWORD)
 
     message = EmailMessage()
-    message["From"] = EMAIL_HOST_USER
+    message["From"] = config.EMAIL_HOST_USER
     message["To"] = recipient_email
     message["Subject"] = title
     message.set_content(content)
@@ -171,7 +171,7 @@ def is_answer_from_user(string: str) -> bool:
 '''
 
 start_func = '''
-@dp.message(filters.CommandStart())
+@router.message(filters.CommandStart())
 async def handler_command_start(message: types.Message):
     keyboard = {keyboard}
     await message.answer({message_text}, reply_markup=keyboard)

@@ -1,0 +1,21 @@
+import asyncio
+import logging
+import sys
+
+from db import create_user_table
+from handlers import custom_router
+from loader import dp, bot, db_connector
+from middlewares import UserMiddleware
+
+
+async def main():
+    await create_user_table(db_connector)
+    await dp.start_polling(bot)
+
+
+if __name__ == '__main__':
+    custom_router.message.middleware(UserMiddleware())
+    dp.include_router(custom_router)
+
+    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    asyncio.run(main())

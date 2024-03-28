@@ -1,4 +1,5 @@
 import io
+import os
 import zipfile
 
 from async_fastapi_jwt_auth import AuthJWT
@@ -52,7 +53,28 @@ async def get_bot_code(
     zip_data = io.BytesIO()
 
     with zipfile.ZipFile(zip_data, mode='w') as zipf:
-        zipf.writestr('bot_code.py', in_memory_file.getvalue())
+        zipf.writestr('handlers/custom.py', in_memory_file.getvalue())
+
+        main_file = 'src/bot_templates/project_structure/main.py.j2'
+        zipf.write(main_file, 'main.py')
+
+        loader_file = 'src/bot_templates/project_structure/loader.py.j2'
+        zipf.write(loader_file, 'loader.py')
+
+        config_file = 'src/bot_templates/project_structure/config.py.j2'
+        zipf.write(config_file, 'config.py')
+
+        db_file = 'src/bot_templates/project_structure/db.py.j2'
+        zipf.write(db_file, 'db.py')
+
+        middlewares_file = 'src/bot_templates/project_structure/middlewares.py.j2'
+        zipf.write(middlewares_file, 'middlewares.py')
+
+        env_file = 'src/bot_templates/project_structure/.env.example.j2'
+        zipf.write(env_file, '.env.example')
+
+        handlers_init_file = 'src/bot_templates/project_structure/handlers/__init__.py.j2'
+        zipf.write(handlers_init_file, 'handlers/__init__.py')
 
     zip_data.seek(0)
 
