@@ -2,7 +2,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.persistence import plugins_persistence
 from src.schemas.plugins_schemas import PluginReadSchema, PluginCreateSchema
-from src.schemas.projects_schemas import ProjectWithPluginsReadSchema
+from src.schemas.projects_schemas import ProjectReadSchema
 from src.services import projects_service, users_service
 from src.services.exceptions import plugins_exceptions, users_exceptions
 
@@ -63,7 +63,7 @@ async def check_access_and_add_plugin_to_project(
         plugin_id: int,
         session: AsyncSession,
 ) -> PluginReadSchema:
-    project = await projects_service.check_access_and_get_project_with_plugins(
+    project = await projects_service.check_access_and_get_project(
         user_id=user_id,
         project_id=project_id,
         session=session
@@ -83,7 +83,7 @@ async def check_access_and_remove_plugin_from_project(
         plugin_id: int,
         session: AsyncSession,
 ):
-    project = await projects_service.check_access_and_get_project_with_plugins(
+    project = await projects_service.check_access_and_get_project(
         user_id=user_id,
         project_id=project_id,
         session=session
@@ -95,6 +95,6 @@ async def check_access_and_remove_plugin_from_project(
     await plugins_persistence.remove_plugin_from_project(project_id, plugin_id, session)
 
 
-def _project_contain_plugin_with_specified_id(project: ProjectWithPluginsReadSchema, plugin_id: int) -> bool:
+def _project_contain_plugin_with_specified_id(project: ProjectReadSchema, plugin_id: int) -> bool:
     project_plugins_ids = [plugin.plugin_id for plugin in project.plugins]
     return plugin_id in project_plugins_ids

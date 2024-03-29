@@ -15,19 +15,14 @@ class ProjectReadSchema(BaseModel):
     start_keyboard_type: KeyboardType
     created_at: datetime.datetime
 
+    dialogues: list[DialogueReadSchema] = Field(default_factory=list)
+    plugins: list[PluginReadSchema] = Field(default_factory=list)
+
     class Config:
         from_attributes = True
 
 
-class ProjectWithPluginsReadSchema(ProjectReadSchema):
-    plugins: list[PluginReadSchema] = Field(default_factory=list)
-
-
-class ProjectWithDialoguesReadSchema(ProjectReadSchema):
-    dialogues: list[DialogueReadSchema] = Field(default_factory=list)
-
-
-class ProjectWithDialoguesAndBlocksReadSchema(ProjectWithDialoguesReadSchema):
+class ProjectToGenerateCodeReadSchema(ProjectReadSchema):
     dialogues: list[DialogueWithBlocksReadSchema] = Field(default_factory=list)
 
 

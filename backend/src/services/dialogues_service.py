@@ -8,7 +8,7 @@ from src.schemas.dialogues_schemas import (
     DialogueWithBlocksReadSchema,
     TriggerUpdateSchema,
 )
-from src.schemas.projects_schemas import ProjectWithDialoguesReadSchema
+from src.schemas.projects_schemas import ProjectReadSchema
 from src.services import projects_service
 from src.services.exceptions.dialogues_exceptions import DialogueNotFound, RepeatingSequenceNumbersForBlocks
 
@@ -19,7 +19,7 @@ async def check_access_and_create_dialogue(
         dialogue_data: DialogueCreateSchema,
         session: AsyncSession,
 ) -> DialogueReadSchema:
-    _ = await projects_service.check_access_and_get_project_with_dialogues(user_id, project_id, session)
+    _ = await projects_service.check_access_and_get_project(user_id, project_id, session)
     dialogue = await _create_dialogue(project_id, dialogue_data, session)
     return dialogue
 
@@ -40,7 +40,7 @@ async def check_access_and_update_dialogue_trigger(
         trigger: TriggerUpdateSchema,
         session: AsyncSession,
 ) -> DialogueReadSchema:
-    _ = await projects_service.check_access_and_get_project_with_dialogues(user_id, project_id, session)
+    _ = await projects_service.check_access_and_get_project(user_id, project_id, session)
 
     dialogue = await dialogues_persistence.update_dialogue_trigger(dialogue_id, trigger, session)
     if dialogue is None:
@@ -61,7 +61,7 @@ async def check_access_and_update_blocks_in_dialogue(
         blocks: list[UnionBlockCreateSchema],
         session: AsyncSession,
 ) -> list[UnionBlockReadSchema]:
-    project = await projects_service.check_access_and_get_project_with_dialogues(user_id, project_id, session)
+    project = await projects_service.check_access_and_get_project(user_id, project_id, session)
     if not _project_contain_dialogue_with_specified_id(project, dialogue_id):
         raise DialogueNotFound
 
@@ -92,7 +92,7 @@ async def check_access_and_get_blocks_in_dialogue(
         dialogue_id: int,
         session: AsyncSession,
 ) -> list[UnionBlockReadSchema]:
-    project = await projects_service.check_access_and_get_project_with_dialogues(user_id, project_id, session)
+    project = await projects_service.check_access_and_get_project(user_id, project_id, session)
     if not _project_contain_dialogue_with_specified_id(project, dialogue_id):
         raise DialogueNotFound
 
@@ -100,7 +100,7 @@ async def check_access_and_get_blocks_in_dialogue(
     return blocks
 
 
-def _project_contain_dialogue_with_specified_id(project: ProjectWithDialoguesReadSchema, dialogue_id: int) -> bool:
+def _project_contain_dialogue_with_specified_id(project: ProjectReadSchema, dialogue_id: int) -> bool:
     project_dialogue_ids = [dialogue.dialogue_id for dialogue in project.dialogues]
     return dialogue_id in project_dialogue_ids
 
@@ -116,7 +116,7 @@ async def check_access_and_delete_dialogue(
         dialogue_id: int,
         session: AsyncSession
 ):
-    project = await projects_service.check_access_and_get_project_with_dialogues(user_id, project_id, session)
+    project = await projects_service.check_access_and_get_project(user_id, project_id, session)
     if not _project_contain_dialogue_with_specified_id(project, dialogue_id):
         raise DialogueNotFound
 
