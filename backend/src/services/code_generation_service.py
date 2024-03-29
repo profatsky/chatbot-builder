@@ -1,3 +1,6 @@
+import io
+import os
+import zipfile
 from typing import Optional
 
 from jinja2 import Template, Environment, FileSystemLoader
@@ -13,18 +16,18 @@ from src.enums import (
     AiohttpSessionMethod,
 )
 from src.schemas.code_generation_schemas import HandlerSchema, StateSchema, StatesGroupSchema, KeyboardSchema
-from src.schemas.projects_schemas import ProjectWithDialoguesAndBlocksReadSchema
+from src.schemas.projects_schemas import ProjectToGenerateCodeReadSchema
 from src.services import projects_service
 from src.services.exceptions.dialogues_exceptions import NoDialoguesInProject
 from src.bot_templates import code
 
 
-async def get_bot_code(
+async def get_bot_code_in_zip(
         user_id: int,
         project_id: int,
         session: AsyncSession,
-) -> str:
-    project = await projects_service.check_access_and_get_project_with_dialogues_and_blocks(
+) -> io.BytesIO:
+    project = await projects_service.check_access_and_get_project_to_generate_code(
         user_id=user_id,
         project_id=project_id,
         session=session,
@@ -33,14 +36,69 @@ async def get_bot_code(
     if not project.dialogues:
         raise NoDialoguesInProject
 
-    bot_code = _generate_bot_code(project)
-    return bot_code
+    zip_data = io.BytesIO()
+
+    with zipfile.ZipFile(zip_data, mode='w') as zipf:
+
+        _add_custom_handlers_code_to_zip(project, zipf)
+        _add_plugins_code_to_zip(project, zipf)
+
+        main_file = 'src/bot_templates/project_structure/main.py.j2'
+        zipf.write(main_file, 'main.py')
+
+        loader_file = 'src/bot_templates/project_structure/loader.py.j2'
+        zipf.write(loader_file, 'loader.py')
+
+        config_file = 'src/bot_templates/project_structure/config.py.j2'
+        zipf.write(config_file, 'config.py')
+
+        db_file = 'src/bot_templates/project_structure/db/base.py.j2'
+        zipf.write(db_file, 'db/base.py')
+
+        middlewares_file = 'src/bot_templates/project_structure/middlewares.py.j2'
+        zipf.write(middlewares_file, 'middlewares.py')
+
+        env_file = 'src/bot_templates/project_structure/.env.example.j2'
+        zipf.write(env_file, '.env.example')
+
+    zip_data.seek(0)
+
+    return zip_data
+
+
+# TODO need refactoring
+def _add_plugins_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
+    handlers_file_names = []
+
+    for plugin in project.plugins:
+
+        handlers_file_path = os.path.join('src/bot_templates/project_structure/handlers/', plugin.handlers_file_path)
+        handlers_file_name_without_jinja_extension = plugin.handlers_file_path[:-3]
+        handlers_file_names.append(handlers_file_name_without_jinja_extension[:-3])
+        zip_file.write(handlers_file_path, os.path.join('handlers/', handlers_file_name_without_jinja_extension))
+
+        db_funcs_file_path = os.path.join('src/bot_templates/project_structure/db/', plugin.db_funcs_file_path)
+        db_funcs_file_name_without_jinja_extension = plugin.db_funcs_file_path[:-3]
+        zip_file.write(db_funcs_file_path, os.path.join('db/', db_funcs_file_name_without_jinja_extension))
+
+    handlers_init_template = _get_template('src/bot_templates/project_structure/handlers/__init__.py.j2')
+    handlers_init_code = handlers_init_template.render({
+        'handlers_file_names': handlers_file_names,
+    })
+    handlers_init_in_memory_file = io.BytesIO(str.encode(handlers_init_code))
+    zip_file.writestr('handlers/__init__.py', handlers_init_in_memory_file.getvalue())
+
+
+def _add_custom_handlers_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
+    custom_handlers_code = _generate_custom_handlers_code(project)
+    custom_handlers_in_memory_file = io.BytesIO(str.encode(custom_handlers_code))
+    zip_file.writestr('handlers/custom.py', custom_handlers_in_memory_file.getvalue())
 
 
 # TODO refactoring
 # TODO add customize env variables
 # TODO changed start func call
-def _generate_bot_code(project: ProjectWithDialoguesAndBlocksReadSchema) -> str:
+def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> str:
     utils_funcs = set()
     states_groups: list[StatesGroupSchema] = []
     handlers: list[HandlerSchema] = []
@@ -207,7 +265,7 @@ def _generate_bot_code(project: ProjectWithDialoguesAndBlocksReadSchema) -> str:
     if not start_keyboard.buttons:
         start_keyboard = None
 
-    template = _get_custom_handlers_template()
+    template = _get_template('src/bot_templates/project_structure/handlers/custom.py.j2')
     bot_code = template.render({
         'utils_funcs': utils_funcs,
         'states_groups': states_groups,
@@ -264,8 +322,8 @@ def _get_aiohttp_session_method(http_method: HTTPMethod) -> AiohttpSessionMethod
     return http_methods_to_aiohttp_methods[http_method]
 
 
-def _get_custom_handlers_template() -> Template:
-    with open('src/bot_templates/project_structure/handlers/custom.py.j2', 'r', encoding='utf-8') as f:
+def _get_template(file_path: str) -> Template:
+    with open(file_path, 'r', encoding='utf-8') as f:
         template_str = f.read()
 
     env = Environment(

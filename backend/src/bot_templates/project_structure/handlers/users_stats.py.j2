@@ -1,0 +1,14 @@
+from aiogram import types, filters, Router
+
+import config
+from db.users_stats import count_users
+from loader import db_connector
+
+router = Router()
+
+
+@router.message(filters.Command("stats"))
+async def get_users_stats(message: types.Message):
+    if message.from_user.id == int(config.ADMIN_ID):
+        num_of_users = await count_users(db_connector)
+        await message.answer(f"Количество пользователей в чат-боте: {num_of_users}")

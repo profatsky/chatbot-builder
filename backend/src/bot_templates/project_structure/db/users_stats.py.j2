@@ -1,0 +1,12 @@
+from db.base import DatabaseConnector
+
+
+async def count_users(db_connector: DatabaseConnector):
+    async with db_connector as conn:
+        number_of_users = await conn.execute(
+            '''
+               SELECT COUNT(*) FROM users
+            '''
+        )
+        number_of_users = await number_of_users.fetchone()
+        return number_of_users[0]

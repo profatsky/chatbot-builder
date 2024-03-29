@@ -1,1 +1,11 @@
 from .custom import router as custom_router
+{% for handler_file_name in handlers_file_names %}
+from . import {{ handler_file_name }}
+{% endfor %}
+
+routers = [
+    custom_router,
+    {% for handler_file_name in handlers_file_names %}
+    {{ handler_file_name }}.router,
+    {% endfor %}
+]

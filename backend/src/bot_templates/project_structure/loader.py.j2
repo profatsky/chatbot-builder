@@ -1,7 +1,7 @@
 from aiogram import Bot, Dispatcher
 
 from config import BOT_TOKEN
-from db import DatabaseConnector
+from db.base import DatabaseConnector
 
 bot = Bot(token=BOT_TOKEN)
 dp = Dispatcher()

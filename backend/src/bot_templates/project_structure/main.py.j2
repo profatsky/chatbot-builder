@@ -2,8 +2,8 @@ import asyncio
 import logging
 import sys
 
-from db import create_user_table
-from handlers import custom_router
+from db.base import create_user_table
+from handlers import routers
 from loader import dp, bot, db_connector
 from middlewares import UserMiddleware
 
@@ -14,8 +14,10 @@ async def main():
 
 
 if __name__ == '__main__':
-    custom_router.message.middleware(UserMiddleware())
-    dp.include_router(custom_router)
+    for router in routers:
+        router.message.middleware(UserMiddleware())
+
+    dp.include_routers(*routers)
 
     logging.basicConfig(level=logging.INFO, stream=sys.stdout)
     asyncio.run(main())
