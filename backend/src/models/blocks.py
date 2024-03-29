@@ -1,6 +1,5 @@
-from sqlalchemy import String, ForeignKey, Enum, UniqueConstraint, Column
+from sqlalchemy import String, ForeignKey, Enum, UniqueConstraint
 from sqlalchemy.dialects.postgresql import JSONB
-from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from src.core.db import Base

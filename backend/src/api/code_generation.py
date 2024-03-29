@@ -1,5 +1,4 @@
 import io
-import os
 import zipfile
 
 from async_fastapi_jwt_auth import AuthJWT
