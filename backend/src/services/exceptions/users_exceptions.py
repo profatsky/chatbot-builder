@@ -1,0 +1,2 @@
+class UserDoesNotHavePermission(Exception):
+    pass

@@ -12,3 +12,15 @@ class PluginReadSchema(BaseModel):
     created_at: datetime.datetime
     handlers_file_path: str
     db_funcs_file_path: str
+
+    class Config:
+        from_attributes = True
+
+
+class PluginCreateSchema(BaseModel):
+    name: str
+    summary: str
+    description: str
+    image_path: str
+    handlers_file_path: str
+    db_funcs_file_path: str

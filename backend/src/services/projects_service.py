@@ -8,6 +8,7 @@ from src.schemas.projects_schemas import (
     ProjectWithDialoguesAndBlocksReadSchema,
     ProjectCreateSchema,
     ProjectUpdateSchema,
+    ProjectWithPluginsReadSchema,
 )
 from src.services.exceptions.projects_exceptions import ProjectNotFound, NoPermissionForProject
 
@@ -41,8 +42,27 @@ async def check_access_and_get_project_with_dialogues_and_blocks(
     return project
 
 
-async def check_access_and_get_project_with_dialogues(user_id: int, project_id: int, session: AsyncSession):
+async def check_access_and_get_project_with_dialogues(
+        user_id: int,
+        project_id: int,
+        session: AsyncSession
+) -> ProjectWithDialoguesReadSchema:
     project = await projects_persistence.get_project_with_dialogues(project_id, session)
+    if project is None:
+        raise ProjectNotFound
+
+    if project.user_id != user_id:
+        raise NoPermissionForProject
+
+    return project
+
+
+async def check_access_and_get_project_with_plugins(
+        user_id: int,
+        project_id: int,
+        session: AsyncSession
+) -> ProjectWithPluginsReadSchema:
+    project = await projects_persistence.get_project_with_plugins(project_id, session)
     if project is None:
         raise ProjectNotFound
 

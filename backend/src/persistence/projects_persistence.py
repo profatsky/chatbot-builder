@@ -10,6 +10,7 @@ from src.schemas.projects_schemas import (
     ProjectWithDialoguesAndBlocksReadSchema,
     ProjectCreateSchema,
     ProjectUpdateSchema,
+    ProjectWithPluginsReadSchema,
 )
 
 
@@ -23,6 +24,23 @@ async def create_project(
     await session.commit()
     project = await get_project_with_dialogues(project.project_id, session)
     return project
+
+
+async def get_project_with_plugins(
+        project_id: int,
+        session: AsyncSession
+) -> Optional[ProjectWithPluginsReadSchema]:
+    project = await session.execute(
+        select(ProjectModel)
+        .options(
+            selectinload(ProjectModel.plugins),
+        )
+        .where(ProjectModel.project_id == project_id)
+    )
+    project = project.scalar()
+    if project is None:
+        return
+    return ProjectWithPluginsReadSchema.model_validate(project)
 
 
 async def get_projects_with_dialogues(user_id: int, session: AsyncSession) -> list[ProjectWithDialoguesReadSchema]:
@@ -42,13 +60,16 @@ async def get_project_with_dialogues(
         project_id: int,
         session: AsyncSession
 ) -> Optional[ProjectWithDialoguesReadSchema]:
-    project = await _get_project_with_dialogues(project_id, session)
+    project = await _get_project_model_instance_with_dialogues(project_id, session)
     if not project:
         return
     return ProjectWithDialoguesReadSchema.model_validate(project)
 
 
-async def _get_project_with_dialogues(project_id: int,  session: AsyncSession) -> Optional[ProjectModel]:
+async def _get_project_model_instance_with_dialogues(
+        project_id: int,
+        session: AsyncSession
+) -> Optional[ProjectModel]:
     project = await session.execute(
         select(ProjectModel)
         .options(
@@ -58,8 +79,6 @@ async def _get_project_with_dialogues(project_id: int,  session: AsyncSession) -
         .where(ProjectModel.project_id == project_id)
     )
     project = project.scalar()
-    if project is None:
-        return
     return project
 
 
@@ -90,7 +109,7 @@ async def update_project(
         project_data: ProjectUpdateSchema,
         session: AsyncSession
 ) -> Optional[ProjectWithDialoguesReadSchema]:
-    project = await _get_project_with_dialogues(project_id, session)
+    project = await _get_project_model_instance_with_dialogues(project_id, session)
     if project is None:
         return
 
