@@ -11,9 +11,9 @@ import AppButton from '@/components/UI/AppButton.vue';
         </div>
         <div class="header-navbar__menu">
           <ul>
-            <li><a href="#">Возможности</a></li>
-            <li><a href="#">Руководство</a></li>
-            <li><a href="#">Поддержка</a></li>
+            <li><a href="#advantages-section">Возможности</a></li>
+            <li><a href="#manual-section">Руководство</a></li>
+            <li><a href="#support-section">Поддержка</a></li>
           </ul>
         </div>
         <div class="header-navbar__auth">
