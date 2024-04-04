@@ -38,6 +38,7 @@ export default {
 .btn {
   font-weight: 600;
   border-radius: 40px;
+  transition: background-color 0.3s, color 0.3s;
 }
 
 .btn-primary {
@@ -45,10 +46,28 @@ export default {
   color: var(--main-white);
 }
 
+.btn-primary:hover {
+  background-color: var(--primary-dark);
+}
+
+.btn-primary:active {
+  background-color: var(--main-black);
+}
+
 .btn-secondary {
   background: none;
   color: var(--primary);
   border: 2px solid var(--primary);
+}
+
+.btn-secondary:hover {
+  border-color: var(--primary-dark);
+  color: var(--primary-dark);
+}
+
+.btn-secondary:active {
+  border-color: var(--main-black);
+  color: var(--main-black);
 }
 
 .btn-large {
