@@ -1,24 +1,30 @@
-<script>
-export default {
-  data() {
-    return {
-      email: "",
-      password: "",
-      confirmPassword: "",
-      showPassword: false
-    }
-  },
-  methods: {
-    submitForm() {
-      if (this.password !== this.confirmPassword) {
-        alert('Пароли не совпадают');
-        return;
-      }
-      alert('Данные отправлены на сервер');
-    }
-  }
+<script setup>
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import { registerUser, getUserProfile } from '@/api/auth';
+
+const email = ref('');
+const password = ref('');
+const confirmPassword = ref('');
+const showPassword = ref(false);
+
+const checkPasswordsMatch = () => {
+  return password.value === confirmPassword.value
 }
 
+const store = useStore();
+
+const submitForm = async () => {
+  if (checkPasswordsMatch()) {
+  const { response, error } = await registerUser(email.value, password.value)
+    if (error.value) {
+      alert(`Ошибка: ${error.value.message}`)
+      return;
+    }
+    store.dispatch('login');
+    // TODO: redirect to user profile
+  }
+}
 </script>
 
 <template>

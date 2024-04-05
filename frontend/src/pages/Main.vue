@@ -42,11 +42,13 @@ export default {
     @openLoginForm="openLoginFormHandler"
   />
   <main>
-    <AppModal 
-      v-if="showRegisterForm" @closeModal="closeRegisterFormHandler"
-    >
-      <RegisterForm/>
-    </AppModal>
+    <Suspense>
+      <AppModal 
+        v-if="showRegisterForm" @closeModal="closeRegisterFormHandler"
+      >
+        <RegisterForm/>
+      </AppModal>
+    </Suspense>
     <AppModal 
       v-if="showLoginForm" @closeModal="closeLoginFormHandler"
     >
@@ -182,7 +184,6 @@ export default {
 </template>
 
 <style scoped>
-
 #advantages-section,
 #manual-section,
 #support-section {
