@@ -1,14 +1,41 @@
-<script setup>
+<script>
 import HeaderNavigation from '@/components/HeaderNavigation.vue';
 import Footer from '@/components/Footer.vue';
 import '@/style.css'
-import AppButton from '../components/UI/AppButton.vue';
+import RegisterForm from '@/components/RegisterForm.vue';
+
+export default {
+  components: {
+    HeaderNavigation,
+    Footer,
+    RegisterForm,
+  },
+  data() {
+    return {
+      showRegisterForm: false,
+    }
+  },
+  methods: {
+    openRegisterFormHandler() {
+      this.showRegisterForm = true;
+    },
+    closeRegisterFormHandler() {
+      this.showRegisterForm = false;
+    }
+  }
+}
 
 </script>
 
 <template>
-  <HeaderNavigation/>
+  <HeaderNavigation @openRegisterForm="openRegisterFormHandler"/>
   <main>
+    <AppModal 
+      v-if="showRegisterForm" @closeModal="closeRegisterFormHandler"
+    >
+      <RegisterForm/>
+    </AppModal>
+
     <div class="container">
       <section id="main-section">
         <div class="offer">
@@ -23,6 +50,7 @@ import AppButton from '../components/UI/AppButton.vue';
             size="large" 
             importance="primary"
             class="offer__btn"
+            @click="openRegisterFormHandler"
           >
             Создать чат-бота
           </AppButton>

@@ -37,18 +37,19 @@
 
 :root {
   --main-black: #14142B;
-  --main-white: #FFFFFF;
+  --main-white: #FEFEFE;
   --primary: #5F2EEA;
   --primary-dark: #2A00A2;
   --body-text: #4E4B66;
   --light-gray: #EFF0F6;
+  --placeholder: #A0A3BD;
 }
 
 html,
 body {
-  background-color: #FEFEFE;
+  background-color: var(--main-white);
   font-family: 'Montserrat', sans-serif;
-  color: #14142B;
+  color: var(--main-black);
   height: 100%;
   margin: 0;
   padding: 0;
@@ -56,7 +57,7 @@ body {
 
 a {
   text-decoration: none;
-  color: #14142B;
+  color: var(--main-black);
 }
 
 button {

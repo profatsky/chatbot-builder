@@ -1,5 +1,13 @@
-<script setup>
+<script>
 import AppButton from '@/components/UI/AppButton.vue';
+
+export default {
+  methods: {
+    openRegisterForm() {
+      this.$emit('openRegisterForm');
+    }
+  }
+}
 </script>
 
 <template>
@@ -18,7 +26,13 @@ import AppButton from '@/components/UI/AppButton.vue';
         </div>
         <div class="header-navbar__auth">
           <a href="#">Вход</a>
-          <AppButton size="medium" importance="secondary">Регистрация</AppButton>
+          <AppButton 
+            size="medium" 
+            importance="secondary"
+            @click="openRegisterForm"
+          >
+            Регистрация
+          </AppButton>
         </div>
       </nav>
     </div>

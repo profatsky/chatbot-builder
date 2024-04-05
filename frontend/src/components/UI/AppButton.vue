@@ -34,7 +34,7 @@ export default {
 </template>
 
 
-<style scoped>
+<style>
 .btn {
   font-weight: 600;
   border-radius: 40px;
