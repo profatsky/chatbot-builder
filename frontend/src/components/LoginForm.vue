@@ -4,27 +4,21 @@ export default {
     return {
       email: "",
       password: "",
-      confirmPassword: "",
       showPassword: false
     }
   },
   methods: {
     submitForm() {
-      if (this.password !== this.confirmPassword) {
-        alert('Пароли не совпадают');
-        return;
-      }
       alert('Данные отправлены на сервер');
     }
   }
 }
-
 </script>
 
 <template>
-  <div class="register">
-    <h2 class="register-title">Регистрация</h2>
-    <form @submit.prevent="submitForm" class="register-form">
+  <div class="login">
+    <h2 class="login-title">Вход</h2>
+    <form @submit.prevent="submitForm" class="login-form">
       <AppInput
         type="email"
         id="email" 
@@ -40,14 +34,7 @@ export default {
         autocomplete="new-password"
         placeholder="Введите пароль"
       />
-      <AppInput
-        :type="showPassword ? 'text' : 'password'" id="confirmPassword" 
-        v-model="confirmPassword" 
-        required 
-        autocomplete="new-password"
-        placeholder="Введите пароль повторно"
-      />
-      <div class="register-form__show-password-checkbox">
+      <div class="login-form__show-password-checkbox">
         <input 
           type="checkbox" 
           v-model="showPassword"
@@ -55,27 +42,20 @@ export default {
         <label>Показать пароль</label>
       </div>
 
-      <div class="register-form__personal-data-confirm">
-        <input type="checkbox" required>
-        <label>
-          Я даю свое согласие на <a href="#">обработку моих персональных данных</a>
-        </label>
-      </div>
-
       <AppButton 
         type="submit" 
         size="medium" 
         importance="primary"
-        class="register-form__btn"
+        class="login-form__btn"
       >
-        Зарегистрироваться
+        Войти
       </AppButton>
     </form>
   </div>
 </template>
 
 <style scoped>
-.register {
+.login {
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -83,7 +63,7 @@ export default {
   width: 500px;
 }
 
-.register-title {
+.login-title {
   font-size: 36px;
   font-weight: 600px;
   margin-top: 0;
@@ -95,7 +75,7 @@ export default {
   background-color: var(--light-gray);
 }
 
-.register-form {
+.login-form {
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -104,8 +84,7 @@ export default {
   gap: 16px;
 }
 
-.register-form__show-password-checkbox,
-.register-form__personal-data-confirm {
+.login-form__show-password-checkbox {
   display: flex;
   gap: 8px;
 
@@ -116,14 +95,7 @@ export default {
   margin-right: auto;
 }
 
-.register-form__personal-data-confirm a {
-  font-weight: 500;
-  color: var(--primary-dark);
-}
-
-.register-form__btn {
-  width: 300px;
+.login-form__btn {
   margin-top: 20px;
 }
-
 </style>

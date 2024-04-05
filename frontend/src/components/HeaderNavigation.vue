@@ -5,6 +5,9 @@ export default {
   methods: {
     openRegisterForm() {
       this.$emit('openRegisterForm');
+    },
+    openLoginForm() {
+      this.$emit('openLoginForm');
     }
   }
 }
@@ -25,7 +28,12 @@ export default {
           </ul>
         </div>
         <div class="header-navbar__auth">
-          <a href="#">Вход</a>
+          <button 
+            @click="openLoginForm"
+            class="login-btn"
+          >
+            Вход
+          </button>
           <AppButton 
             size="medium" 
             importance="secondary"
@@ -64,5 +72,10 @@ export default {
   justify-content: space-between;
   gap: 24px;
   align-items: center;
+}
+
+.login-btn {
+  background: none;
+  font-size: 16px;
 }
 </style>

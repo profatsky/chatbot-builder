@@ -3,16 +3,19 @@ import HeaderNavigation from '@/components/HeaderNavigation.vue';
 import Footer from '@/components/Footer.vue';
 import '@/style.css'
 import RegisterForm from '@/components/RegisterForm.vue';
+import LoginForm from '@/components/LoginForm.vue';
 
 export default {
   components: {
     HeaderNavigation,
     Footer,
     RegisterForm,
+    LoginForm,
   },
   data() {
     return {
       showRegisterForm: false,
+      showLoginForm: false,
     }
   },
   methods: {
@@ -21,6 +24,12 @@ export default {
     },
     closeRegisterFormHandler() {
       this.showRegisterForm = false;
+    },
+    openLoginFormHandler() {
+      this.showLoginForm = true;
+    },
+    closeLoginFormHandler() {
+      this.showLoginForm = false;
     }
   }
 }
@@ -28,12 +37,20 @@ export default {
 </script>
 
 <template>
-  <HeaderNavigation @openRegisterForm="openRegisterFormHandler"/>
+  <HeaderNavigation 
+    @openRegisterForm="openRegisterFormHandler"
+    @openLoginForm="openLoginFormHandler"
+  />
   <main>
     <AppModal 
       v-if="showRegisterForm" @closeModal="closeRegisterFormHandler"
     >
       <RegisterForm/>
+    </AppModal>
+    <AppModal 
+      v-if="showLoginForm" @closeModal="closeLoginFormHandler"
+    >
+      <LoginForm/>
     </AppModal>
 
     <div class="container">
