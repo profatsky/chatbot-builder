@@ -110,42 +110,42 @@ export default {
         <h2 class="primary-title">Наши преимущества</h2>
         <div class="advantages">
           <div class="advantage">
-            <img src="@/assets/icons/star.svg">
+            <img src="@/assets/icons/star-purple.svg">
             <h4 class="advantage__title">Бесплатно</h4>
             <p class="advantage__description">
               Неограниченный доступ к конструктору чат-ботов
             </p>
           </div>
           <div class="advantage">
-            <img src="@/assets/icons/cpu.svg">
+            <img src="@/assets/icons/cpu-purple.svg">
             <h4 class="advantage__title">Генерация кода</h4>
             <p class="advantage__description">
               Конструктор предоставит вам готовый программный код чат-бота
             </p>
           </div>
           <div class="advantage">
-            <img src="@/assets/icons/code.svg">
+            <img src="@/assets/icons/code-purple.svg">
             <h4 class="advantage__title">Без программирования</h4>
             <p class="advantage__description">
               Для создания чат-бота не потребуются навыки программирования
             </p>
           </div>
           <div class="advantage">
-            <img src="@/assets/icons/layout.svg">
+            <img src="@/assets/icons/layout-purple.svg">
             <h4 class="advantage__title">Шаблоны чат-ботов</h4>
             <p class="advantage__description">
               Шаблоны с базовой структурой для быстрого создания чат-ботов
             </p>
           </div>
           <div class="advantage">
-            <img src="@/assets/icons/blocks.svg">
+            <img src="@/assets/icons/blocks-purple.svg">
             <h4 class="advantage__title">Плагины</h4>
             <p class="advantage__description">
               Готовые программные дополнения для решения типовых задач
             </p>
           </div>
           <div class="advantage">
-            <img src="@/assets/icons/scroll.svg">
+            <img src="@/assets/icons/scroll-purple.svg">
             <h4 class="advantage__title">Руководство</h4>
             <p class="advantage__description">
               Разобраться в работе с конструктором не составит труда

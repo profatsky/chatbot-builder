@@ -45,6 +45,11 @@
   --placeholder: #A0A3BD;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+}
+
 html,
 body {
   background-color: var(--main-white);
@@ -53,6 +58,11 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+}
+
+
+main {
+  flex: 1 1 auto;
 }
 
 a {
