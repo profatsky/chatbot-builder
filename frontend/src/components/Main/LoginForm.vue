@@ -1,18 +1,43 @@
-<script>
-export default {
-  data() {
-    return {
-      email: "",
-      password: "",
-      showPassword: false
+<script setup>
+import { ref } from 'vue';
+import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
+import { loginUser } from '@/api/auth';
+import {useToast} from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-bootstrap.css';
+
+const email = ref('');
+const password = ref('');
+const showPassword = ref(false);
+
+const checkPasswordLength = () => {
+  return (password.value.length >= 8 && password.value.length <= 32);
+}
+
+const store = useStore();
+const router = useRouter();
+const toast = useToast();
+
+const submitForm = async () => {
+  if (!checkPasswordLength()) {
+    toast.error('Длина пароля должна быть от 8 до 32 символов!');
+    return
+  }
+
+  const { response, error } = await loginUser(email.value, password.value)
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
     }
-  },
-  methods: {
-    submitForm() {
-      alert('Данные отправлены на сервер');
-    }
+  } else {
+    store.dispatch('login');
+    toast.success(response.value.data.detail)
+    router.push({ path: '/profile' })
   }
 }
+
 </script>
 
 <template>

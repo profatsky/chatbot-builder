@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from 'vue';
 import { useStore } from 'vuex';
+import { useRouter } from 'vue-router';
 import { registerUser } from '@/api/auth';
 import {useToast} from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-bootstrap.css';
@@ -19,7 +20,7 @@ const checkPasswordLength = () => {
 }
 
 const store = useStore();
-
+const router = useRouter()
 const toast = useToast();
 
 
@@ -45,7 +46,7 @@ const submitForm = async () => {
     } else {
       store.dispatch('login');
       toast.success(response.value.data.detail)
-      // TODO: redirect to user profile
+      router.push({ path: '/profile' })
     }
   }
 }
