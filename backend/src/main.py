@@ -3,10 +3,24 @@ from async_fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi import FastAPI
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
+from fastapi.middleware.cors import CORSMiddleware
 
 from src.api import routers
+from src.core import settings
 
 app = FastAPI()
+
+origins = [
+    settings.CLIENT_APP_URL,
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 @app.exception_handler(AuthJWTException)

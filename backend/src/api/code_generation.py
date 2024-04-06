@@ -26,7 +26,7 @@ async def get_bot_code(
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        zipped_code = await code_generation_service.get_bot_code_in_zip(user_id, project_id, session)
+        zipped_bot = await code_generation_service.get_bot_code_in_zip(user_id, project_id, session)
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -44,7 +44,7 @@ async def get_bot_code(
         )
 
     return StreamingResponse(
-        zipped_code,
+        zipped_bot,
         media_type='application/zip',
         headers={'Content-Disposition': 'attachment; filename=bot.zip'}
     )

@@ -23,11 +23,11 @@ async def register(
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail='User with this email already exists.'
+            detail='Пользователь с таким email уже зарегистрирован!'
         )
 
     await auth_service.set_auth_tokens(user, auth_jwt)
-    return {'message': 'Registration was successful.'}
+    return {'detail': 'Регистрация прошла успешно!'}
 
 
 # Нужно отправлять csrf_access_token в заголовке X-CSRF-Token
@@ -56,8 +56,8 @@ async def request_email_verification(
     )
 
     # TODO remove print
-    print(f'{settings.BASE_URL}/verify-email?user_id={user_id}&code={verification_code}')
-    return {'message': 'Verification was requested.'}
+    print(f'{settings.CLIENT_APP_URL}/verify-email?user_id={user_id}&code={verification_code}')
+    return {'detail': 'Verification was requested.'}
 
 
 @router.get('/verify-email')
@@ -79,7 +79,7 @@ async def verify_email(
     user = await users_service.set_verified_status_for_user(user_id, session)
     await auth_service.set_auth_tokens(user, auth_jwt)
 
-    return {'message': 'Email verification was successful.'}
+    return {'detail': 'Email verification was successful.'}
 
 
 # Нужно отправлять csrf_access_token в заголовке X-CSRF-Token
@@ -107,7 +107,7 @@ async def request_email_change(
             session=session,
         )
         await auth_service.set_auth_tokens(user, auth_jwt)
-        return {'message': 'Your last email was not verified. Email change was successful.'}
+        return {'detail': 'Your last email was not verified. Email change was successful.'}
 
     auth_service.create_and_save_email_change_verification_code(user_id, new_email)
     verification_code, _ = auth_service.get_email_and_change_verification_code(user_id)
@@ -120,7 +120,7 @@ async def request_email_change(
     )
 
     # TODO remove print
-    print(f'{settings.BASE_URL}/verify-email-change?user_id={user_id}&code={verification_code}')
+    print(f'{settings.CLIENT_APP_URL}/verify-email-change?user_id={user_id}&code={verification_code}')
     return {'message': 'Email change was requested.'}
 
 
@@ -150,7 +150,7 @@ async def verify_email_change(
     )
     await auth_service.set_auth_tokens(user, auth_jwt)
 
-    return {'message': 'Email change was successful.'}
+    return {'detail': 'Email change was successful.'}
 
 
 # Нужно отправлять csrf_access_token в заголовке X-CSRF-Token
@@ -180,8 +180,8 @@ async def request_change_password(
     )
 
     # TODO remove print
-    print(f'{settings.BASE_URL}/verify-password-change?user_id={user_id}&code={verification_code}')
-    return {'message': 'Password change was requested.'}
+    print(f'{settings.CLIENT_APP_URL}/verify-password-change?user_id={user_id}&code={verification_code}')
+    return {'detail': 'Password change was requested.'}
 
 
 @router.get('/verify-password-change')
@@ -210,7 +210,7 @@ async def verify_password_change(
     )
     await auth_service.set_auth_tokens(user, auth_jwt)
 
-    return {'message': 'Password change was successful.'}
+    return {'detail': 'Password change was successful.'}
 
 
 @router.post('/login')
@@ -223,11 +223,11 @@ async def login(
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Could not validate credentials.'
+            detail='Неверный данные для входа!'
         )
 
     await auth_service.set_auth_tokens(user, auth_jwt)
-    return {'message': 'Login was successful.'}
+    return {'detail': 'Авторизация прошла успешно!'}
 
 
 # Нужно отправлять csrf_refresh_token в заголовке X-CSRF-Token
@@ -236,7 +236,7 @@ async def refresh(
         auth_jwt: AuthJWT = Depends(auth_dep),
 ):
     await auth_service.refresh_access_token(auth_jwt)
-    return {'message': 'Refresh access token was successful.'}
+    return {'detail': 'Refresh access token was successful.'}
 
 
 # Нужно отправлять csrf_access_token в заголовке X-CSRF-Token
@@ -245,4 +245,4 @@ async def logout(
         auth_jwt: AuthJWT = Depends(auth_dep),
 ):
     await auth_service.unset_auth_tokens(auth_jwt)
-    return {'message': 'Logout was successful.'}
+    return {'detail': 'Logout was successful.'}

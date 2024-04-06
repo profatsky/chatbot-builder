@@ -6,7 +6,7 @@ load_dotenv()
 
 DEBUG = os.environ.get('DEBUG')
 
-BASE_URL = os.environ.get('BASE_URL')
+CLIENT_APP_URL = os.environ.get('CLIENT_APP_URL')
 
 JWT_SECRET = os.environ.get('JWT_SECRET')
 
