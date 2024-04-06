@@ -38,11 +38,21 @@
 :root {
   --main-black: #14142B;
   --main-white: #FEFEFE;
+
   --primary: #5F2EEA;
   --primary-dark: #2A00A2;
+
   --body-text: #4E4B66;
   --light-gray: #EFF0F6;
   --placeholder: #A0A3BD;
+
+  --success-dark: #00966D;
+  --success: #00BA88;
+  --success-light: #F2FFFB;
+
+  --error-dark: #C30052;
+  --error: #ED2E7E;
+  --error-light: #FFF3F8;
 }
 
 * {
@@ -60,7 +70,6 @@ body {
   padding: 0;
 }
 
-
 main {
   flex: 1 1 auto;
 }
@@ -76,7 +85,7 @@ button {
   border: none;
 }
 
-.app {
+#app {
   min-height: 100%;
   display: flex;
   flex-direction: column;

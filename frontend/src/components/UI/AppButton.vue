@@ -94,12 +94,12 @@ export default {
 
 .btn-small {
   height: 40px;
-  min-width: 120px;
+  min-width: 200px;
 
   font-size: 14px;
   line-height: 24px;
   letter-spacing: 0.75px;
 
-  padding: 14px;
+  padding: 8px;
 }
 </style>
