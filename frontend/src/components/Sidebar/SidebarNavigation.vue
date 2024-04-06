@@ -1,6 +1,6 @@
 <script setup>
 import { collapsed, toggleSidebar, sidebarWidth } from '@/components/utils/sidebarCollapse';
-import SidebarLink from '@/components/SidebarLink.vue';
+import SidebarLink from '@/components/Sidebar/SidebarLink.vue';
 
 </script>
 

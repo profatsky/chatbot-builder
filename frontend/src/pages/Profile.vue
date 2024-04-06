@@ -1,13 +1,12 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import SidebarNavigation from '@/components/SidebarNavigation.vue';
+import AppNotification from '@/components/UI/AppNotification.vue';
+import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import Footer from '@/components/Footer.vue';
 import { getUserProfile } from '@/api/users';
 import {useToast} from 'vue-toast-notification';
-import AppNotification from '@/components/UI/AppNotification.vue';
 
-const email = ref('');
-const registeredAt = ref('');
+
 const userData = ref({});
 
 const toast = useToast();

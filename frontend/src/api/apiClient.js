@@ -18,7 +18,6 @@ apiClient.interceptors.response.use(
   },
   async error => {
     const originalRequest = error.config;
-    console.log(error)
     if (error.response.status === 422 && error.response.data.detail === "Signature has expired") {
       await refreshTokens();
 

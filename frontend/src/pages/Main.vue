@@ -1,9 +1,10 @@
 <script>
-import HeaderNavigation from '@/components/HeaderNavigation.vue';
+import HeaderNavigation from '@/components/Main/HeaderNavigation.vue';
+import RegisterForm from '@/components/Main/RegisterForm.vue';
+import LoginForm from '@/components/Main/LoginForm.vue';
 import Footer from '@/components/Footer.vue';
 import '@/style.css'
-import RegisterForm from '@/components/RegisterForm.vue';
-import LoginForm from '@/components/LoginForm.vue';
+
 
 export default {
   components: {
