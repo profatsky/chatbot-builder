@@ -2,6 +2,8 @@
 import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { registerUser, getUserProfile } from '@/api/auth';
+import {useToast} from 'vue-toast-notification';
+import 'vue-toast-notification/dist/theme-bootstrap.css';
 
 const email = ref('');
 const password = ref('');
@@ -12,17 +14,39 @@ const checkPasswordsMatch = () => {
   return password.value === confirmPassword.value
 }
 
+const checkPasswordLength = () => {
+  return (password.value.length >= 8 && password.value.length <= 32);
+}
+
 const store = useStore();
 
+const toast = useToast();
+
+
 const submitForm = async () => {
+  if (!checkPasswordsMatch()) {
+    toast.error('Введенные пароли должны совпадать!');
+    return
+  }
+
+  if (!checkPasswordLength()) {
+    toast.error('Длина пароля должна быть от 8 до 32 символов!');
+    return
+  }
+
   if (checkPasswordsMatch()) {
   const { response, error } = await registerUser(email.value, password.value)
     if (error.value) {
-      alert(`Ошибка: ${error.value.message}`)
-      return;
+      if (error.value.response) {
+        toast.error(error.value.response.data.detail)
+      } else {
+        toast.error('Что-то пошло не так...')
+      }
+    } else {
+      store.dispatch('login');
+      toast.success(response.value.data.detail)
+      // TODO: redirect to user profile
     }
-    store.dispatch('login');
-    // TODO: redirect to user profile
   }
 }
 </script>
