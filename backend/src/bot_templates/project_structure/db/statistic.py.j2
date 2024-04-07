@@ -10,3 +10,7 @@ async def count_users(db_connector: DatabaseConnector):
         )
         number_of_users = await number_of_users.fetchone()
         return number_of_users[0]
+
+
+async def create_tables(db_connector: DatabaseConnector):
+    pass

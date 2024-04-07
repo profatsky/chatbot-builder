@@ -23,7 +23,7 @@ class DatabaseConnector:
         await self.close_connection()
 
 
-async def create_user_table(db_connector: DatabaseConnector):
+async def _create_user_table(db_connector: DatabaseConnector):
     async with db_connector as conn:
         await conn.execute('''
             CREATE TABLE IF NOT EXISTS users (
@@ -36,6 +36,10 @@ async def create_user_table(db_connector: DatabaseConnector):
             );
         ''')
         await conn.commit()
+
+
+async def create_tables(db_connector: DatabaseConnector):
+    await _create_user_table(db_connector)
 
 
 async def add_user(

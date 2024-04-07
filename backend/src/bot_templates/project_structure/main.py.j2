@@ -2,14 +2,16 @@ import asyncio
 import logging
 import sys
 
-from db.base import create_user_table
+from db import create_tables_funcs
 from handlers import routers
 from loader import dp, bot, db_connector
 from middlewares import UserMiddleware
 
 
 async def main():
-    await create_user_table(db_connector)
+    for func in create_tables_funcs:
+        await func(db_connector)
+
     await dp.start_polling(bot)
 
 

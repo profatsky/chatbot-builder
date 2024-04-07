@@ -1,0 +1,14 @@
+{
+  "tablename": "plugins",
+  "data": [
+    {
+      "plugin_id": 1,
+      "name": "Статистика",
+      "summary": "Предоставляет статистику по пользователям чат-бота",
+      "description": "Плагин Статистика предоставляет информацию о количестве пользователей вашего чат-бота. Для просмотра статистики воспользуйтесь командой /stats. Команда доступна только администратору чат-бота.",
+      "image_path": "media/plugins/statistic.png",
+      "handlers_file_path": "bot_templates/project_structure/handlers/statistic.py.j2",
+      "db_funcs_file_path": "bot_templates/project_structure/db/statistic.py.j2"
+    }
+  ]
+}

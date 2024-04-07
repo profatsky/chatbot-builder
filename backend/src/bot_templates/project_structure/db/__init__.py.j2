@@ -1,0 +1,11 @@
+from . import base
+{% for db_funcs_file_name in db_funcs_file_names %}
+from . import {{ db_funcs_file_name }}
+{% endfor %}
+
+create_tables_funcs = [
+    base.create_tables,
+    {% for db_funcs_file_name in db_funcs_file_names %}
+    {{ db_funcs_file_name }}.create_tables,
+    {% endfor %}
+]

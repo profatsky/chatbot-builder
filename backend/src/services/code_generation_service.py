@@ -69,17 +69,28 @@ async def get_bot_code_in_zip(
 # TODO need refactoring
 def _add_plugins_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
     handlers_file_names = []
+    db_funcs_file_names = []
 
     for plugin in project.plugins:
+        # handlers
+        handlers_file_name = os.path.basename(plugin.handlers_file_path)
+        handlers_file_name_with_py_extension = os.path.splitext(handlers_file_name)[0]
 
-        handlers_file_path = os.path.join('src/bot_templates/project_structure/handlers/', plugin.handlers_file_path)
-        handlers_file_name_without_jinja_extension = plugin.handlers_file_path[:-3]
-        handlers_file_names.append(handlers_file_name_without_jinja_extension[:-3])
-        zip_file.write(handlers_file_path, os.path.join('handlers/', handlers_file_name_without_jinja_extension))
+        handlers_file_name_without_extension = os.path.splitext(handlers_file_name_with_py_extension)[0]
+        handlers_file_names.append(handlers_file_name_without_extension)
 
-        db_funcs_file_path = os.path.join('src/bot_templates/project_structure/db/', plugin.db_funcs_file_path)
-        db_funcs_file_name_without_jinja_extension = plugin.db_funcs_file_path[:-3]
-        zip_file.write(db_funcs_file_path, os.path.join('db/', db_funcs_file_name_without_jinja_extension))
+        handlers_file_path = os.path.join('src/', plugin.handlers_file_path)
+        zip_file.write(handlers_file_path, os.path.join('handlers/', handlers_file_name_with_py_extension))
+
+        # database funcs
+        db_funcs_file_name = os.path.basename(plugin.handlers_file_path)
+        db_funcs_file_name_with_py_extension = os.path.splitext(db_funcs_file_name)[0]
+
+        db_funcs_file_name_without_extension = os.path.splitext(db_funcs_file_name_with_py_extension)[0]
+        db_funcs_file_names.append(db_funcs_file_name_without_extension)
+
+        db_funcs_file_path = os.path.join('src/', plugin.db_funcs_file_path)
+        zip_file.write(db_funcs_file_path, os.path.join('db/', db_funcs_file_name_with_py_extension))
 
     handlers_init_template = _get_template('src/bot_templates/project_structure/handlers/__init__.py.j2')
     handlers_init_code = handlers_init_template.render({
@@ -87,6 +98,13 @@ def _add_plugins_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file:
     })
     handlers_init_in_memory_file = io.BytesIO(str.encode(handlers_init_code))
     zip_file.writestr('handlers/__init__.py', handlers_init_in_memory_file.getvalue())
+
+    db_funcs_init_template = _get_template('src/bot_templates/project_structure/db/__init__.py.j2')
+    db_funcs_init_code = db_funcs_init_template.render({
+        'db_funcs_file_names': db_funcs_file_names,
+    })
+    db_funcs_init_in_memory_file = io.BytesIO(str.encode(db_funcs_init_code))
+    zip_file.writestr('db/__init__.py', db_funcs_init_in_memory_file.getvalue())
 
 
 def _add_custom_handlers_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
