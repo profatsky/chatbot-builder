@@ -29,7 +29,8 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=False),
     sa.Column('handlers_file_path', sa.String(length=256), nullable=False),
     sa.Column('db_funcs_file_path', sa.String(length=256), nullable=False),
-    sa.PrimaryKeyConstraint('plugin_id')
+    sa.PrimaryKeyConstraint('plugin_id'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('projects_plugins',
     sa.Column('project_id', sa.Integer(), nullable=False),

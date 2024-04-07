@@ -106,6 +106,7 @@ def _add_plugins_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file:
     db_funcs_init_in_memory_file = io.BytesIO(str.encode(db_funcs_init_code))
     zip_file.writestr('db/__init__.py', db_funcs_init_in_memory_file.getvalue())
 
+    zip_file.writestr('img/', 'img/')
 
 def _add_custom_handlers_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
     custom_handlers_code = _generate_custom_handlers_code(project)

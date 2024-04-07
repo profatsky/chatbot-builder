@@ -19,7 +19,7 @@ class PluginModel(Base):
 
     plugin_id: Mapped[int] = mapped_column(primary_key=True)
 
-    name: Mapped[str] = mapped_column(String(128))
+    name: Mapped[str] = mapped_column(String(128), unique=True)
     summary: Mapped[str] = mapped_column(String(512))
     description: Mapped[str] = mapped_column(String(4096))
     image_path: Mapped[str] = mapped_column(String(256))

@@ -3,6 +3,7 @@ import json
 import os
 
 from sqlalchemy import text, TextClause
+from sqlalchemy.exc import IntegrityError, DBAPIError
 
 from src.core.db import async_session_maker
 
@@ -38,12 +39,16 @@ def transform_jsons_to_sql_inserts(jsons: list[dict]) -> list[TextClause]:
             sql_values_rows.append(sql_values_row)
 
         columns_to_sql = ', '.join(columns)
-        values_to_sql = ', '.join(sql_values_rows)
 
-        sql = text(f'''
-            INSERT INTO {seed['tablename']} ({columns_to_sql}) VALUES {values_to_sql}
-        ''')
-        sql_inserts.append(sql)
+        '''
+        A separate insert is created for each set of values. When adding data at once in one insert, 
+        a conflict may occur, which will cause no query to be executed.
+        '''
+        for row in sql_values_rows:
+            sql = text(f'''
+                INSERT INTO {seed['tablename']} ({columns_to_sql}) VALUES {row}
+            ''')
+            sql_inserts.append(sql)
 
     return sql_inserts
 
@@ -51,9 +56,12 @@ def transform_jsons_to_sql_inserts(jsons: list[dict]) -> list[TextClause]:
 async def insert_data(sql_inserts: list[TextClause]):
     async with async_session_maker() as session:
         for sql_insert in sql_inserts:
-            await session.execute(sql_insert)
+            try:
+                await session.execute(sql_insert)
+                await session.commit()
+            except (IntegrityError, DBAPIError):
+                pass
 
-        await session.commit()
 
 
 async def main():
