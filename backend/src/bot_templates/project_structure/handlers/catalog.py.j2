@@ -34,6 +34,13 @@ async def get_catalog(
         products = await get_products(db_connector)
 
     if not products:
+        if state:
+            await state.clear()
+        if sent_message:
+            await bot.delete_message(
+                chat_id=sent_message.chat.id,
+                message_id=sent_message.message_id,
+            )
         return await message.answer('☹ Нет доступных товаров')
 
     if not is_admin and message.from_user.id == int(config.ADMIN_ID):
@@ -133,6 +140,7 @@ async def exit_catalog(message: types.Message, state: FSMContext):
         message_id=data["sent_message"].message_id,
     )
     await state.clear()
+    await message.answer('❎ Каталог закрыт. Теперь вы можете отправлять любые сообщения!')
 
 
 start_keyboard_buttons = [
@@ -153,15 +161,16 @@ class AddProductState(StatesGroup):
 
 @router.message(filters.StateFilter(None), filters.Command("add_product"))
 async def add_product_command(message: types.Message):
-    await message.answer(
-        "❗ Для добавления товара необходимо предоставить следующие данные о нем:\n\n"
-        "- ✏ Название\n\n"
-        "- 📑 Описание\n\n"
-        "- 💵 Стоимость\n\n"
-        "- 🖼 Изображение\n\n"
-        "- 👤 Username продавца в Telegram",
-        reply_markup=start_keyboard,
-    )
+    if message.message_id == int(config.ADMIN_ID):
+        await message.answer(
+            "❗ Для добавления товара необходимо предоставить следующие данные о нем:\n\n"
+            "- ✏ Название\n\n"
+            "- 📑 Описание\n\n"
+            "- 💵 Стоимость\n\n"
+            "- 🖼 Изображение\n\n"
+            "- 👤 Username продавца в Telegram",
+            reply_markup=start_keyboard,
+        )
 
 
 @router.callback_query(filters.StateFilter(None), F.data == "start_add_product")
