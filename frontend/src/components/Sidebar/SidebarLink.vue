@@ -19,7 +19,7 @@ const isActive = computed(() => route.path === props.to)
 
 </script>
 
-<template>
+<template name="fade">
   <router-link :to="to" class="link" :class="{ active: isActive }">
     <img :src="props.iconPath">
     <transition name="fade">
@@ -36,9 +36,9 @@ const isActive = computed(() => route.path === props.to)
   transition: opacity 0.3s;
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
-  opacity: 0.3s ease;
+  opacity: 0;
 }
 
 .link {

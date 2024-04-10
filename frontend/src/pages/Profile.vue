@@ -92,10 +92,12 @@ onMounted(async () => {
       </div>
     </div>
   </main>
-  <Footer/>
 </template>
 
 <style scoped>
+main {
+  margin-left: 120px;
+}
 
 .profile__title {
   margin: 48px 0;
