@@ -27,7 +27,7 @@ export default {
   border: 0;
   padding: 14px 24px;
 
-  font-family: 'Montserrat', 'sans-serif';
+  font-family: 'Montserrat';
   font-size: 16px;
   line-height: 28px;
   letter-spacing: 0.75px;

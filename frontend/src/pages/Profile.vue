@@ -2,7 +2,6 @@
 import { ref, onMounted } from 'vue';
 import AppNotification from '@/components/UI/AppNotification.vue';
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
-import Footer from '@/components/Footer.vue';
 import { getUserProfile } from '@/api/users';
 import {useToast} from 'vue-toast-notification';
 

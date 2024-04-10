@@ -17,7 +17,7 @@ import SidebarLink from '@/components/Sidebar/SidebarLink.vue';
         </transition>
       </div>
     </div>
-    <SidebarLink to="/" iconPath="src/assets/icons/bot-gray.svg">Боты</SidebarLink>
+    <SidebarLink to="/projects" iconPath="src/assets/icons/bot-gray.svg">Боты</SidebarLink>
     <SidebarLink to="/" iconPath="src/assets/icons/layout-gray.svg">Шаблоны</SidebarLink>
     <SidebarLink to="/" iconPath="src/assets/icons/blocks-gray.svg">Плагины</SidebarLink>
     <SidebarLink to="/" iconPath="src/assets/icons/scroll-gray.svg">Руководство</SidebarLink>
