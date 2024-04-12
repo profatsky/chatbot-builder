@@ -35,19 +35,17 @@ const submitForm = async () => {
     return
   }
 
-  if (checkPasswordsMatch()) {
   const { response, error } = await registerUser(email.value, password.value)
-    if (error.value) {
-      if (error.value.response) {
-        toast.error(error.value.response.data.detail)
-      } else {
-        toast.error('Что-то пошло не так...')
-      }
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
     } else {
-      store.dispatch('login');
-      toast.success(response.value.data.detail)
-      router.push({ path: '/profile' })
+      toast.error('Что-то пошло не так...')
     }
+  } else {
+    store.dispatch('login');
+    toast.success(response.value.data.detail)
+    router.push({ path: '/profile' })
   }
 }
 </script>

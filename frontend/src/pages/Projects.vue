@@ -4,6 +4,7 @@ import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import ProjectList from '@/components/Projects/ProjectList.vue';
 import { getUserProjects } from '@/api/projects';
 import {useToast} from 'vue-toast-notification';
+import { updateProject } from '@/api/projects';
 
 const toast = useToast();
 
@@ -11,14 +12,29 @@ const projects = ref([])
 
 const isProjectsLoading = ref(true);
 
-function updateProject(updatedProject) {
-  const index = projects.value.findIndex(
-    project => project.project_id === updatedProject.project_id
+const handleUpdateProjectEvent = async (editedProject) => {
+  const { response, error } = await updateProject(
+    editedProject.project_id,
+    editedProject.name,
+    editedProject.start_message,
+    editedProject.start_keyboard_type
   );
-  if (index !== -1) {
-    projects.value[index] = updatedProject;
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    const index = projects.value.findIndex(
+      project => project.project_id === editedProject.project_id
+    );
+    if (index !== -1) {
+      projects.value[index] = editedProject;
+    }
+
+    toast.success('Данные о чат-боте обновлены');
   }
-  console.log(projects)
 }
 
 onMounted(async () => {
@@ -47,7 +63,7 @@ onMounted(async () => {
         <ProjectList
           :projects="projects"
           v-if="!isProjectsLoading"
-          @update-project="updateProject"
+          @update-project="handleUpdateProjectEvent"
         />
       </div>
     </div>

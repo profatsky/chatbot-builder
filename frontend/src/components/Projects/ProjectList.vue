@@ -10,10 +10,9 @@ const props = defineProps({
 
 const emits = defineEmits(['update-project']);
 
-function updateProject(updatedProject) {
-  emits('update-project', updatedProject)
+const updateProjectEvent = (editedProject) => {
+  emits('update-project', editedProject)
 }
-
 </script>
 
 <template>
@@ -22,7 +21,7 @@ function updateProject(updatedProject) {
       v-for="project in projects"
       :key="project.project_id"
       :project="project"
-      @update-project="updateProject"
+      @update-project="updateProjectEvent"
     />
   </div>
 </template>
