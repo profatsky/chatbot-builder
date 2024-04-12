@@ -8,10 +8,14 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits(['update-project']);
+const emits = defineEmits(['update-project', 'delete-project']);
 
 const updateProjectEvent = (editedProject) => {
   emits('update-project', editedProject)
+}
+
+const deleteProjectEvent = (projectID) => {
+  emits('delete-project', projectID)
 }
 </script>
 
@@ -22,10 +26,10 @@ const updateProjectEvent = (editedProject) => {
       :key="project.project_id"
       :project="project"
       @update-project="updateProjectEvent"
+      @delete-project="deleteProjectEvent"
     />
   </div>
 </template>
 
 <style>
-
 </style>

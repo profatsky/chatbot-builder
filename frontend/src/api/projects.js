@@ -28,3 +28,14 @@ export async function updateProject(
 
   return { response, error };
 }
+
+export async function deleteProject(project_id) {
+  const response = ref(null);
+  const error = ref(null);
+  
+  await apiClient.delete(`/projects/${project_id}`)
+  .then(res => response.value = res)
+  .catch(err => error.value = err);
+
+  return { response, error };
+}

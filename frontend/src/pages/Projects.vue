@@ -4,7 +4,7 @@ import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import ProjectList from '@/components/Projects/ProjectList.vue';
 import { getUserProjects } from '@/api/projects';
 import {useToast} from 'vue-toast-notification';
-import { updateProject } from '@/api/projects';
+import { updateProject, deleteProject } from '@/api/projects';
 
 const toast = useToast();
 
@@ -37,6 +37,20 @@ const handleUpdateProjectEvent = async (editedProject) => {
   }
 }
 
+const handleDeleteProjectEvent = async (projectID) => {
+  const { response, error } = await deleteProject(projectID);
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    projects.value = projects.value.filter(p => p.project_id !== projectID);
+    toast.success('Чат-бот успешно удален');
+  }
+}
+
 onMounted(async () => {
   const { response, error } = await getUserProjects();
   if (error.value) {
@@ -64,6 +78,7 @@ onMounted(async () => {
           :projects="projects"
           v-if="!isProjectsLoading"
           @update-project="handleUpdateProjectEvent"
+          @delete-project="handleDeleteProjectEvent"
         />
       </div>
     </div>

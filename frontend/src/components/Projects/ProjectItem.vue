@@ -18,7 +18,7 @@ const props = defineProps({
 
 const editedProject = reactive({ ...props.project })
 
-const emits = defineEmits(['update-project']);
+const emits = defineEmits(['update-project', 'delete-project']);
 const updateProjectStartMessageEvent = debounce(() => {
   emits('update-project', editedProject)
 }, 3000);
@@ -38,6 +38,10 @@ const openChangeNameForm = () => {
 }
 const closeChangeNameForm = () => {
   showChangeNameForm.value = false;
+}
+
+const deleteProjectEvent = () => {
+  emits('delete-project', editedProject.project_id)
 }
 </script>
 
@@ -67,7 +71,7 @@ const closeChangeNameForm = () => {
           <img src="@/assets/icons/pencil-gray.svg">
           <div>Изменить название</div>
         </div>
-        <div class="action">
+        <div @click="deleteProjectEvent" class="action">
           <img src="@/assets/icons/remove-gray.svg">
           <div>Удалить чат-бота</div>
         </div>
@@ -121,7 +125,7 @@ const closeChangeNameForm = () => {
 .project {
   background-color: var(--light-gray);
   padding: 44px 48px;
-  
+  margin-top: 48px;
   border-radius: 16px;
 }
 
