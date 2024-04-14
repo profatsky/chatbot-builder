@@ -7,6 +7,7 @@ import PluginRowList from '@/components/Projects/PluginRowList.vue';
 import { removePluginFromProject } from '@/api/projects';
 import { updateDialogueTrigger, deleteDialogue } from '@/api/dialogues';
 import DialogueRowList from '@/components/Projects/DialogueRowList.vue';
+import { createDialogue } from '@/api/dialogues';
 
 const toast = useToast();
 
@@ -14,15 +15,6 @@ const keyboardTypes = ref([
   { label: 'Inline Keyboard', value: 'inline_keyboard' },
   { label: 'Reply Keyboard', value: 'reply_keyboard' },
 ]);
-
-const props = defineProps({
-  project: {
-    type: Object,
-    required: true
-  }
-});
-
-const editedProject = reactive({ ...props.project });
 
 const showChangeNameForm = ref(false);
 
@@ -33,7 +25,16 @@ const closeChangeNameForm = () => {
   showChangeNameForm.value = false;
 }
 
-const emits = defineEmits(['update-project', 'delete-project']);
+const props = defineProps({
+  project: {
+    type: Object,
+    required: true
+  }
+});
+
+const editedProject = reactive({ ...props.project });
+
+const emits = defineEmits(['update-project', 'delete-project', 'create-dialogue']);
 
 const updateProjectStartMessageEvent = debounce(() => {
   emits('update-project', editedProject)
@@ -105,6 +106,30 @@ const handleDeleteDialogueEvent = async (dialogue) => {
   }
 };
 
+const handleCreateDialogueEvent = async () => {
+  const dialogue = {
+    triggerEventType: 'text',
+    triggerValue: '',
+  };
+
+  const { response, error } = await createDialogue(
+    editedProject.project_id, 
+    dialogue.triggerEventType, 
+    dialogue.triggerValue
+  );
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    const responseData = response.value.data;
+    editedProject.dialogues.push(responseData);
+    toast.success('Диалог успешно создан');
+  }
+}
+
 </script>
 
 <template>
@@ -166,6 +191,7 @@ const handleDeleteDialogueEvent = async (dialogue) => {
           size="large" 
           importance="secondary"
           class="dialogue__add-btn"
+          @click="handleCreateDialogueEvent"
         >
           Добавить диалог
         </AppButton>

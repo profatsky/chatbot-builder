@@ -29,7 +29,7 @@ const dialogueTrigerTypes = ref([
   { label: 'Текст', value: 'text' },
   { label: 'Команда', value: 'command' },
   { label: 'Кнопка', value: 'button' }
-])
+]);
 </script>
 
 <template>

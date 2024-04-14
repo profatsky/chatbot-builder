@@ -1,6 +1,23 @@
 import { ref } from 'vue';
 import apiClient from '@/api/apiClient';
 
+export async function createDialogue(projectID, triggerEventType, triggerValue) {
+  const response = ref(null);
+  const error = ref(null);
+  
+  await apiClient.post(`/projects/${projectID}/dialogues`, {
+    project_id: projectID,
+    trigger: {
+      event_type: triggerEventType,
+      value: triggerValue,
+    }
+  })
+  .then(res => response.value = res)
+  .catch(err => error.value = err);
+
+  return { response, error };
+};
+
 export async function updateDialogueTrigger(
   projectID, 
   dialogueID, 

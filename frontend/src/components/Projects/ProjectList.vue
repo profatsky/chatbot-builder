@@ -12,11 +12,11 @@ const emits = defineEmits(['update-project', 'delete-project']);
 
 const updateProjectEvent = (editedProject) => {
   emits('update-project', editedProject)
-}
+};
 
 const deleteProjectEvent = (projectID) => {
   emits('delete-project', projectID)
-}
+};
 </script>
 
 <template>
