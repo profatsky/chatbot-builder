@@ -62,15 +62,8 @@ const handleRemovePluginEvent = async (plugin) => {
       toast.error('Что-то пошло не так...')
     }
   } else {
-    const index = editedProject.plugins.findIndex(
-      p => p.plugin_id === plugin.plugin_id
-    );
-    if (index !== -1) {
-      editedProject.plugins = editedProject.plugins.filter(p => p.plugin_id !== plugin.plugin_id);
-      toast.success('Плагин успешно удален');
-    } else {
-      toast.success('Что-то пошло не так');
-    }
+    editedProject.plugins = editedProject.plugins.filter(p => p.plugin_id !== plugin.plugin_id);
+    toast.success('Плагин успешно удален');
   }
 };
 
