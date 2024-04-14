@@ -181,7 +181,7 @@ const handleCreateDialogueEvent = async () => {
       </div>
     </div>
     <div class="dialogues">
-        <h3 class="dialogues__title">Диалоги (0/15)</h3>
+        <h3 class="dialogues__title">Диалоги ({{ editedProject.dialogues.length }}/15)</h3>
         <DialogueRowList
           :dialogues="editedProject.dialogues"
           @update-dialogue="handleUpdateDialogueEvent"
@@ -197,7 +197,7 @@ const handleCreateDialogueEvent = async () => {
         </AppButton>
       </div>
       <div class="plugins">
-        <h3 class="plugins__title">Плагины (0/15)</h3>
+        <h3 class="plugins__title">Плагины ({{ editedProject.plugins.length }}/15)</h3>
         <PluginRowList 
           :plugins="editedProject.plugins"
           @remove-plugin="handleRemovePluginEvent"
@@ -226,6 +226,7 @@ const handleCreateDialogueEvent = async () => {
   padding: 44px 48px;
   margin-top: 48px;
   border-radius: 16px;
+  box-shadow: 0 0 16px 0 rgba(17, 17, 17, 0.04);
 }
 
 .project__management {

@@ -4,7 +4,7 @@ import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import ProjectList from '@/components/Projects/ProjectList.vue';
 import { getUserProjects } from '@/api/projects';
 import {useToast} from 'vue-toast-notification';
-import { updateProject, deleteProject } from '@/api/projects';
+import { createProject, updateProject, deleteProject } from '@/api/projects';
 
 const toast = useToast();
 
@@ -50,6 +50,32 @@ const handleDeleteProjectEvent = async (projectID) => {
   }
 };
 
+const handleCreateProjectEvent = async () => {
+  const project = {
+    name: 'Новый чат-бот',
+    start_message: '',
+    start_keyboard_type: 'reply_keyboard',
+  };
+
+  const { response, error } = await createProject(
+    project.name, 
+    project.start_message, 
+    project.start_keyboard_type
+  );
+
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    const responseData = response.value.data;
+    projects.value.push(responseData);
+    toast.success('Новый чат-бот успешно создан');
+  }
+};
+
 onMounted(async () => {
   const { response, error } = await getUserProjects();
   if (error.value) {
@@ -72,7 +98,16 @@ onMounted(async () => {
   <main>
     <div class="container">
       <div class="page-content">
-        <h1 class="content__title">Чат-боты</h1>
+        <div class="page-header">
+          <h1 class="content__title">Чат-боты</h1>
+          <AppButton
+            size="large" 
+            importance="secondary"
+            @click="handleCreateProjectEvent"
+          >
+            Создать чат-бота
+          </AppButton>
+        </div>
         <ProjectList
           :projects="projects"
           v-if="!isProjectsLoading"
@@ -89,7 +124,11 @@ onMounted(async () => {
   margin-left: 120px;
 }
 
-.content__title {
+.page-header {
   margin: 48px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
+
 </style>

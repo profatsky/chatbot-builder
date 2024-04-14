@@ -1,6 +1,21 @@
 import { ref } from 'vue';
 import apiClient from '@/api/apiClient';
 
+export async function createProject(name, startMessage, startKeyboardType) {
+  const response = ref(null);
+  const error = ref(null);
+  
+  await apiClient.post('/projects', {
+    name: name,
+    start_message: startMessage,
+    start_keyboard_type: startKeyboardType,
+  })
+  .then(res => response.value = res)
+  .catch(err => error.value = err);
+
+  return { response, error };
+}
+
 export async function getUserProjects() {
   const response = ref(null);
   const error = ref(null);
