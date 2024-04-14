@@ -15,7 +15,7 @@ const removePluginEvent = (plugin) => {
 </script>
 
 <template>
-  <div v-if="plugins.length > 0">
+  <div v-if="plugins.length > 0" class="plugin-list">
     <PluginRowItem
       v-for="plugin in plugins"
       :key="plugin.plugin_id"
@@ -25,6 +25,8 @@ const removePluginEvent = (plugin) => {
   </div>
 </template>
 
-<style>
-
+<style scoped>
+.plugin-list {
+  margin: 24px 0;
+}
 </style>

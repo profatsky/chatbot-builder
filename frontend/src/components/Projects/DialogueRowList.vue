@@ -20,7 +20,7 @@ const deleteDialogueEvent = (dialogue) => {
 </script>
 
 <template>
-  <div v-if="dialogues.length > 0">
+  <div v-if="dialogues.length > 0" class="dialogue-list">
     <DialoguRowItem
       v-for="dialogue in dialogues"
       :key="dialogue.dialogue_id"
@@ -31,6 +31,8 @@ const deleteDialogueEvent = (dialogue) => {
   </div>
 </template>
 
-<style>
-
+<style scoped>
+.dialogue-list {
+  margin: 24px 0;
+}
 </style>

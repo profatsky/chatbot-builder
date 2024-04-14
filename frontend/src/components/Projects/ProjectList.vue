@@ -20,7 +20,7 @@ const deleteProjectEvent = (projectID) => {
 </script>
 
 <template>
-  <div v-if="projects.length > 0">
+  <div v-if="projects.length > 0" class="project-list">
     <ProjectItem
       v-for="project in projects"
       :key="project.project_id"

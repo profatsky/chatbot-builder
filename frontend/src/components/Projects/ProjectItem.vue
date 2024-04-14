@@ -224,7 +224,7 @@ const handleCreateDialogueEvent = async () => {
 .project {
   background-color: var(--light-gray);
   padding: 44px 48px;
-  margin-top: 48px;
+  margin-bottom: 48px;
   border-radius: 16px;
   box-shadow: 0 0 16px 0 rgba(17, 17, 17, 0.04);
 }
@@ -290,10 +290,4 @@ const handleCreateDialogueEvent = async () => {
   text-transform: uppercase;
   margin-bottom: 24px;
 }
-
-.dialogue__add-btn,
-.plugin__add-btn {
-  margin-top: 24px;
-}
-
 </style>
