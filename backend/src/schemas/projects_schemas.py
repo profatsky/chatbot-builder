@@ -11,7 +11,7 @@ class ProjectReadSchema(BaseModel):
     project_id: int
     name: str = Field(min_length=1, max_length=256)
     user_id: int
-    start_message: str = Field(min_length=1, max_length=4098)
+    start_message: str = Field(max_length=4098)
     start_keyboard_type: KeyboardType
     created_at: datetime.datetime
 
@@ -28,11 +28,11 @@ class ProjectToGenerateCodeReadSchema(ProjectReadSchema):
 
 class ProjectCreateSchema(BaseModel):
     name: str
-    start_message: str = Field(min_length=1, max_length=4098)
+    start_message: str = Field(max_length=4098)
     start_keyboard_type: KeyboardType
 
 
 class ProjectUpdateSchema(BaseModel):
     name: str
-    start_message: str = Field(min_length=1, max_length=4098)
+    start_message: str = Field(max_length=4098)
     start_keyboard_type: KeyboardType

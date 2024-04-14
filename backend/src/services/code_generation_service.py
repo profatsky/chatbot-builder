@@ -108,6 +108,7 @@ def _add_plugins_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file:
 
     zip_file.writestr('img/', 'img/')
 
+
 def _add_custom_handlers_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
     custom_handlers_code = _generate_custom_handlers_code(project)
     custom_handlers_in_memory_file = io.BytesIO(str.encode(custom_handlers_code))
@@ -291,7 +292,7 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
         'handlers': handlers,
         'commands_values': commands_values,
         'start_keyboard': start_keyboard,
-        'start_message': project.start_message,
+        'start_message': project.start_message if project.start_message else 'Главное меню',
     })
     return bot_code
 
