@@ -10,6 +10,10 @@ const props = defineProps({
 
 const emits = defineEmits(['update-dialogue', 'delete-dialogue']);
 
+const updateDialogueEvent = (dialogue) => {
+  emits('update-dialogue', dialogue)
+};
+
 const deleteDialogueEvent = (dialogue) => {
   emits('delete-dialogue', dialogue)
 };
@@ -21,6 +25,7 @@ const deleteDialogueEvent = (dialogue) => {
       v-for="dialogue in dialogues"
       :key="dialogue.dialogue_id"
       :dialogue="dialogue"
+      @update-dialogue="updateDialogueEvent"
       @delete-dialogue="deleteDialogueEvent"
     />
   </div>

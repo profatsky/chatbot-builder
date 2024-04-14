@@ -5,7 +5,7 @@ import {useToast} from 'vue-toast-notification';
 import ChangeNameForm from '@/components/Projects/ChangeNameForm.vue';
 import PluginRowList from '@/components/Projects/PluginRowList.vue';
 import { removePluginFromProject } from '@/api/projects';
-import { deleteDialogue } from '@/api/dialogues';
+import { updateDialogueTrigger, deleteDialogue } from '@/api/dialogues';
 import DialogueRowList from '@/components/Projects/DialogueRowList.vue';
 
 const toast = useToast();
@@ -67,6 +67,30 @@ const handleRemovePluginEvent = async (plugin) => {
   }
 };
 
+const handleUpdateDialogueEvent = async (dialogue) => {
+  const { response, error } = await updateDialogueTrigger(
+    editedProject.project_id,
+    dialogue.dialogue_id,
+    dialogue.trigger.event_type,
+    dialogue.trigger.value
+  );
+  if (error.value) {
+    if (error.value.response) {
+      console.log(error.value.response)
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    const index = editedProject.dialogues.findIndex(
+      d => d.dialogue_id === dialogue.dialogue_id
+    )
+    const responseData = response.value.data;
+    editedProject.dialogues[index] = responseData;
+    toast.success('Данные о диалоге обновлены');
+  }
+};
+
 const handleDeleteDialogueEvent = async (dialogue) => {
   const { response, error } = await deleteDialogue(editedProject.project_id, dialogue.dialogue_id);
   if (error.value) {
@@ -79,8 +103,6 @@ const handleDeleteDialogueEvent = async (dialogue) => {
     editedProject.dialogues = editedProject.dialogues.filter(d => d.dialogue_id !== dialogue.dialogue_id);
     toast.success('Диалог успешно удален');
   }
-
-  console.log('Диалог должен быть удален!', dialogue)
 };
 
 </script>
@@ -137,6 +159,7 @@ const handleDeleteDialogueEvent = async (dialogue) => {
         <h3 class="dialogues__title">Диалоги (0/15)</h3>
         <DialogueRowList
           :dialogues="editedProject.dialogues"
+          @update-dialogue="handleUpdateDialogueEvent"
           @delete-dialogue="handleDeleteDialogueEvent"
         />
         <AppButton 

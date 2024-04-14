@@ -1,5 +1,6 @@
 <script setup>
 import { ref, reactive } from 'vue';
+import { debounce } from 'lodash';
 
 const props = defineProps({
   dialogue: {
@@ -13,12 +14,12 @@ const editedDialogue = reactive({ ...props.dialogue });
 const emits = defineEmits(['update-dialogue', 'delete-dialogue']);
 
 const updateDialogueTriggerTypeEvent = () => {
-  emits('update-dialoge', editedDialogue)
+  emits('update-dialogue', editedDialogue)
 };
 
-const updateDialogueTriggerValueEvent = () => {
-  emits('update-dialoge', editedDialogue)
-};
+const updateDialogueTriggerValueEvent = debounce(() => {
+  emits('update-dialogue', editedDialogue)
+}, 3000);
 
 const deleteDialogueEvent = () => {
   emits('delete-dialogue', props.dialogue)
