@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 
 const props = defineProps({
   modelValue: {
@@ -8,6 +8,11 @@ const props = defineProps({
   options: {
     type: Array,
     default: () => []
+  },
+  size: {
+    type: String,
+    default: 'small',
+    validator: (value) => ['small', 'medium', 'large'].includes(value),
   }
 });
 
@@ -15,13 +20,19 @@ const selectedOption = ref(props.modelValue);
 
 const emits = defineEmits(['update:modelValue']);
 
-function changeOption(event) {
+const changeOption = (event) => {
   emits('update:modelValue', event.target.value)
-}
+};
+
+const computedClasses = computed(() => ({
+  "select": true,
+  "select-small": props.size == 'small',
+  "select-medium": props.size == 'medium',
+}));
 </script>
 
 <template>
-  <select @change="changeOption" class="select" v-model="selectedOption">
+  <select @change="changeOption" :class="computedClasses" v-model="selectedOption">
     <option 
       v-for="(option, index) in options" 
       :key="index"
@@ -34,20 +45,35 @@ function changeOption(event) {
 
 <style scoped>
 .select {
-  padding: 6px 60px 6px 24px;
+  min-width: 200px;
   border: 0;
   border-radius: 10px;
   appearance: none;
-
-  font-size: 16px;
   color: var(--main-black);
+  background-color: var(--main-white);
+}
+
+.select-small {
+  font-size: 16px;
   letter-spacing: 0.75px;
   line-height: 28px;
+
+  padding: 6px 60px 6px 24px;
+  border-radius: 10px;
+}
+
+.select-medium {
+  font-size: 16px;
+  letter-spacing: 0.75px;
+  line-height: 28px;
+
+  padding: 14px 60px 14px 24px;
+  border-radius: 16px;
 }
 
 .select:not([multiple]) {
   background-repeat: no-repeat;
-  background-position-y: calc(100% - 18px);
+  background-position-y: calc(50%);
   background-position-x: calc(100% - 24px);
   background-image: url('src/assets/select-arrow.svg');
   background-size: 0.85em auto;

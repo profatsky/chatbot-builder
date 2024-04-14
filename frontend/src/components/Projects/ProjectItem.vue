@@ -5,12 +5,14 @@ import {useToast} from 'vue-toast-notification';
 import ChangeNameForm from '@/components/Projects/ChangeNameForm.vue';
 import PluginRowList from '@/components/Projects/PluginRowList.vue';
 import { removePluginFromProject } from '@/api/projects';
+import { deleteDialogue } from '@/api/dialogues';
+import DialogueRowList from '@/components/Projects/DialogueRowList.vue';
 
 const toast = useToast();
 
 const keyboardTypes = ref([
-  {label: 'Inline Keyboard', value: 'inline_keyboard'},
-  {label: 'Reply Keyboard', value: 'reply_keyboard'},
+  { label: 'Inline Keyboard', value: 'inline_keyboard' },
+  { label: 'Reply Keyboard', value: 'reply_keyboard' },
 ]);
 
 const props = defineProps({
@@ -71,6 +73,23 @@ const handleRemovePluginEvent = async (plugin) => {
     }
   }
 };
+
+const handleDeleteDialogueEvent = async (dialogue) => {
+  const { response, error } = await deleteDialogue(editedProject.project_id, dialogue.dialogue_id);
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    editedProject.dialogues = editedProject.dialogues.filter(d => d.dialogue_id !== dialogue.dialogue_id);
+    toast.success('Диалог успешно удален');
+  }
+
+  console.log('Диалог должен быть удален!', dialogue)
+};
+
 </script>
 
 <template>
@@ -123,9 +142,14 @@ const handleRemovePluginEvent = async (plugin) => {
     </div>
     <div class="dialogues">
         <h3 class="dialogues__title">Диалоги (0/15)</h3>
+        <DialogueRowList
+          :dialogues="editedProject.dialogues"
+          @delete-dialogue="handleDeleteDialogueEvent"
+        />
         <AppButton 
           size="large" 
           importance="secondary"
+          class="dialogue__add-btn"
         >
           Добавить диалог
         </AppButton>
@@ -139,6 +163,7 @@ const handleRemovePluginEvent = async (plugin) => {
         <AppButton 
           size="large" 
           importance="secondary"
+          class="plugin__add-btn"
         >
           Добавить плагин
         </AppButton>
@@ -222,4 +247,10 @@ const handleRemovePluginEvent = async (plugin) => {
   text-transform: uppercase;
   margin-bottom: 24px;
 }
+
+.dialogue__add-btn,
+.plugin__add-btn {
+  margin-top: 24px;
+}
+
 </style>
