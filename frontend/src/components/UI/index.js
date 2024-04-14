@@ -3,6 +3,7 @@ import AppModal from '@/components/UI/AppModal.vue';
 import AppInput from '@/components/UI/AppInput.vue';
 import AppTextarea from '@/components/UI/AppTextarea.vue';
 import AppSelect from '@/components/UI/AppSelect.vue';
+import AppRoundButton from '@/components/UI/AppRoundButton.vue';
 
 export default {
   AppButton,
@@ -10,4 +11,5 @@ export default {
   AppInput,
   AppTextarea,
   AppSelect,
+  AppRoundButton,
 };

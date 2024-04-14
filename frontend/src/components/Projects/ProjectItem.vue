@@ -1,8 +1,12 @@
 <script setup>
 import { ref, reactive } from 'vue';
-import ChangeNameForm from '@/components/Projects/ChangeNameForm.vue';
 import { debounce } from 'lodash';
+import {useToast} from 'vue-toast-notification';
+import ChangeNameForm from '@/components/Projects/ChangeNameForm.vue';
+import PluginRowList from '@/components/Projects/PluginRowList.vue';
+import { removePluginFromProject } from '@/api/projects';
 
+const toast = useToast();
 
 const keyboardTypes = ref([
   {label: 'Inline Keyboard', value: 'inline_keyboard'},
@@ -16,23 +20,10 @@ const props = defineProps({
   }
 });
 
-const editedProject = reactive({ ...props.project })
-
-const emits = defineEmits(['update-project', 'delete-project']);
-const updateProjectStartMessageEvent = debounce(() => {
-  emits('update-project', editedProject)
-}, 3000);
-const updateProjectKeyboardTypeEvent = () => {
-  emits('update-project', editedProject)
-}
-
-const updateProjectNameEvent = (name) => {
-  editedProject.name = name;
-  emits('update-project', editedProject)
-  closeChangeNameForm();
-}
+const editedProject = reactive({ ...props.project });
 
 const showChangeNameForm = ref(false);
+
 const openChangeNameForm = () => {
   showChangeNameForm.value = true;
 }
@@ -40,9 +31,46 @@ const closeChangeNameForm = () => {
   showChangeNameForm.value = false;
 }
 
+const emits = defineEmits(['update-project', 'delete-project']);
+
+const updateProjectStartMessageEvent = debounce(() => {
+  emits('update-project', editedProject)
+}, 3000);
+
+const updateProjectKeyboardTypeEvent = () => {
+  emits('update-project', editedProject)
+};
+
+const updateProjectNameEvent = (name) => {
+  editedProject.name = name;
+  emits('update-project', editedProject)
+  closeChangeNameForm();
+};
+
 const deleteProjectEvent = () => {
   emits('delete-project', editedProject.project_id)
-}
+};
+
+const handleRemovePluginEvent = async (plugin) => {
+  const { response, error } = await removePluginFromProject(editedProject.project_id, plugin.plugin_id);
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    const index = editedProject.plugins.findIndex(
+      p => p.plugin_id === plugin.plugin_id
+    );
+    if (index !== -1) {
+      editedProject.plugins = editedProject.plugins.filter(p => p.plugin_id !== plugin.plugin_id);
+      toast.success('Плагин успешно удален');
+    } else {
+      toast.success('Что-то пошло не так');
+    }
+  }
+};
 </script>
 
 <template>
@@ -104,6 +132,10 @@ const deleteProjectEvent = () => {
       </div>
       <div class="plugins">
         <h3 class="plugins__title">Плагины (0/15)</h3>
+        <PluginRowList 
+          :plugins="editedProject.plugins"
+          @remove-plugin="handleRemovePluginEvent"
+        />
         <AppButton 
           size="large" 
           importance="secondary"

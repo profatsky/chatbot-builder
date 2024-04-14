@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, toRefs, reactive, onMounted } from 'vue';
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import ProjectList from '@/components/Projects/ProjectList.vue';
 import { getUserProjects } from '@/api/projects';
@@ -8,7 +8,7 @@ import { updateProject, deleteProject } from '@/api/projects';
 
 const toast = useToast();
 
-const projects = ref([])
+const projects = ref([]);
 
 const isProjectsLoading = ref(true);
 
@@ -31,11 +31,10 @@ const handleUpdateProjectEvent = async (editedProject) => {
     );
     if (index !== -1) {
       projects.value[index] = editedProject;
+      toast.success('Данные о чат-боте обновлены');
     }
-
-    toast.success('Данные о чат-боте обновлены');
   }
-}
+};
 
 const handleDeleteProjectEvent = async (projectID) => {
   const { response, error } = await deleteProject(projectID);
@@ -49,7 +48,7 @@ const handleDeleteProjectEvent = async (projectID) => {
     projects.value = projects.value.filter(p => p.project_id !== projectID);
     toast.success('Чат-бот успешно удален');
   }
-}
+};
 
 onMounted(async () => {
   const { response, error } = await getUserProjects();
