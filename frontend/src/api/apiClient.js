@@ -4,8 +4,6 @@ axios.defaults.withCredentials = true
 
 async function refreshTokens() {
   await apiClient.post('/refresh')
-  .then(res => response.value = res)
-  .catch(err => error.value = err);
 };
 
 const apiClient = axios.create({
@@ -18,12 +16,13 @@ apiClient.interceptors.response.use(
   },
   async error => {
     const originalRequest = error.config;
-    if (error.response.status === 422 && error.response.data.detail === "Signature has expired") {
-      await refreshTokens();
 
+    if (error.response.status === 422 && 
+      error.response.data.detail === "Signature has expired") {
+      await refreshTokens();
       return axios(originalRequest);
     }
-
+    
     return Promise.reject(error);
   }
 );
