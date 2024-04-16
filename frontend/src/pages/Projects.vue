@@ -1,10 +1,9 @@
 <script setup>
-import { ref, toRefs, reactive, onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useToast } from 'vue-toast-notification';
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import ProjectList from '@/components/Projects/ProjectList.vue';
-import { getUserProjects } from '@/api/projects';
-import {useToast} from 'vue-toast-notification';
-import { createProject, updateProject, deleteProject } from '@/api/projects';
+import { createProject, getUserProjects, updateProject, deleteProject } from '@/api/projects';
 
 const toast = useToast();
 
@@ -109,8 +108,8 @@ onMounted(async () => {
           </AppButton>
         </div>
         <ProjectList
-          :projects="projects"
           v-if="!isProjectsLoading"
+          :projects="projects"
           @update-project="handleUpdateProjectEvent"
           @delete-project="handleDeleteProjectEvent"
         />

@@ -185,6 +185,10 @@ export default {
 </template>
 
 <style scoped>
+section {
+  margin-bottom: 100px;
+}
+
 #advantages-section,
 #manual-section,
 #support-section {
@@ -192,12 +196,10 @@ export default {
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  margin-bottom: 100px;
 }
 
 #main-section {
-  margin-top: 160px;
-  height: 984px;
+  margin-top: 120px;
 }
 
 .offer {
@@ -238,7 +240,7 @@ export default {
 }
 
 .steps {
-  margin-top: 140px;
+  margin-top: 120px;
   display: flex;
   justify-content: space-between;
   gap: 27px;

@@ -6,7 +6,11 @@ const props = defineProps({
   dialogue: {
     type: Object,
     required: true,
-  }
+  },
+  projectID: {
+    type: Number,
+    required: true,
+  },
 });
 
 const editedDialogue = reactive({ ...props.dialogue });
@@ -52,7 +56,10 @@ const dialogueTrigerTypes = ref([
       />
     </div>
     <div class="dialogue-row__btns">
-      <AppRoundButton buttonType="redirect"/>
+      <AppRoundButton 
+        buttonType="redirect"
+        @click="$router.push(`/projects/${projectID}/dialogues/${dialogue.dialogue_id}`)"
+      />
       <AppRoundButton 
         @click="deleteDialogueEvent"
         buttonType="delete"

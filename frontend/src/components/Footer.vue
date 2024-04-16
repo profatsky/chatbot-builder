@@ -21,5 +21,6 @@
   display: flex;
   padding: 20px 0;
   gap: 271px;
+  align-items: center;
 }
 </style>

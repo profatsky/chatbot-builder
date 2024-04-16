@@ -45,12 +45,14 @@ const computedClasses = computed(() => ({
 
 <style scoped>
 .select {
+  font-family: 'Montserrat';
+  color: var(--main-black);
+
+  background-color: var(--main-white);
   min-width: 200px;
   border: 0;
   border-radius: 10px;
   appearance: none;
-  color: var(--main-black);
-  background-color: var(--main-white);
 }
 
 .select-small {

@@ -184,6 +184,7 @@ const handleCreateDialogueEvent = async () => {
         <h3 class="dialogues__title">Диалоги ({{ editedProject.dialogues.length }}/15)</h3>
         <DialogueRowList
           :dialogues="editedProject.dialogues"
+          :projectID="project.project_id"
           @update-dialogue="handleUpdateDialogueEvent"
           @delete-dialogue="handleDeleteDialogueEvent"
         />

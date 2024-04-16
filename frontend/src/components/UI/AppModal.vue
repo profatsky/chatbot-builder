@@ -53,5 +53,4 @@ export default {
 .slot {
   margin-bottom: 20px;
 }
-
 </style>
