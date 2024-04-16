@@ -77,17 +77,14 @@ const submitForm = async () => {
         placeholder="Введите пароль повторно"
       />
       <div class="register-form__show-password-checkbox">
-        <input 
-          type="checkbox" 
-          v-model="showPassword"
-        >
+        <input type="checkbox" v-model="showPassword">
         <label>Показать пароль</label>
       </div>
 
       <div class="register-form__personal-data-confirm">
         <input type="checkbox" required>
         <label>
-          Я даю свое согласие на <a href="#">обработку моих персональных данных</a>
+          Я даю свое согласие на <a href="/personal-data-processing-policy" target="_blank">обработку моих персональных данных</a>
         </label>
       </div>
 

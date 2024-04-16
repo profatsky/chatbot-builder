@@ -2,14 +2,14 @@
 import HeaderNavigation from '@/components/Main/HeaderNavigation.vue';
 import RegisterForm from '@/components/Main/RegisterForm.vue';
 import LoginForm from '@/components/Main/LoginForm.vue';
-import Footer from '@/components/Footer.vue';
+import SimpleFooter from '@/components/SimpleFooter.vue';
 import '@/style.css'
 
 
 export default {
   components: {
     HeaderNavigation,
-    Footer,
+    SimpleFooter,
     RegisterForm,
     LoginForm,
   },
@@ -31,6 +31,9 @@ export default {
     },
     closeLoginFormHandler() {
       this.showLoginForm = false;
+    },
+    openPersonalDataProcessingPolicyPage() {
+      window.open('/personal-data-processing-policy', '_blank')
     }
   }
 }
@@ -160,7 +163,13 @@ export default {
         <p class="section-description">
           Руководство упростит процесс создания и настройки чат-бота.  Независимо от вашего опыта, вы сможете быстро освоить все возможности нашего конструктора и создать уникального чат-бота. 
         </p>
-        <AppButton size="medium" importance="secondary">Перейти к руководству</AppButton>
+        <AppButton 
+          size="medium" 
+          importance="secondary"
+          @click="openPersonalDataProcessingPolicyPage"
+        >
+          Перейти к руководству
+        </AppButton>
       </section>
       <section id="support-section">
         <h3 class="secondary-title">Техническая поддержка</h3>
@@ -181,7 +190,7 @@ export default {
       </section>
     </div>
   </main>
-  <Footer/>
+  <SimpleFooter/>
 </template>
 
 <style scoped>

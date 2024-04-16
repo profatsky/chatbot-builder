@@ -3,6 +3,7 @@ import Main from '@/pages/Main.vue';
 import Projects from '@/pages/Projects.vue';
 import Profile from '@/pages/Profile.vue';
 import Dialogue from '@/pages/Dialogue.vue';
+import PersonalDataProcessingPolicy from '@/pages/PersonalDataProcessingPolicy.vue';
 
 const routes = [
   {
@@ -20,6 +21,10 @@ const routes = [
   {
     path: '/projects/:projectID/dialogues/:dialogueID',
     component: Dialogue
+  },
+  {
+    path: '/personal-data-processing-policy',
+    component: PersonalDataProcessingPolicy
   }
 ]
 
