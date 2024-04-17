@@ -5,9 +5,12 @@ import BlockList from '@/components/Dialogues/BlockList.vue';
 import BlockTypeList from '@/components/Dialogues/BlockTypeList.vue';
 import emptyBlocks from '@/components/Dialogues/blocks'
 
+import msgPurpleIcon from '@/assets/icons/blocks/msg-purple.svg';
+import imgPurpleIcon from '@/assets/icons/blocks/img-purple.svg';
+
 const blockTypes = ref([
-  { value: 'textBlock', name: 'Текст', imgPath: '/src/assets/icons/blocks/msg-purple.svg' },
-  { value: 'imageBlock', name: 'Изображение', imgPath: '/src/assets/icons/blocks/img-purple.svg' },
+  { value: 'textBlock', name: 'Текст', imgPath: msgPurpleIcon },
+  { value: 'imageBlock', name: 'Изображение', imgPath: imgPurpleIcon },
 ]);
 // const isBlocksLoading = ref(false);
 

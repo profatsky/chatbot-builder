@@ -2,6 +2,12 @@
 import { collapsed, toggleSidebar, sidebarWidth } from '@/components/utils/sidebarCollapse';
 import SidebarLink from '@/components/Sidebar/SidebarLink.vue';
 
+import botGrayIcon from '@/assets/icons/bot-gray.svg';
+import layoutGrayIcon from '@/assets/icons/layout-gray.svg';
+import blockGrayIcon from '@/assets/icons/blocks-gray.svg';
+import scrollGrayIcon from '@/assets/icons/scroll-gray.svg';
+import profileGrayIcon from '@/assets/icons/profile-gray.svg';
+
 </script>
 
 <template>
@@ -17,11 +23,11 @@ import SidebarLink from '@/components/Sidebar/SidebarLink.vue';
         </transition>
       </div>
     </div>
-    <SidebarLink to="/projects" iconPath="/src/assets/icons/bot-gray.svg">Боты</SidebarLink>
-    <SidebarLink to="/" iconPath="/src/assets/icons/layout-gray.svg">Шаблоны</SidebarLink>
-    <SidebarLink to="/" iconPath="/src/assets/icons/blocks-gray.svg">Плагины</SidebarLink>
-    <SidebarLink to="/" iconPath="/src/assets/icons/scroll-gray.svg">Руководство</SidebarLink>
-    <SidebarLink to="/profile" iconPath="/src/assets/icons/profile-gray.svg">Профиль</SidebarLink>
+    <SidebarLink to="/projects" :iconPath="botGrayIcon">Боты</SidebarLink>
+    <SidebarLink to="/" :iconPath="layoutGrayIcon">Шаблоны</SidebarLink>
+    <SidebarLink to="/" :iconPath="blockGrayIcon">Плагины</SidebarLink>
+    <SidebarLink to="/" :iconPath="scrollGrayIcon">Руководство</SidebarLink>
+    <SidebarLink to="/profile" :iconPath="profileGrayIcon">Профиль</SidebarLink>
     <span
       class="collapse-icon"
       :class="{ 'rotate-180': collapsed }"
