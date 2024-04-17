@@ -31,9 +31,6 @@ export default {
     },
     closeLoginFormHandler() {
       this.showLoginForm = false;
-    },
-    openPersonalDataProcessingPolicyPage() {
-      window.open('/personal-data-processing-policy', '_blank')
     }
   }
 }
@@ -166,7 +163,6 @@ export default {
         <AppButton 
           size="medium" 
           importance="secondary"
-          @click="openPersonalDataProcessingPolicyPage"
         >
           Перейти к руководству
         </AppButton>
