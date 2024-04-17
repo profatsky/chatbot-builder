@@ -32,7 +32,7 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
 
 
 for router in routers:
-    app.include_router(router)
+    app.include_router(router, prefix='/api')
 
 if __name__ == '__main__':
     uvicorn.run(
