@@ -1,7 +1,7 @@
 from typing import Optional
 
 from sqlalchemy import select, delete
-from sqlalchemy.orm import selectin_polymorphic, joinedload
+from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.models import DialogueModel, TriggerModel, BlockModel
@@ -53,46 +53,9 @@ async def _get_dialogue(dialogue_id: int, session: AsyncSession) -> Optional[Dia
     return dialogue
 
 
-async def update_blocks_in_dialogue(
-        dialogue_id: int,
-        blocks: list[UnionBlockCreateSchema],
-        session: AsyncSession,
-) -> list[UnionBlockReadSchema]:
-    await session.execute(
-        delete(BlockModel)
-        .where(BlockModel.dialogue_id == dialogue_id)
-    )
-
-    new_blocks = []
-    for block_schema in blocks:
-        block_model = blocks_utils.get_block_model_by_type(block_schema.type)
-        block = block_model(**block_schema.model_dump(), dialogue_id=dialogue_id)
-        new_blocks.append(block)
-        session.add(block)
-
-    await session.commit()
-
-    return [blocks_utils.validate_block_from_db(block) for block in new_blocks]
-
-
-async def get_blocks_in_dialogue(dialogue_id: int, session: AsyncSession) -> list[UnionBlockReadSchema]:
-    blocks = await session.execute(
-        select(BlockModel)
-        .options(
-            selectin_polymorphic(BlockModel, BlockModel.__subclasses__()),
-        )
-        .where(BlockModel.dialogue_id == dialogue_id)
-        .order_by(BlockModel.sequence_number)
-    )
-    blocks = blocks.unique().scalars().all()
-    return [blocks_utils.validate_block_from_db(block) for block in blocks]
-
-
 async def delete_dialogue(dialogue_id: int, session: AsyncSession):
     await session.execute(
         delete(DialogueModel)
-        .where(
-            DialogueModel.dialogue_id == dialogue_id,
-        )
+        .where(DialogueModel.dialogue_id == dialogue_id)
     )
     await session.commit()

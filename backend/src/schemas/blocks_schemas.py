@@ -28,6 +28,10 @@ class TextBlockCreateSchema(BlockCreateSchema):
     type: Literal[BlockType.TEXT_BLOCK.value]
 
 
+class TextBlockUpdateSchema(TextBlockCreateSchema):
+    pass
+
+
 # Image block
 class ImageBlockReadSchema(BlockReadSchema):
     image_path: str = Field(min_length=1, max_length=256)
@@ -37,6 +41,10 @@ class ImageBlockReadSchema(BlockReadSchema):
 class ImageBlockCreateSchema(BlockCreateSchema):
     image_path: str = Field(min_length=1, max_length=256)
     type: Literal[BlockType.IMAGE_BLOCK.value]
+
+
+class ImageBlockUpdateSchema(ImageBlockCreateSchema):
+    pass
 
 
 # Question block
@@ -50,6 +58,10 @@ class QuestionBlockCreateSchema(BlockCreateSchema):
     message_text: str = Field(min_length=1, max_length=4096)
     answer_type: AnswerMessageType
     type: Literal[BlockType.QUESTION_BLOCK.value]
+
+
+class QuestionBlockUpdateSchema(QuestionBlockCreateSchema):
+    pass
 
 
 # Email block
@@ -67,6 +79,10 @@ class EmailBlockCreateSchema(BlockCreateSchema):
     type: Literal[BlockType.EMAIL_BLOCK.value]
 
 
+class EmailBlockUpdateSchema(EmailBlockCreateSchema):
+    pass
+
+
 # CSV block
 class CSVBlockReadSchema(BlockReadSchema):
     file_path: str = Field(min_length=1, max_length=256)
@@ -78,6 +94,10 @@ class CSVBlockCreateSchema(BlockCreateSchema):
     file_path: str = Field(min_length=1, max_length=256)
     data: dict
     type: Literal[BlockType.CSV_BLOCK.value]
+
+
+class CSVBlockUpdateSchema(CSVBlockCreateSchema):
+    pass
 
 
 # API block
@@ -101,6 +121,10 @@ class APIBlockCreateSchema(BlockCreateSchema):
         return str(url)
 
 
+class APIBlockUpdateSchema(APIBlockCreateSchema):
+    pass
+
+
 UnionBlockReadSchema = Annotated[
     Union[
         TextBlockReadSchema,
@@ -120,6 +144,18 @@ UnionBlockCreateSchema = Annotated[
         EmailBlockCreateSchema,
         CSVBlockCreateSchema,
         APIBlockCreateSchema,
+    ],
+    Field(discriminator='type')
+]
+
+UnionBlockUpdateSchema = Annotated[
+    Union[
+        TextBlockUpdateSchema,
+        ImageBlockUpdateSchema,
+        QuestionBlockUpdateSchema,
+        EmailBlockUpdateSchema,
+        CSVBlockUpdateSchema,
+        APIBlockUpdateSchema,
     ],
     Field(discriminator='type')
 ]

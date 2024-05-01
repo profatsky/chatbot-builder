@@ -4,7 +4,3 @@ class DialogueNotFound(Exception):
 
 class NoDialoguesInProject(Exception):
     pass
-
-
-class RepeatingSequenceNumbersForBlocks(Exception):
-    pass
