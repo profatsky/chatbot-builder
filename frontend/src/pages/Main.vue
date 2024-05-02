@@ -1,40 +1,45 @@
-<script>
+<script setup>
+import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 import HeaderNavigation from '@/components/Main/HeaderNavigation.vue';
 import RegisterForm from '@/components/Main/RegisterForm.vue';
 import LoginForm from '@/components/Main/LoginForm.vue';
 import SimpleFooter from '@/components/SimpleFooter.vue';
+import { refreshTokens } from '@/api/auth';
 import '@/style.css'
 
+const router = useRouter();
 
-export default {
-  components: {
-    HeaderNavigation,
-    SimpleFooter,
-    RegisterForm,
-    LoginForm,
-  },
-  data() {
-    return {
-      showRegisterForm: false,
-      showLoginForm: false,
-    }
-  },
-  methods: {
-    openRegisterFormHandler() {
-      this.showRegisterForm = true;
-    },
-    closeRegisterFormHandler() {
-      this.showRegisterForm = false;
-    },
-    openLoginFormHandler() {
-      this.showLoginForm = true;
-    },
-    closeLoginFormHandler() {
-      this.showLoginForm = false;
-    }
+const showRegisterForm = ref(false);
+const showLoginForm = ref(false);
+
+const openRegisterFormHandler = async () => {
+  const { response, error } = await refreshTokens();
+  if (error.value === null && response.value.status == 200) {
+    router.push({ path: '/profile' })
   }
-}
+  else {
+    showRegisterForm.value = true;
+  }
+};
 
+const closeRegisterFormHandler = () => {
+  showRegisterForm.value = false;
+};
+
+const openLoginFormHandler = async () => {
+  const { response, error } = await refreshTokens();
+  if (error.value === null && response.value.status == 200) {
+    router.push({ path: '/profile' })
+  }
+  else {
+    showLoginForm.value = true;
+  }
+};
+
+const closeLoginFormHandler = () => {
+  showLoginForm.value = false;
+};
 </script>
 
 <template>

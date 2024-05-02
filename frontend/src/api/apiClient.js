@@ -1,10 +1,7 @@
 import axios from 'axios';
+import { refreshTokens } from '@/api/auth';
 
-axios.defaults.withCredentials = true
-
-async function refreshTokens() {
-  await apiClient.post('/refresh')
-};
+axios.defaults.withCredentials = true;
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
