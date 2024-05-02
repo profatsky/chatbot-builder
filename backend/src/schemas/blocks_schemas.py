@@ -5,123 +5,163 @@ from pydantic import BaseModel, Field, HttpUrl, field_serializer
 from src.enums import BlockType, AnswerMessageType, HTTPMethod
 
 
-class BlockReadSchema(BaseModel):
-    block_id: int
+class BaseBlockSchema(BaseModel):
     sequence_number: int = Field(ge=1)
+
+
+class BlockReadSchema(BaseBlockSchema):
+    block_id: int
 
     class Config:
         from_attributes = True
 
 
-class BlockCreateSchema(BaseModel):
-    sequence_number: int = Field(ge=1)
+class BlockCreateSchema(BaseBlockSchema):
+    pass
+
+
+class BlockUpdateSchema(BaseBlockSchema):
+    pass
 
 
 # Text block
-class TextBlockReadSchema(BlockReadSchema):
-    message_text: str = Field(min_length=1, max_length=4096)
+class BaseTextBlockSchema(BaseModel):
+    message_text: str = Field(max_length=4096)
     type: Literal[BlockType.TEXT_BLOCK.value]
 
+    @property
+    def is_draft(self) -> bool:
+        return not bool(self.message_text)
 
-class TextBlockCreateSchema(BlockCreateSchema):
-    message_text: str = Field(min_length=1, max_length=4096)
-    type: Literal[BlockType.TEXT_BLOCK.value]
+
+class TextBlockReadSchema(BaseTextBlockSchema, BlockReadSchema):
+    pass
 
 
-class TextBlockUpdateSchema(TextBlockCreateSchema):
+class TextBlockCreateSchema(BaseTextBlockSchema, BlockCreateSchema):
+    pass
+
+
+class TextBlockUpdateSchema(BaseTextBlockSchema, BlockUpdateSchema):
     pass
 
 
 # Image block
-class ImageBlockReadSchema(BlockReadSchema):
-    image_path: str = Field(min_length=1, max_length=256)
+class BaseImageBlockSchema(BaseModel):
+    image_path: str = Field(max_length=256)
     type: Literal[BlockType.IMAGE_BLOCK.value]
 
+    @property
+    def is_draft(self) -> bool:
+        return not bool(self.image_path)
 
-class ImageBlockCreateSchema(BlockCreateSchema):
-    image_path: str = Field(min_length=1, max_length=256)
-    type: Literal[BlockType.IMAGE_BLOCK.value]
+
+class ImageBlockReadSchema(BaseImageBlockSchema, BlockReadSchema):
+    pass
 
 
-class ImageBlockUpdateSchema(ImageBlockCreateSchema):
+class ImageBlockCreateSchema(BaseImageBlockSchema, BlockCreateSchema):
+    pass
+
+
+class ImageBlockUpdateSchema(BaseImageBlockSchema, BlockUpdateSchema):
     pass
 
 
 # Question block
-class QuestionBlockReadSchema(BlockReadSchema):
-    message_text: str = Field(min_length=1, max_length=4096)
+class BaseQuestionBlockSchema(BaseModel):
+    message_text: str = Field(max_length=4096)
     answer_type: AnswerMessageType
     type: Literal[BlockType.QUESTION_BLOCK.value]
 
-
-class QuestionBlockCreateSchema(BlockCreateSchema):
-    message_text: str = Field(min_length=1, max_length=4096)
-    answer_type: AnswerMessageType
-    type: Literal[BlockType.QUESTION_BLOCK.value]
+    @property
+    def is_draft(self) -> bool:
+        return not (self.message_text and self.answer_type)
 
 
-class QuestionBlockUpdateSchema(QuestionBlockCreateSchema):
+class QuestionBlockReadSchema(BaseQuestionBlockSchema, BlockReadSchema):
+    pass
+
+
+class QuestionBlockCreateSchema(BaseQuestionBlockSchema, BlockCreateSchema):
+    pass
+
+
+class QuestionBlockUpdateSchema(BaseQuestionBlockSchema, BlockUpdateSchema):
     pass
 
 
 # Email block
-class EmailBlockReadSchema(BlockReadSchema):
-    subject: str = Field(min_length=1, max_length=128)
-    text: str = Field(min_length=1, max_length=8192)
-    recipient_email: str = Field(min_length=6, max_length=254)
+class EmailBlockSchema(BaseModel):
+    subject: str = Field(max_length=128)
+    text: str = Field(max_length=8192)
+    recipient_email: str = Field(max_length=254)
     type: Literal[BlockType.EMAIL_BLOCK.value]
 
-
-class EmailBlockCreateSchema(BlockCreateSchema):
-    subject: str = Field(min_length=1, max_length=128)
-    text: str = Field(min_length=1, max_length=8192)
-    recipient_email: str = Field(min_length=6, max_length=254)
-    type: Literal[BlockType.EMAIL_BLOCK.value]
+    @property
+    def is_draft(self) -> bool:
+        return not (self.subject and self.text and self.recipient_email)
 
 
-class EmailBlockUpdateSchema(EmailBlockCreateSchema):
+class EmailBlockReadSchema(EmailBlockSchema, BlockReadSchema):
+    pass
+
+
+class EmailBlockCreateSchema(EmailBlockSchema, BlockCreateSchema):
+    pass
+
+
+class EmailBlockUpdateSchema(EmailBlockSchema, BlockUpdateSchema):
     pass
 
 
 # CSV block
-class CSVBlockReadSchema(BlockReadSchema):
-    file_path: str = Field(min_length=1, max_length=256)
+class CSVBlockSchema(BaseModel):
+    file_path: str = Field(max_length=256)
     data: dict
     type: Literal[BlockType.CSV_BLOCK.value]
 
-
-class CSVBlockCreateSchema(BlockCreateSchema):
-    file_path: str = Field(min_length=1, max_length=256)
-    data: dict
-    type: Literal[BlockType.CSV_BLOCK.value]
+    @property
+    def is_draft(self) -> bool:
+        return not (self.file_path and self.data)
 
 
-class CSVBlockUpdateSchema(CSVBlockCreateSchema):
+class CSVBlockReadSchema(CSVBlockSchema, BlockReadSchema):
+    pass
+
+
+class CSVBlockCreateSchema(CSVBlockSchema, BlockCreateSchema):
+    pass
+
+
+class CSVBlockUpdateSchema(CSVBlockSchema, BlockUpdateSchema):
     pass
 
 
 # API block
-class APIBlockReadSchema(BlockReadSchema):
+class APIBlockSchema(BaseModel):
     url: HttpUrl
     http_method: HTTPMethod
     headers: dict
     body: dict
     type: Literal[BlockType.API_BLOCK.value]
 
+    @property
+    def is_draft(self) -> bool:
+        return not (self.url and self.http_method)
 
-class APIBlockCreateSchema(BlockCreateSchema):
-    url: HttpUrl
-    http_method: HTTPMethod
-    headers: dict
-    body: dict
-    type: Literal[BlockType.API_BLOCK.value]
 
+class APIBlockReadSchema(APIBlockSchema, BlockReadSchema):
+    pass
+
+
+class APIBlockCreateSchema(APIBlockSchema, BlockCreateSchema):
     @field_serializer('url')
     def serialize_url(self, url: HttpUrl):
         return str(url)
 
 
-class APIBlockUpdateSchema(APIBlockCreateSchema):
+class APIBlockUpdateSchema(APIBlockSchema, BlockUpdateSchema):
     pass
 
 

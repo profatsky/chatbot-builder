@@ -117,7 +117,7 @@ def _add_custom_handlers_code_to_zip(project: ProjectToGenerateCodeReadSchema, z
 
 # TODO refactoring
 # TODO add customize env variables
-# TODO changed start func call
+# TODO change start func call
 def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> str:
     utils_funcs = set()
     states_groups: list[StatesGroupSchema] = []
@@ -165,6 +165,9 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
             handler.add_to_body('pass')
 
         for block in dialogue.blocks:
+
+            if block.is_draft:
+                continue
 
             if block.type == BlockType.TEXT_BLOCK.value:
                 if handler.type == HandlerType.CALLBACK:
