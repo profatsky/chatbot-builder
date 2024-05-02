@@ -24,7 +24,7 @@ const deleteBlockEvent = (block) => {
   <div v-if="blocks.length > 0"  class="blocks-list">
     <BlockItem
       v-for="block in blocks"
-      :key="block.sequence_number"
+      :key="block.block_id"
       :block="block"
       @update-block="updateBlockEvent"
       @delete-block="deleteBlockEvent"

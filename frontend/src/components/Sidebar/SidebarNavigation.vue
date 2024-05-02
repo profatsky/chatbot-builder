@@ -1,5 +1,5 @@
 <script setup>
-import { collapsed, toggleSidebar, sidebarWidth } from '@/components/utils/sidebarCollapse';
+import { collapsed, toggleSidebar, sidebarWidth } from '@/components/Sidebar/sidebarCollapse';
 import SidebarLink from '@/components/Sidebar/SidebarLink.vue';
 
 import botGrayIcon from '@/assets/icons/bot-gray.svg';

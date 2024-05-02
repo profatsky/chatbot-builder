@@ -1,26 +1,48 @@
 <script setup>
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { useToast } from 'vue-toast-notification';
+
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import BlockList from '@/components/Dialogues/BlockList.vue';
 import BlockTypeList from '@/components/Dialogues/BlockTypeList.vue';
 import emptyBlocks from '@/components/Dialogues/blocks'
-
 import msgPurpleIcon from '@/assets/icons/blocks/msg-purple.svg';
 import imgPurpleIcon from '@/assets/icons/blocks/img-purple.svg';
+import { getBlocks, createBlock } from '@/api/blocks';
 
 const blockTypes = ref([
   { value: 'textBlock', name: 'Текст', imgPath: msgPurpleIcon },
   { value: 'imageBlock', name: 'Изображение', imgPath: imgPurpleIcon },
 ]);
-// const isBlocksLoading = ref(false);
+
+const toast = useToast();
+const route = useRoute();
 
 const blocks = ref([]);
 
-const handleAddBlockEvent = (blockType) => {
+const isBlocksLoading = ref(true);
+
+const handleAddBlockEvent = async (blockType) => {
   const newBlock = { ...emptyBlocks[blockType.value] };
   newBlock.sequence_number = blocks.value.length + 1;
-  blocks.value.push(newBlock);
-  console.log(blocks)
+
+  const { response, error } = await createBlock(
+    route.params.projectId,
+    route.params.dialogueId,
+    newBlock
+  );
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    const responseData = response.value.data;
+    blocks.value.push(responseData);
+    console.log("response", responseData)
+  }
 };
 
 const handleUpdateBlockEvent = (block) => {
@@ -35,6 +57,26 @@ const handleDeleteBlockEvent = (block) => {
   //   obj.sequence_number = index + 1;
   // });
 }
+
+onMounted(async () => {
+  const { response, error } = await getBlocks(
+    route.params.projectId,
+    route.params.dialogueId
+  );
+
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    isBlocksLoading.value = false;
+    const responseData = response.value.data;
+    blocks.value = responseData;
+    console.log(blocks.value)
+  }
+});
 
 </script>
 
@@ -55,6 +97,7 @@ const handleDeleteBlockEvent = (block) => {
         <div class="workspace">
           <div class="dialogue">
             <BlockList
+              v-if="!isBlocksLoading"
               :blocks="blocks"
               @update-block="handleUpdateBlockEvent"
               @delete-block="handleDeleteBlockEvent"

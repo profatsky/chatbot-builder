@@ -1,5 +1,5 @@
 const textBlock = {
-  sequence_number: 1,
+  sequence_number: 0,
   type: 'text_block',
   message_text: ''
 };

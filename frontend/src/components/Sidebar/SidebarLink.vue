@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { collapsed } from '@/components/utils/sidebarCollapse';
+import { collapsed } from '@/components/Sidebar/sidebarCollapse';
 
 const props = defineProps({
   to: {

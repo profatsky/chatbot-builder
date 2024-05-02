@@ -19,7 +19,7 @@ const routes = [
     component: Profile
   },
   {
-    path: '/projects/:projectID/dialogues/:dialogueID',
+    path: '/projects/:projectId/dialogues/:dialogueId',
     component: Dialogue
   },
   {
