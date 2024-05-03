@@ -1,5 +1,6 @@
 <script setup>
 import { ref, shallowRef } from 'vue';
+import { debounce } from 'lodash';
 import TextBlockItem from '@/components/Dialogues/TextBlockItem.vue';
 
 const props = defineProps({
@@ -11,9 +12,9 @@ const props = defineProps({
 
 const emits = defineEmits(['update-block', 'delete-block']);
 
-const updateBlockEvent = (block) => {
+const updateBlockEvent = debounce((block) => {
   emits('update-block', block)
-};
+}, 3000);
 
 const deleteBlockEvent = (block) => {
   emits('delete-block', block)
@@ -39,7 +40,6 @@ switch (props.block.type) {
     class="block"
     @update-block="updateBlockEvent"
     @delete-block="deleteBlockEvent"
-
   />
 </template>
 

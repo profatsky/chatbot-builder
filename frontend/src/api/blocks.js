@@ -23,6 +23,17 @@ export async function getBlocks(projectId, dialogueId) {
   return { response, error };
 };
 
+export async function updateBlock(projectId, dialogueId, block) {
+  const response = ref(null);
+  const error = ref(null);
+
+  await apiClient.put(`/projects/${projectId}/dialogues/${dialogueId}/blocks/${block.block_id}`, block)
+  .then(res => response.value = res)
+  .catch(err => error.value = err);
+
+  return { response, error };
+}
+
 export async function deleteBlock(projectId, dialogueId, blockId) {
   const response = ref(null);
   const error = ref(null);

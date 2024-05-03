@@ -9,7 +9,7 @@ import BlockTypeList from '@/components/Dialogues/BlockTypeList.vue';
 import emptyBlocks from '@/components/Dialogues/blocks'
 import msgPurpleIcon from '@/assets/icons/blocks/msg-purple.svg';
 import imgPurpleIcon from '@/assets/icons/blocks/img-purple.svg';
-import { getBlocks, createBlock, deleteBlock } from '@/api/blocks';
+import { getBlocks, createBlock, updateBlock, deleteBlock } from '@/api/blocks';
 
 const blockTypes = ref([
   { value: 'textBlock', name: 'Текст', imgPath: msgPurpleIcon },
@@ -41,11 +41,32 @@ const handleAddBlockEvent = async (blockType) => {
   } else {
     const responseData = response.value.data;
     blocks.value.push(responseData);
+    toast.success('Новый блок успешно добавлен')
   }
 };
 
-const handleUpdateBlockEvent = (block) => {
-  blocks.value[block.sequence_number - 1] = block;
+const handleUpdateBlockEvent = async (editedBlock) => {
+  const { response, error } = await updateBlock(
+    route.params.projectId,
+    route.params.dialogueId,
+    editedBlock
+  );
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    const responseData = response.value.data;
+    const index = blocks.value.findIndex(
+      b => b.block_id === editedBlock.block_id
+    );
+    if (index !== -1) {
+      blocks.value[index] = responseData;
+      toast.success('Данные о блоке обновлены');
+    }
+  }
 };
 
 const handleDeleteBlockEvent = async (block) => {
@@ -63,6 +84,7 @@ const handleDeleteBlockEvent = async (block) => {
     }
   } else {
     await getBlocksFromApi();
+    toast.success('Блок успешно удален')
   }
 }
 
@@ -82,6 +104,7 @@ const getBlocksFromApi = async () => {
     isBlocksLoading.value = false;
     const responseData = response.value.data;
     blocks.value = responseData;
+    console.log(blocks.value);
   }
 };
 
