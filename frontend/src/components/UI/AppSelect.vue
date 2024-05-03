@@ -77,7 +77,7 @@ const computedClasses = computed(() => ({
   background-repeat: no-repeat;
   background-position-y: calc(50%);
   background-position-x: calc(100% - 24px);
-  background-image: url('src/assets/select-arrow.svg');
+  background-image: url('@/assets/select-arrow.svg');
   background-size: 0.85em auto;
 }
 select::-ms-expand {
