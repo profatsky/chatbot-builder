@@ -9,7 +9,7 @@ import BlockTypeList from '@/components/Dialogues/BlockTypeList.vue';
 import emptyBlocks from '@/components/Dialogues/blocks'
 import msgPurpleIcon from '@/assets/icons/blocks/msg-purple.svg';
 import imgPurpleIcon from '@/assets/icons/blocks/img-purple.svg';
-import { getBlocks, createBlock } from '@/api/blocks';
+import { getBlocks, createBlock, deleteBlock } from '@/api/blocks';
 
 const blockTypes = ref([
   { value: 'textBlock', name: 'Текст', imgPath: msgPurpleIcon },
@@ -41,7 +41,6 @@ const handleAddBlockEvent = async (blockType) => {
   } else {
     const responseData = response.value.data;
     blocks.value.push(responseData);
-    console.log("response", responseData)
   }
 };
 
@@ -49,16 +48,25 @@ const handleUpdateBlockEvent = (block) => {
   blocks.value[block.sequence_number - 1] = block;
 };
 
-const handleDeleteBlockEvent = (block) => {
-  blocks.value = blocks.value.filter(
-    b => b.sequence_number !== block.sequence_number
+const handleDeleteBlockEvent = async (block) => {
+  const { response, error } = await deleteBlock(
+    route.params.projectId,
+    route.params.dialogueId,
+    block.block_id
   );
-  // blocks.value.forEach((obj, index) => {
-  //   obj.sequence_number = index + 1;
-  // });
+
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    await getBlocksFromApi();
+  }
 }
 
-onMounted(async () => {
+const getBlocksFromApi = async () => {
   const { response, error } = await getBlocks(
     route.params.projectId,
     route.params.dialogueId
@@ -74,10 +82,10 @@ onMounted(async () => {
     isBlocksLoading.value = false;
     const responseData = response.value.data;
     blocks.value = responseData;
-    console.log(blocks.value)
   }
-});
+};
 
+onMounted(async () => { await getBlocksFromApi() });
 </script>
 
 <template>

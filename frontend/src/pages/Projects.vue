@@ -87,7 +87,6 @@ onMounted(async () => {
     isProjectsLoading.value = false;
     const responseData = response.value.data;
     projects.value = responseData;
-    console.log(projects.value)
   }
 });
 </script>
