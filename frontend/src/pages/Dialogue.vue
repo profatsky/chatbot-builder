@@ -9,11 +9,13 @@ import BlockTypeList from '@/components/Dialogues/BlockTypeList.vue';
 import emptyBlocks from '@/components/Dialogues/blocks'
 import msgPurpleIcon from '@/assets/icons/blocks/msg-purple.svg';
 import imgPurpleIcon from '@/assets/icons/blocks/img-purple.svg';
+import questionPurpleIcon from '@/assets/icons/blocks/question-purple.svg';
 import { getBlocks, createBlock, updateBlock, deleteBlock } from '@/api/blocks';
 
 const blockTypes = ref([
   { value: 'textBlock', name: 'Текст', imgPath: msgPurpleIcon },
   { value: 'imageBlock', name: 'Изображение', imgPath: imgPurpleIcon },
+  { value: 'questionBlock', name: 'Вопрос', imgPath: questionPurpleIcon },
 ]);
 
 const toast = useToast();
@@ -117,7 +119,7 @@ onMounted(async () => { await getBlocksFromApi() });
     <div class="container">
       <div class="page-content">
         <div class="page-header">
-          <h1 class="content__title">Диалоги</h1>
+          <h1 class="content__title">Диалог</h1>
           <AppButton
             size="large"
             importance="secondary"
@@ -126,14 +128,13 @@ onMounted(async () => { await getBlocksFromApi() });
           </AppButton>
         </div>
         <div class="workspace">
-          <div class="dialogue">
-            <BlockList
-              v-if="!isBlocksLoading"
-              :blocks="blocks"
-              @update-block="handleUpdateBlockEvent"
-              @delete-block="handleDeleteBlockEvent"
-            />
-          </div>
+          <BlockList
+            v-if="!isBlocksLoading"
+            :blocks="blocks"
+            @update-block="handleUpdateBlockEvent"
+            @delete-block="handleDeleteBlockEvent"
+            class="block-list"
+          />
           <div class="block-types">
             <p class="clue">Чтобы добавить блок, нажмите на него</p>
             <BlockTypeList
@@ -161,8 +162,14 @@ onMounted(async () => { await getBlocksFromApi() });
 
 .workspace {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   gap: 64px;
+}
+
+.block-list {
+  display: flex;
+  flex-direction: column;
+  width: 972px;
 }
 
 .block-types {

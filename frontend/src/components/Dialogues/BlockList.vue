@@ -21,7 +21,7 @@ const deleteBlockEvent = (block) => {
 </script>
 
 <template>
-  <div v-if="blocks.length > 0"  class="blocks-list">
+  <div v-if="blocks.length > 0">
     <BlockItem
       v-for="block in blocks"
       :key="block.block_id"
@@ -30,7 +30,14 @@ const deleteBlockEvent = (block) => {
       @delete-block="deleteBlockEvent"
     />
   </div>
+  <div v-else class="block-list__clue">
+    <p>В этом диалоге нет блоков</p>
+  </div>
 </template>
 
 <style scoped>
+.block-list__clue {
+  font-size: 24px;
+  align-items: center;
+}
 </style>

@@ -1,7 +1,8 @@
 <script setup>
-import { ref, shallowRef } from 'vue';
+import { shallowRef } from 'vue';
 import { debounce } from 'lodash';
 import TextBlockItem from '@/components/Dialogues/TextBlockItem.vue';
+import QuestionBlockItem from '@/components/Dialogues/QuestionBlockItem.vue';
 
 const props = defineProps({
   block: {
@@ -12,9 +13,13 @@ const props = defineProps({
 
 const emits = defineEmits(['update-block', 'delete-block']);
 
-const updateBlockEvent = debounce((block) => {
+const updateTextInBlockEvent = debounce((block) => {
   emits('update-block', block)
 }, 3000);
+
+const updateBlockEvent = (block) => {
+  emits('update-block', block)
+};
 
 const deleteBlockEvent = (block) => {
   emits('delete-block', block)
@@ -25,6 +30,9 @@ const currentComponent = shallowRef(null);
 switch (props.block.type) {
   case 'text_block':
     currentComponent.value = TextBlockItem;
+    break;
+  case 'question_block':
+    currentComponent.value = QuestionBlockItem;
     break;
   default:
     currentComponent.value = null;
@@ -37,15 +45,52 @@ switch (props.block.type) {
   <component 
     :is="currentComponent" 
     :block="block"
-    class="block"
+    @update-text-in-block="updateTextInBlockEvent"
     @update-block="updateBlockEvent"
     @delete-block="deleteBlockEvent"
   />
+  <div v-if="currentComponent === QuestionBlockItem">
+    <div class="user-answer block">
+      <div class="block__header">
+        <img src="@/assets/icons/blocks/msg-purple.svg">
+        <p class="block__type">*Пользователь отвечает на вопрос*</p>
+      </div>
+      <p class="clue">Ответ №1</p>
+    </div>
+  </div>
 </template>
 
-<style scoped>
+<style>
 .block {
+  background-color: var(--light-gray);
+  border-radius: 16px;
+  padding: 24px 28px;
+  width: 642px;
   margin-bottom: 28px;
   box-shadow: 0 0 16px 0 rgba(17, 17, 17, 0.04);
+  margin-left: auto;
+}
+
+.user-answer {
+  width: 424px;
+  margin-left: 0;
+}
+
+.block__close-button {
+  background-color: var(--light-gray);
+  float: right;
+}
+
+.block__header {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.block__type {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: 0.75px;
 }
 </style>

@@ -10,10 +10,10 @@ const props = defineProps({
 
 const editedBlock = reactive({ ...props.block })
 
-const emits = defineEmits(['update-block', 'delete-block']);
+const emits = defineEmits(['update-text-in-block', 'delete-block']);
 
 const updateBlockTextMessageEvent = () => {
-  emits('update-block', editedBlock)
+  emits('update-text-in-block', editedBlock)
 };
 
 const deleteBlockEvent = () => {
@@ -27,7 +27,7 @@ const deleteBlockEvent = () => {
   <div class="block">
     <button 
       @click="deleteBlockEvent" 
-      class="close-button"
+      class="block__close-button"
     >
       <img src="@/assets/icons/close.svg">
     </button>
@@ -46,36 +46,10 @@ const deleteBlockEvent = () => {
 </template>
 
 <style scoped>
-.block {
-  background-color: var(--light-gray);
-  border-radius: 16px;
-  padding: 24px 28px;
-  width: 642px;
-}
-
-.close-button {
-  background-color: var(--light-gray);
-  float: right;
-}
-
-.block__header {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 20px;
-  align-items: center;
-}
-
-.block__type {
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: 0.75px;
-}
-
 .textarea {
   box-sizing: border-box;
   width: 100%;
   height: 112px;
   resize: none;
 }
-
 </style>
