@@ -164,7 +164,8 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
         if not dialogue.blocks:
             handler.add_to_body('pass')
 
-        for block in dialogue.blocks:
+        dialogue_blocks = sorted(dialogue.blocks, key=lambda x: x.sequence_number)
+        for block in dialogue_blocks:
 
             if block.is_draft:
                 continue

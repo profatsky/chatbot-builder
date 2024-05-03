@@ -7,6 +7,7 @@ from sqlalchemy.orm import selectin_polymorphic
 from src.models import BlockModel
 from src.schemas.blocks_schemas import UnionBlockCreateSchema, UnionBlockReadSchema, UnionBlockUpdateSchema
 from src.utils import blocks_utils
+from src.utils.blocks_utils import UnionBlockModel
 
 
 async def create_block(
@@ -22,6 +23,11 @@ async def create_block(
 
 
 async def get_blocks(dialogue_id: int, session: AsyncSession) -> list[UnionBlockReadSchema]:
+    blocks = await _get_blocks(dialogue_id, session)
+    return [blocks_utils.validate_block_from_db(block) for block in blocks]
+
+
+async def _get_blocks(dialogue_id: int, session: AsyncSession) -> list[UnionBlockModel]:
     blocks = await session.execute(
         select(BlockModel)
         .options(
@@ -31,7 +37,7 @@ async def get_blocks(dialogue_id: int, session: AsyncSession) -> list[UnionBlock
         .order_by(BlockModel.sequence_number)
     )
     blocks = blocks.unique().scalars().all()
-    return [blocks_utils.validate_block_from_db(block) for block in blocks]
+    return blocks
 
 
 async def _get_block(block_id: int, session: AsyncSession) -> Optional[BlockModel]:
@@ -52,6 +58,21 @@ async def update_block(
     await delete_block(block_id, session)
     block = await create_block(dialogue_id, block_data, session)
     return block
+
+
+async def update_blocks_sequence_numbers(
+        dialogue_id: int,
+        session: AsyncSession,
+) -> Optional[UnionBlockReadSchema]:
+    blocks = await _get_blocks(dialogue_id, session)
+
+    counter = 1
+    for block in sorted(blocks, key=lambda x: x.sequence_number):
+        block.sequence_number = counter
+        counter += 1
+    await session.commit()
+
+    return [blocks_utils.validate_block_from_db(block) for block in blocks]
 
 
 async def delete_block(block_id: int, session: AsyncSession):

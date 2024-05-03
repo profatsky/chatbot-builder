@@ -32,6 +32,7 @@ async def check_access_and_get_blocks(
     _ = await dialogues_service.check_access_and_get_dialogue(user_id, project_id, dialogue_id, session)
 
     blocks = await blocks_persistence.get_blocks(dialogue_id, session)
+    blocks.sort(key=lambda x: x.sequence_number)
     return blocks
 
 
@@ -75,3 +76,4 @@ async def check_access_and_delete_block(
         raise BlockNotFound
 
     await blocks_persistence.delete_block(block_id, session)
+    await blocks_persistence.update_blocks_sequence_numbers(dialogue_id, session)
