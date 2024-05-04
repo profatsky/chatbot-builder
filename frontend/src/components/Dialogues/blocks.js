@@ -9,14 +9,14 @@ const questionBlock = {
   type: 'question_block',
   answer_type: 'any',
   message_text: ''
-}
+};
 
 const csvBlock =  {
   sequence_number: 0,
   type: 'csv_block',
   file_path: '',
   data: {}
-}
+};
 
 const emailBlock = {
   sequence_number: 0,
@@ -24,11 +24,21 @@ const emailBlock = {
   subject: '',
   text: '',
   recipient_email: ''
-}
+};
+
+const apiBlock = {
+  sequence_number: 0,
+  type: 'api_block',
+  url: '',
+  http_method: 'GET',
+  headers: {},
+  body: {}
+};
 
 export default {
   textBlock,
   questionBlock,
   csvBlock,
   emailBlock,
+  apiBlock
 }

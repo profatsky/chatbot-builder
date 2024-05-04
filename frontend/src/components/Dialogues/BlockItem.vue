@@ -5,6 +5,7 @@ import TextBlockItem from '@/components/Dialogues/TextBlockItem.vue';
 import QuestionBlockItem from '@/components/Dialogues/QuestionBlockItem.vue';
 import CSVBlockItem from '@/components/Dialogues/CSVBlockItem.vue';
 import EmailBlockItem from '@/components/Dialogues/EmailBlockItem.vue';
+import ApiBlockItem from '@/components/Dialogues/ApiBlockItem.vue';
 
 const props = defineProps({
   block: {
@@ -41,6 +42,9 @@ switch (props.block.type) {
     break;
   case 'email_block':
     currentComponent.value = EmailBlockItem;
+    break;
+  case 'api_block':
+    currentComponent.value = ApiBlockItem;
     break;
   default:
     currentComponent.value = null;
@@ -108,5 +112,6 @@ switch (props.block.type) {
   color: var(--body-text);
   letter-spacing: 0.75px;
   line-height: 24px;
+  margin-bottom: 8px;
 }
 </style>

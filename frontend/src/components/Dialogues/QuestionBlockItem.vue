@@ -94,7 +94,7 @@ const deleteBlockEvent = () => {
         >
         <label for="phone_number">Номер телефона</label>
       </div>
-      <p class="block__clue">
+      <p class="block__clue block__clue--last">
         Вы можете использовать ответ на вопрос в других блоках. <br>
         Для этого указывайте answer[номер ответа]. Например: answer[1]
       </p>
@@ -123,18 +123,20 @@ input[type="radio"] + label {
   display: inline-block;
   padding: 7px 16px;
   margin-right: 8px ;
-  margin-top: 12px;
   border: 2px solid var(--primary);
   border-radius: 20px;
   cursor: pointer;
   font-size: 12px;
   color: var(--primary);
-  line-height: 18px;
   font-weight: 500;
 }
 
 input[type="radio"]:checked + label {
   background-color: var(--primary);
   color: var(--main-white);
+}
+
+.block__clue--last {
+  margin-bottom: 0;
 }
 </style>
