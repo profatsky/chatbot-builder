@@ -11,7 +11,15 @@ const questionBlock = {
   message_text: ''
 }
 
+const csvBlock =  {
+  sequence_number: 0,
+  type: 'csv_block',
+  file_path: '',
+  data: {}
+}
+
 export default {
   textBlock,
-  questionBlock
+  questionBlock,
+  csvBlock,
 }

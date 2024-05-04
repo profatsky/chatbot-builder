@@ -3,6 +3,7 @@ import { shallowRef } from 'vue';
 import { debounce } from 'lodash';
 import TextBlockItem from '@/components/Dialogues/TextBlockItem.vue';
 import QuestionBlockItem from '@/components/Dialogues/QuestionBlockItem.vue';
+import CSVBlockItem from '@/components/Dialogues/CSVBlockItem.vue';
 
 const props = defineProps({
   block: {
@@ -34,6 +35,9 @@ switch (props.block.type) {
   case 'question_block':
     currentComponent.value = QuestionBlockItem;
     break;
+  case 'csv_block':
+    currentComponent.value = CSVBlockItem;
+    break;
   default:
     currentComponent.value = null;
     break;
@@ -55,7 +59,7 @@ switch (props.block.type) {
         <img src="@/assets/icons/blocks/msg-purple.svg">
         <p class="block__type">*Пользователь отвечает на вопрос*</p>
       </div>
-      <p class="clue">Ответ №1</p>
+      <p class="block__clue">Ответ №1</p>
     </div>
   </div>
 </template>
@@ -92,5 +96,13 @@ switch (props.block.type) {
   font-size: 16px;
   font-weight: 500;
   letter-spacing: 0.75px;
+}
+
+.block__clue {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--body-text);
+  letter-spacing: 0.75px;
+  line-height: 24px;
 }
 </style>

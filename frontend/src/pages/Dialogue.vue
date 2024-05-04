@@ -10,12 +10,14 @@ import emptyBlocks from '@/components/Dialogues/blocks'
 import msgPurpleIcon from '@/assets/icons/blocks/msg-purple.svg';
 import imgPurpleIcon from '@/assets/icons/blocks/img-purple.svg';
 import questionPurpleIcon from '@/assets/icons/blocks/question-purple.svg';
+import csvPurpleIcon from '@/assets/icons/blocks/csv-purple.svg';
 import { getBlocks, createBlock, updateBlock, deleteBlock } from '@/api/blocks';
 
 const blockTypes = ref([
   { value: 'textBlock', name: 'Текст', imgPath: msgPurpleIcon },
   { value: 'imageBlock', name: 'Изображение', imgPath: imgPurpleIcon },
   { value: 'questionBlock', name: 'Вопрос', imgPath: questionPurpleIcon },
+  { value: 'csvBlock', name: 'Сохранить в CSV', imgPath: csvPurpleIcon },
 ]);
 
 const toast = useToast();
@@ -120,12 +122,6 @@ onMounted(async () => { await getBlocksFromApi() });
       <div class="page-content">
         <div class="page-header">
           <h1 class="content__title">Диалог</h1>
-          <AppButton
-            size="large"
-            importance="secondary"
-          >
-            Сохранить
-          </AppButton>
         </div>
         <div class="workspace">
           <BlockList

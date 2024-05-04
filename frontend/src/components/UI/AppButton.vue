@@ -75,7 +75,6 @@ export default {
   min-width: 200px;
 
   font-size: 16px;
-  line-height: 28px;
   letter-spacing: 0.75px;
 
   padding: 18px;
@@ -86,7 +85,6 @@ export default {
   min-width: 200px;
 
   font-size: 16px;
-  line-height: 28px;
   letter-spacing: 0.75px;
 
   padding: 14px;
@@ -97,7 +95,6 @@ export default {
   min-width: 200px;
 
   font-size: 14px;
-  line-height: 24px;
   letter-spacing: 0.75px;
 
   padding: 8px;
