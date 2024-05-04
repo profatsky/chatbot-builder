@@ -2,16 +2,33 @@ import asyncio
 import logging
 import sys
 
+import aiogram.exceptions
+
+import config
 from db import create_tables_funcs
 from handlers import routers
 from loader import dp, bot, db_connector
 from middlewares import UserMiddleware
 
 
+async def send_start_msg_to_admin():
+    if not config.ADMIN_ID:
+        raise ValueError('Вы не указали ADMIN_ID в файле .env!')
+
+    try:
+        await bot.send_message(chat_id=int(config.ADMIN_ID), text='Бот запущен!')
+    except aiogram.exceptions.TelegramForbiddenError:
+        logging.error(
+            'Не удалось отправить сообщение администратору чат-бота! '
+            'Администратор заблокировал чат-бота или пока не разрешил чат-боту отправлять сообщения!'
+        )
+
+
 async def main():
     for func in create_tables_funcs:
         await func(db_connector)
 
+    await send_start_msg_to_admin()
     await dp.start_polling(bot)
 
 
