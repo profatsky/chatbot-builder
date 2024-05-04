@@ -32,6 +32,7 @@ async def _create_user_table(db_connector: DatabaseConnector):
                 first_name TEXT,
                 last_name TEXT,
                 username TEXT,
+                is_admin INTEGER DEFAULT 0,
                 created_at DATE
             );
         ''')
@@ -48,6 +49,7 @@ async def add_user(
         first_name: str,
         last_name: str,
         username: str,
+        is_admin: bool,
 ):
     created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     async with db_connector as conn:
@@ -62,9 +64,9 @@ async def add_user(
         if user is None:
             await conn.execute(
                 '''
-                    INSERT INTO users (user_id, first_name, last_name, username, created_at)
-                    VALUES (?, ?, ?, ?, ?)
+                    INSERT INTO users (user_id, first_name, last_name, username, is_admin, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
                 ''',
-                (user_id, first_name, last_name, username, created_at)
+                (user_id, first_name, last_name, username, is_admin, created_at)
             )
             await conn.commit()

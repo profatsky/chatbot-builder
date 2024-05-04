@@ -3,6 +3,7 @@ from typing import Any, Callable, Dict, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 
+import config
 from db.base import add_user
 from loader import db_connector
 
@@ -21,5 +22,6 @@ class UserMiddleware(BaseMiddleware):
             first_name=user.first_name,
             last_name=user.last_name,
             username=user.username,
+            is_admin=(user.id == int(config.ADMIN_ID))
         )
         return await handler(event, data)
