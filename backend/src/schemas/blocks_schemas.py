@@ -139,8 +139,9 @@ class CSVBlockUpdateSchema(CSVBlockSchema, BlockUpdateSchema):
 
 
 # API block
+# TODO url validation
 class APIBlockSchema(BaseModel):
-    url: HttpUrl
+    url: Union[HttpUrl, str]
     http_method: HTTPMethod
     headers: dict
     body: dict
@@ -157,7 +158,7 @@ class APIBlockReadSchema(APIBlockSchema, BlockReadSchema):
 
 class APIBlockCreateSchema(APIBlockSchema, BlockCreateSchema):
     @field_serializer('url')
-    def serialize_url(self, url: HttpUrl):
+    def serialize_url(self, url: Union[HttpUrl, str]):
         return str(url)
 
 
