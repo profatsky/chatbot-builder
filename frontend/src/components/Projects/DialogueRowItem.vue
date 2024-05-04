@@ -73,7 +73,7 @@ const dialogueTrigerTypes = ref([
   display: flex;
   gap: 24px;
   align-items: center;
-  margin-top: 20px;
+  margin-bottom: 20px;
 }
 
 .dialogue-row__trigger {

@@ -30,13 +30,13 @@ const deleteBlockEvent = (block) => {
       @delete-block="deleteBlockEvent"
     />
   </div>
-  <div v-else class="block-list__clue">
+  <div v-else class="block-list__hint">
     <p>В этом диалоге нет блоков</p>
   </div>
 </template>
 
 <style scoped>
-.block-list__clue {
+.block-list__hint {
   font-size: 24px;
   align-items: center;
 }

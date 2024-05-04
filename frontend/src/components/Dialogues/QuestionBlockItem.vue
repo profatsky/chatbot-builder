@@ -45,7 +45,7 @@ const deleteBlockEvent = () => {
       @input="updateBlockTextMessageEvent"
     />
     <div class="block__answer-type">
-      <p class="block__clue">
+      <p class="block__hint">
         Выберите тип ответа, ожидаемый от пользователя
       </p>
       <div class="answer-type__select">
@@ -94,7 +94,7 @@ const deleteBlockEvent = () => {
         >
         <label for="phone_number">Номер телефона</label>
       </div>
-      <p class="block__clue block__clue--last">
+      <p class="block__hint block__hint--last">
         Вы можете использовать ответ на вопрос в других блоках. <br>
         Для этого указывайте answer[номер ответа]. Например: answer[1]
       </p>
@@ -136,7 +136,7 @@ input[type="radio"]:checked + label {
   color: var(--main-white);
 }
 
-.block__clue--last {
+.block__hint--last {
   margin-bottom: 0;
 }
 </style>

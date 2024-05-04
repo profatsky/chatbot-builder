@@ -60,7 +60,7 @@ const deleteBlockEvent = () => {
     />
 
     <div class="block__http-method">
-      <p class="block__clue">
+      <p class="block__hint">
         Выберите метод HTTP-запроса
       </p>
       <div class="answer-type__select">
@@ -139,7 +139,7 @@ const deleteBlockEvent = () => {
     </div>
 
     <div class="block__headers">
-      <p class="block__clue">
+      <p class="block__hint">
         Укажите заголовки
       </p>
 
@@ -153,7 +153,7 @@ const deleteBlockEvent = () => {
     </div>
 
     <div class="block__request-body">
-      <p class="block__clue">
+      <p class="block__hint">
         Введите пары “ключ-значение” для тела запроса. Строковые значения указывайте в кавычках.
       </p>
 

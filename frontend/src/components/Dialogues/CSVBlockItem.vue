@@ -46,7 +46,7 @@ const deleteBlockEvent = () => {
       @input="updateBlockFileNameEvent"
     />
     <div class="block__saving-data">
-      <p class="block__clue">
+      <p class="block__hint">
         Укажите данные для сохранения в файл
       </p>
 

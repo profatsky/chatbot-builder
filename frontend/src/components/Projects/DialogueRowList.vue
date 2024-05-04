@@ -38,6 +38,6 @@ const deleteDialogueEvent = (dialogue) => {
 
 <style scoped>
 .dialogue-list {
-  margin: 24px 0;
+  margin-bottom: 24px;
 }
 </style>

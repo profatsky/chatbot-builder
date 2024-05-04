@@ -136,7 +136,7 @@ onMounted(async () => { await getBlocksFromApi() });
             class="block-list"
           />
           <div class="block-types">
-            <p class="clue">Чтобы добавить блок, нажмите на него</p>
+            <p class="hint">Чтобы добавить блок, нажмите на него</p>
             <BlockTypeList
               :blockTypes="blockTypes"
               @add-block="handleAddBlockEvent"
@@ -178,7 +178,7 @@ onMounted(async () => { await getBlocksFromApi() });
   flex-direction: column;
 }
 
-.clue {
+.hint {
   font-size: 16px;
   font-weight: 400;
   color: var(--body-text);

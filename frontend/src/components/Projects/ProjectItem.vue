@@ -171,7 +171,7 @@ const handleCreateDialogueEvent = async () => {
         @input="updateProjectStartMessageEvent"
       />
       <div class="project__keyboard">
-        <p class="clue">Выберите тип кнопок для главного меню</p>
+        <p class="hint">Выберите тип кнопок для главного меню</p>
         <AppSelect 
           v-model="editedProject.start_keyboard_type"
           :options="keyboardTypes"
@@ -182,6 +182,10 @@ const handleCreateDialogueEvent = async () => {
     </div>
     <div class="dialogues">
         <h3 class="dialogues__title">Диалоги ({{ editedProject.dialogues.length }}/15)</h3>
+        
+        <p class="hint">
+          При добавлении диалога необходимо указать на какое сообщение будет реагировать ваш чат-бот, чтобы запустить этот диалог. На выбор представлены 3 типа событий: текстовое сообщение, команда, нажатие кнопки.
+        </p>
         <DialogueRowList
           :dialogues="editedProject.dialogues"
           :projectID="project.project_id"
@@ -267,9 +271,9 @@ const handleCreateDialogueEvent = async () => {
   cursor: pointer;
 }
 
-.clue {
-  font-size: 16px;
-  font-weight: 500;
+.hint {
+  font-size: 14px;
+  font-weight: 400;
   color: var(--body-text);
   letter-spacing: 0.75px;
   line-height: 28px;
