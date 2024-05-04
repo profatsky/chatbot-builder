@@ -34,7 +34,7 @@ export default {
   color: var(--body-text);
 }
 
-input::-webkit-input-placeholder {
+.input::-webkit-input-placeholder {
   color: var(--placeholder); 
 }
 </style>

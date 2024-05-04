@@ -18,8 +18,17 @@ const csvBlock =  {
   data: {}
 }
 
+const emailBlock = {
+  sequence_number: 0,
+  type: 'email_block',
+  subject: '',
+  text: '',
+  recipient_email: ''
+}
+
 export default {
   textBlock,
   questionBlock,
   csvBlock,
+  emailBlock,
 }

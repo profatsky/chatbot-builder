@@ -35,4 +35,8 @@ function updateTextarea(event) {
   letter-spacing: 0.75px;
   color: var(--body-text);
 }
+
+.textarea::-webkit-input-placeholder {
+  color: var(--placeholder); 
+}
 </style>

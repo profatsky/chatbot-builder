@@ -11,6 +11,7 @@ import msgPurpleIcon from '@/assets/icons/blocks/msg-purple.svg';
 import imgPurpleIcon from '@/assets/icons/blocks/img-purple.svg';
 import questionPurpleIcon from '@/assets/icons/blocks/question-purple.svg';
 import csvPurpleIcon from '@/assets/icons/blocks/csv-purple.svg';
+import emailPurpleIcon from '@/assets/icons/blocks/email-purple.svg';
 import { getBlocks, createBlock, updateBlock, deleteBlock } from '@/api/blocks';
 
 const blockTypes = ref([
@@ -18,6 +19,7 @@ const blockTypes = ref([
   { value: 'imageBlock', name: 'Изображение', imgPath: imgPurpleIcon },
   { value: 'questionBlock', name: 'Вопрос', imgPath: questionPurpleIcon },
   { value: 'csvBlock', name: 'Сохранить в CSV', imgPath: csvPurpleIcon },
+  { value: 'emailBlock', name: 'Email письмо', imgPath: emailPurpleIcon },
 ]);
 
 const toast = useToast();

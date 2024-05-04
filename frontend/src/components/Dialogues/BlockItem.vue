@@ -4,6 +4,7 @@ import { debounce } from 'lodash';
 import TextBlockItem from '@/components/Dialogues/TextBlockItem.vue';
 import QuestionBlockItem from '@/components/Dialogues/QuestionBlockItem.vue';
 import CSVBlockItem from '@/components/Dialogues/CSVBlockItem.vue';
+import EmailBlockItem from '@/components/Dialogues/EmailBlockItem.vue';
 
 const props = defineProps({
   block: {
@@ -37,6 +38,9 @@ switch (props.block.type) {
     break;
   case 'csv_block':
     currentComponent.value = CSVBlockItem;
+    break;
+  case 'email_block':
+    currentComponent.value = EmailBlockItem;
     break;
   default:
     currentComponent.value = null;
