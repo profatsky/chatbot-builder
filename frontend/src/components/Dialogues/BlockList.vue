@@ -1,4 +1,5 @@
 <script setup>
+import { ref, onBeforeMount, onBeforeUpdate } from 'vue';
 import BlockItem from '@/components/Dialogues/BlockItem.vue';
 
 const props = defineProps({
@@ -7,6 +8,20 @@ const props = defineProps({
     required: true,
   }
 });
+
+const questionBlockNumbers = ref([]);
+
+const numberQuestionBlocks = () => {
+  const qustionBlocksLength = props.blocks.filter(block => block.type === 'question_block').length;
+  questionBlockNumbers.value = Array.from({ length: qustionBlocksLength }, (_, index) => index + 1);
+};
+
+const getQuestionBlockCounter = (block) => {
+  if (block.type !== 'question_block') {
+    return 0;
+  }
+  return questionBlockNumbers.value.shift();
+};
 
 const emits = defineEmits(['update-block', 'delete-block']);
 
@@ -18,6 +33,9 @@ const deleteBlockEvent = (block) => {
   emits('delete-block', block)
 };
 
+onBeforeUpdate(() => { numberQuestionBlocks() });
+
+onBeforeMount(() => { numberQuestionBlocks() });
 </script>
 
 <template>
@@ -26,6 +44,7 @@ const deleteBlockEvent = (block) => {
       v-for="block in blocks"
       :key="block.block_id"
       :block="block"
+      :question-counter="getQuestionBlockCounter(block)"
       @update-block="updateBlockEvent"
       @delete-block="deleteBlockEvent"
     />

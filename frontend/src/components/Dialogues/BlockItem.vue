@@ -11,6 +11,10 @@ const props = defineProps({
   block: {
     type: Object,
     required: true,
+  },
+  questionCounter: {
+    type: Number,
+    required: true,
   }
 });
 
@@ -67,7 +71,7 @@ switch (props.block.type) {
         <img src="@/assets/icons/blocks/msg-purple.svg">
         <p class="block__type">*Пользователь отвечает на вопрос*</p>
       </div>
-      <p class="block__hint">Ответ №1</p>
+      <p class="block__hint">Ответ №{{ questionCounter }}</p>
     </div>
   </div>
 </template>

@@ -50,7 +50,7 @@ const dialogueTrigerTypes = ref([
       <AppInput
         v-model="editedDialogue.trigger.value"
         required 
-        placeholder="Ввидите текст"
+        placeholder="Введите текст"
         @input="updateDialogueTriggerValueEvent"
         class="trigger__input"
       />
