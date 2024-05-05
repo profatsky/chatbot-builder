@@ -23,7 +23,7 @@ const getQuestionBlockCounter = (block) => {
   return questionBlockNumbers.value.shift();
 };
 
-const emits = defineEmits(['update-block', 'delete-block']);
+const emits = defineEmits(['update-block', 'delete-block', 'upload-image']);
 
 const updateBlockEvent = (block) => {
   emits('update-block', block)
@@ -31,6 +31,10 @@ const updateBlockEvent = (block) => {
 
 const deleteBlockEvent = (block) => {
   emits('delete-block', block)
+};
+
+const uploadImageEvent = (block, formData) => {
+  emits('upload-image', block, formData)
 };
 
 onBeforeUpdate(() => { numberQuestionBlocks() });
@@ -45,6 +49,7 @@ onBeforeMount(() => { numberQuestionBlocks() });
       :key="block.block_id"
       :block="block"
       :question-counter="getQuestionBlockCounter(block)"
+      @upload-image="uploadImageEvent"
       @update-block="updateBlockEvent"
       @delete-block="deleteBlockEvent"
     />

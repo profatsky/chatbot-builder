@@ -2,6 +2,7 @@
 import { shallowRef } from 'vue';
 import { debounce } from 'lodash';
 import TextBlockItem from '@/components/Dialogues/TextBlockItem.vue';
+import ImageBlockItem from '@/components/Dialogues/ImageBlockItem.vue';
 import QuestionBlockItem from '@/components/Dialogues/QuestionBlockItem.vue';
 import CSVBlockItem from '@/components/Dialogues/CSVBlockItem.vue';
 import EmailBlockItem from '@/components/Dialogues/EmailBlockItem.vue';
@@ -18,7 +19,7 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits(['update-block', 'delete-block']);
+const emits = defineEmits(['update-block', 'delete-block', 'upload-image']);
 
 const updateTextInBlockEvent = debounce((block) => {
   emits('update-block', block)
@@ -32,11 +33,18 @@ const deleteBlockEvent = (block) => {
   emits('delete-block', block)
 };
 
+const uploadImageEvent = (block, formData) => {
+  emits('upload-image', block, formData)
+};
+
 const currentComponent = shallowRef(null);
 
 switch (props.block.type) {
   case 'text_block':
     currentComponent.value = TextBlockItem;
+    break;
+  case 'image_block':
+    currentComponent.value = ImageBlockItem;
     break;
   case 'question_block':
     currentComponent.value = QuestionBlockItem;
@@ -61,6 +69,7 @@ switch (props.block.type) {
   <component 
     :is="currentComponent" 
     :block="block"
+    @upload-image="uploadImageEvent"
     @update-text-in-block="updateTextInBlockEvent"
     @update-block="updateBlockEvent"
     @delete-block="deleteBlockEvent"

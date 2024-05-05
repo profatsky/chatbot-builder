@@ -4,6 +4,12 @@ const textBlock = {
   message_text: ''
 };
 
+const imageBlock = {
+  sequence_number: 0,
+  type: 'image_block',
+  image_path: ''
+};
+
 const questionBlock = {
   sequence_number: 0,
   type: 'question_block',
@@ -37,6 +43,7 @@ const apiBlock = {
 
 export default {
   textBlock,
+  imageBlock,
   questionBlock,
   csvBlock,
   emailBlock,

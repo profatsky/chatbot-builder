@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'vue-toast-notification';
 
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
@@ -13,7 +13,7 @@ import questionPurpleIcon from '@/assets/icons/blocks/question-purple.svg';
 import csvPurpleIcon from '@/assets/icons/blocks/csv-purple.svg';
 import emailPurpleIcon from '@/assets/icons/blocks/email-purple.svg';
 import requestPurpleIcon from '@/assets/icons/blocks/request-purple.svg';
-import { getBlocks, createBlock, updateBlock, deleteBlock } from '@/api/blocks';
+import { getBlocks, createBlock, updateBlock, deleteBlock, uploadImage } from '@/api/blocks';
 
 const blockTypes = ref([
   { value: 'textBlock', name: 'Текст', imgPath: msgPurpleIcon },
@@ -26,6 +26,7 @@ const blockTypes = ref([
 
 const toast = useToast();
 const route = useRoute();
+const router = useRouter();
 
 const blocks = ref([]);
 
@@ -96,6 +97,30 @@ const handleDeleteBlockEvent = async (block) => {
   }
 }
 
+const handleUploadImageEvent = async (editedBlock, formData) => {
+  const { response, error } = await uploadImage(
+    route.params.projectId,
+    route.params.dialogueId,
+    editedBlock.block_id,
+    formData,
+  );
+
+  if (error.value) {
+    if (error.value.response) {
+      toast.error(error.value.response.data.detail)
+    } else {
+      toast.error('Что-то пошло не так...')
+    }
+  } else {
+    const responseData = response.value.data;
+    const index = blocks.value.findIndex(
+      b => b.block_id === editedBlock.block_id
+    );
+    blocks.value[index] = responseData;
+    router.go();
+  }
+};
+
 const getBlocksFromApi = async () => {
   const { response, error } = await getBlocks(
     route.params.projectId,
@@ -131,6 +156,7 @@ onMounted(async () => { await getBlocksFromApi() });
           <BlockList
             v-if="!isBlocksLoading"
             :blocks="blocks"
+            @upload-image="handleUploadImageEvent"
             @update-block="handleUpdateBlockEvent"
             @delete-block="handleDeleteBlockEvent"
             class="block-list"

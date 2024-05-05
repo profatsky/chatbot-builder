@@ -32,13 +32,32 @@ export async function updateBlock(projectId, dialogueId, block) {
   .catch(err => error.value = err);
 
   return { response, error };
-}
+};
 
 export async function deleteBlock(projectId, dialogueId, blockId) {
   const response = ref(null);
   const error = ref(null);
   
   await apiClient.delete(`/projects/${projectId}/dialogues/${dialogueId}/blocks/${blockId}`)
+  .then(res => response.value = res)
+  .catch(err => error.value = err);
+
+  return { response, error };
+};
+
+export async function uploadImage(projectId, dialogueId, blockId, formData) {
+  const response = ref(null);
+  const error = ref(null);
+  
+  await apiClient.post(
+    `/projects/${projectId}/dialogues/${dialogueId}/blocks/${blockId}/upload-image`, 
+    formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      }
+    },
+  )
   .then(res => response.value = res)
   .catch(err => error.value = err);
 
