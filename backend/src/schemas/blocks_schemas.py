@@ -5,22 +5,19 @@ from pydantic import BaseModel, Field, HttpUrl, field_serializer
 from src.enums import BlockType, AnswerMessageType, HTTPMethod
 
 
-class BaseBlockSchema(BaseModel):
-    sequence_number: int = Field(ge=1)
-
-
-class BlockReadSchema(BaseBlockSchema):
+class BlockReadSchema(BaseModel):
     block_id: int
+    sequence_number: int = Field(ge=1)
 
     class Config:
         from_attributes = True
 
 
-class BlockCreateSchema(BaseBlockSchema):
+class BlockCreateSchema(BaseModel):
     pass
 
 
-class BlockUpdateSchema(BaseBlockSchema):
+class BlockUpdateSchema(BaseModel):
     pass
 
 
