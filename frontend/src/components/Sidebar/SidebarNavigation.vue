@@ -25,7 +25,7 @@ import profileGrayIcon from '@/assets/icons/profile-gray.svg';
     </div>
     <SidebarLink to="/projects" :iconPath="botGrayIcon">Боты</SidebarLink>
     <SidebarLink to="/" :iconPath="layoutGrayIcon">Шаблоны</SidebarLink>
-    <SidebarLink to="/" :iconPath="blockGrayIcon">Плагины</SidebarLink>
+    <SidebarLink to="/plugins" :iconPath="blockGrayIcon">Плагины</SidebarLink>
     <SidebarLink to="/" :iconPath="scrollGrayIcon">Руководство</SidebarLink>
     <SidebarLink to="/profile" :iconPath="profileGrayIcon">Профиль</SidebarLink>
     <span

@@ -1,9 +1,10 @@
 import {createRouter, createWebHistory} from 'vue-router';
 import Main from '@/pages/Main.vue';
+import PersonalDataProcessingPolicy from '@/pages/PersonalDataProcessingPolicy.vue';
 import Projects from '@/pages/Projects.vue';
 import Profile from '@/pages/Profile.vue';
 import Dialogue from '@/pages/Dialogue.vue';
-import PersonalDataProcessingPolicy from '@/pages/PersonalDataProcessingPolicy.vue';
+import Plugins from '@/pages/Plugins.vue';
 
 const routes = [
   {
@@ -13,6 +14,10 @@ const routes = [
   {
     path: '/projects',
     component: Projects
+  },
+  {
+    path: '/plugins',
+    component: Plugins
   },
   {
     path: '/profile',
