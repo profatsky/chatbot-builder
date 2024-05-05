@@ -1,5 +1,5 @@
 from async_fastapi_jwt_auth import AuthJWT
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status, HTTPException, UploadFile
 from fastapi.params import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -100,7 +100,7 @@ async def update_block(
         block: UnionBlockUpdateSchema,
         session: AsyncSession = Depends(get_async_session),
         auth_jwt: AuthJWT = Depends(auth_dep),
-) -> UnionBlockReadSchema:
+):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
@@ -137,6 +137,55 @@ async def update_block(
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Repeating sequence numbers for blocks in the dialogue',
+        )
+    return block
+
+
+@router.post('/{block_id}/upload-image', response_model=UnionBlockReadSchema)
+async def upload_image_for_image_block(
+        project_id: int,
+        dialogue_id: int,
+        block_id: int,
+        image: UploadFile,
+        session: AsyncSession = Depends(get_async_session),
+        auth_jwt: AuthJWT = Depends(auth_dep),
+):
+    await auth_jwt.jwt_required()
+    user_id = await auth_jwt.get_jwt_subject()
+
+    try:
+        block = await blocks_service.check_access_and_upload_image_for_image_block(
+            user_id=user_id,
+            project_id=project_id,
+            dialogue_id=dialogue_id,
+            block_id=block_id,
+            image=image,
+            session=session
+        )
+    except projects_exceptions.ProjectNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Project does not exist',
+        )
+    except projects_exceptions.NoPermissionForProject:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Don\t have permission',
+        )
+    except dialogues_exceptions.DialogueNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Dialogue does not exist',
+        )
+    except blocks_exceptions.BlockNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Block does not exits',
+        )
+    except blocks_exceptions.InvalidBlockType:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='Invalid block type'
         )
     return block
 

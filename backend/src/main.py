@@ -4,11 +4,13 @@ from fastapi import FastAPI
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 from src.api import routers
 from src.core import settings
 
 app = FastAPI()
+app.mount('/api/media', StaticFiles(directory='src/media'), name='media')
 
 origins = [
     settings.CLIENT_APP_URL,

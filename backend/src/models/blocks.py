@@ -46,7 +46,7 @@ class ImageBlockModel(BlockModel):
 
     block_id: Mapped[int] = mapped_column(ForeignKey('blocks.block_id', ondelete='CASCADE'), primary_key=True)
 
-    image_path: Mapped[str] = mapped_column(String(256))
+    image_path: Mapped[str] = mapped_column(String(4096))
 
     __mapper_args__ = {
         'polymorphic_identity': 'image_block',

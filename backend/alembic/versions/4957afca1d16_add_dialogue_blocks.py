@@ -55,7 +55,7 @@ def upgrade() -> None:
     )
     op.create_table('image_blocks',
     sa.Column('block_id', sa.Integer(), nullable=False),
-    sa.Column('image_path', sa.String(length=256), nullable=False),
+    sa.Column('image_path', sa.String(length=4096), nullable=False),
     sa.ForeignKeyConstraint(['block_id'], ['blocks.block_id'], ondelete='CASCADE'),
     sa.PrimaryKeyConstraint('block_id')
     )

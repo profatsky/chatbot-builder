@@ -1,3 +1,5 @@
+import os
+import shutil
 from typing import Optional
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -69,4 +71,11 @@ async def check_access_and_update_project(
 
 async def delete_project(user_id: int, project_id: int, session: AsyncSession):
     _ = await check_access_and_get_project(user_id, project_id, session)
+
+    media_dir_path = os.path.join(
+        'src', 'media', 'users', str(user_id), 'projects', str(project_id)
+    )
+    if os.path.exists(media_dir_path):
+        shutil.rmtree(media_dir_path)
+
     await projects_persistence.delete_project(project_id, session)

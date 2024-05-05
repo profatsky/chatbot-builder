@@ -44,6 +44,11 @@ async def _get_blocks(dialogue_id: int, session: AsyncSession) -> list[UnionBloc
     return blocks
 
 
+# async def get_block(block_id: int, session: AsyncSession) -> Optional[UnionBlockReadSchema]:
+#     block = await _get_block(block_id, session)
+#     return blocks_utils.validate_block_from_db(block)
+
+
 async def _get_block(block_id: int, session: AsyncSession) -> Optional[UnionBlockModel]:
     block = await session.execute(
         select(BlockModel)

@@ -4,3 +4,7 @@ class BlockNotFound(Exception):
 
 class RepeatingBlockSequenceNumber(Exception):
     pass
+
+
+class InvalidBlockType(Exception):
+    pass

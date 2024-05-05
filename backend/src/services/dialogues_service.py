@@ -1,3 +1,6 @@
+import os
+import shutil
+
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.persistence import dialogues_persistence
@@ -64,4 +67,11 @@ async def check_access_and_delete_dialogue(
         session: AsyncSession
 ):
     _ = await check_access_and_get_dialogue(user_id, project_id, dialogue_id, session)
+
+    media_dir_path = os.path.join(
+        'src', 'media', 'users', str(user_id), 'projects', str(project_id), 'dialogues', str(dialogue_id)
+    )
+    if os.path.exists(media_dir_path):
+        shutil.rmtree(media_dir_path)
+
     await dialogues_persistence.delete_dialogue(dialogue_id, session)

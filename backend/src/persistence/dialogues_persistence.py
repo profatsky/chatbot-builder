@@ -4,14 +4,12 @@ from sqlalchemy import select, delete
 from sqlalchemy.orm import joinedload
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.models import DialogueModel, TriggerModel, BlockModel
-from src.schemas.blocks_schemas import UnionBlockCreateSchema, UnionBlockReadSchema
+from src.models import DialogueModel, TriggerModel
 from src.schemas.dialogues_schemas import (
     DialogueCreateSchema,
     DialogueReadSchema,
     TriggerUpdateSchema,
 )
-from src.utils import blocks_utils
 
 
 async def create_dialogue(
