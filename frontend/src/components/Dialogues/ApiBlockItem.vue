@@ -66,75 +66,75 @@ const deleteBlockEvent = () => {
       <div class="answer-type__select">
         <input 
           type="radio" 
-          id="GET" 
+          :id="`GET${editedBlock.block_id}`" 
           value="GET" 
           v-model="editedBlock.http_method"
           @change="updateBlockHttpMethodEvent"
         >
-        <label for="GET">GET</label>
+        <label :for="`GET${editedBlock.block_id}`">GET</label>
 
         <input 
           type="radio" 
-          id="POST" 
+          :id="`POST${editedBlock.block_id}`" 
           value="POST" 
           v-model="editedBlock.http_method"
           @change="updateBlockHttpMethodEvent"
         >
-        <label for="POST">POST</label>
+        <label :for="`POST${editedBlock.block_id}`">POST</label>
 
         <input 
           type="radio" 
-          id="PUT" 
+          :id="`PUT${editedBlock.block_id}`" 
           value="PUT" 
           v-model="editedBlock.http_method"
           @change="updateBlockHttpMethodEvent"
         >
-        <label for="PUT">PUT</label>
+        <label :for="`PUT${editedBlock.block_id}`">PUT</label>
 
         <input 
           type="radio" 
-          id="DELETE" 
+          :id="`DELETE${editedBlock.block_id}`" 
           value="DELETE" 
           v-model="editedBlock.http_method"
           @change="updateBlockHttpMethodEvent"
         >
-        <label for="DELETE">DELETE</label>
+        <label :for="`DELETE${editedBlock.block_id}`">DELETE</label>
 
         <input 
           type="radio" 
-          id="PATCH" 
+          :id="`PATCH${editedBlock.block_id}`" 
           value="PATCH" 
           v-model="editedBlock.http_method"
           @change="updateBlockHttpMethodEvent"
         >
-        <label for="PATCH">PATCH</label>
+        <label :for="`PATCH${editedBlock.block_id}`">PATCH</label>
 
         <input 
           type="radio" 
-          id="CONNECT" 
+          :id="`CONNECT${editedBlock.block_id}`" 
           value="CONNECT" 
           v-model="editedBlock.http_method"
           @change="updateBlockHttpMethodEvent"
         >
-        <label for="CONNECT">CONNECT</label>
+        <label :for="`CONNECT${editedBlock.block_id}`">CONNECT</label>
 
         <input 
           type="radio" 
-          id="HEAD" 
+          :id="`HEAD${editedBlock.block_id}`" 
           value="HEAD" 
           v-model="editedBlock.http_method"
           @change="updateBlockHttpMethodEvent"
         >
-        <label for="HEAD">HEAD</label>
+        <label :for="`HEAD${editedBlock.block_id}`">HEAD</label>
 
         <input 
           type="radio" 
-          id="OPTIONS" 
+          :id="`OPTIONS${editedBlock.block_id}`" 
           value="OPTIONS" 
           v-model="editedBlock.http_method"
           @change="updateBlockHttpMethodEvent"
         >
-        <label for="OPTIONS">OPTIONS</label>
+        <label :for="`OPTIONS${editedBlock.block_id}`">OPTIONS</label>
       </div>
     </div>
 

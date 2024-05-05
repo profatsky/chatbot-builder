@@ -51,48 +51,48 @@ const deleteBlockEvent = () => {
       <div class="answer-type__select">
         <input 
           type="radio" 
-          id="any" 
+          :id="`any${editedBlock.block_id}`" 
           value="any" 
           v-model="editedBlock.answer_type"
           @change="updateBlockAnswerTypeEvent"
         >
-        <label for="any">Любой</label>
+        <label :for="`any${editedBlock.block_id}`">Любой</label>
 
         <input 
           type="radio" 
-          id="text" 
+          :id="`text${editedBlock.block_id}`" 
           value="text" 
           v-model="editedBlock.answer_type"
           @change="updateBlockAnswerTypeEvent"
         >
-        <label for="text">Текст</label>
+        <label :for="`text${editedBlock.block_id}`">Текст</label>
 
         <input 
           type="radio" 
-          id="int" 
+          :id="`int${editedBlock.block_id}`" 
           value="int" 
           v-model="editedBlock.answer_type"
           @change="updateBlockAnswerTypeEvent"
         >
-        <label for="int">Число</label>
+        <label :for="`int${editedBlock.block_id}`">Число</label>
 
         <input 
           type="radio" 
-          id="email" 
+          :id="`email${editedBlock.block_id}`" 
           value="email" 
           v-model="editedBlock.answer_type"
           @change="updateBlockAnswerTypeEvent"
         >
-        <label for="email">Электронная почта</label>
+        <label :for="`email${editedBlock.block_id}`">Электронная почта</label>
 
         <input 
           type="radio" 
-          id="phone_number" 
+          :id="`phone_number${editedBlock.block_id}`" 
           value="phone_number" 
           v-model="editedBlock.answer_type"
           @change="updateBlockAnswerTypeEvent"
         >
-        <label for="phone_number">Номер телефона</label>
+        <label :for="`phone_number${editedBlock.block_id}`">Номер телефона</label>
       </div>
       <p class="block__hint block__hint--last">
         Вы можете использовать ответ на вопрос в других блоках. <br>
