@@ -7,6 +7,11 @@ const props = defineProps({
     required: true,
   }
 });
+
+const emits = defineEmits(['add-plugin']);
+const addPluginEvent = (plugin) => {
+  emits('add-plugin', plugin)
+};
 </script>
 
 <template>
@@ -15,6 +20,7 @@ const props = defineProps({
       v-for="plugin in plugins"
       :key="plugin.plugin_id"
       :plugin="plugin"
+      @add-plugin="addPluginEvent"
     />
   </div>
 </template>

@@ -9,6 +9,11 @@ const props = defineProps({
   }
 });
 
+const emits = defineEmits(['add-plugin']);
+const addPluginEvent = () => {
+  emits('add-plugin', props.plugin)
+};
+
 const summary = computed(() => {
   if (props.plugin.summary.length > 58) {
     return props.plugin.summary.substring(0, 55) + '...';
@@ -28,6 +33,7 @@ const summary = computed(() => {
       <AppButton 
         size="small" 
         importance="primary"
+        @click="addPluginEvent"
       >
         Добавить
       </AppButton>
