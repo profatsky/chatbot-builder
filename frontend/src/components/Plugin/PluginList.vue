@@ -1,5 +1,5 @@
 <script setup>
-import PluginItem from "@/components/Plugins/PluginItem.vue";
+import PluginItem from "@/components/Plugin/PluginItem.vue";
 
 const props = defineProps({
   plugins: {

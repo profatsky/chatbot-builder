@@ -1,5 +1,5 @@
 <script setup>
-import DialoguRowItem from '@/components/Projects/DialogueRowItem.vue';
+import DialoguRowItem from '@/components/Project/DialogueRow/DialogueRowItem.vue';
 
 const props = defineProps({
   dialogues: {

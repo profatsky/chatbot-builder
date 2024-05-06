@@ -1,5 +1,5 @@
 <script setup>
-import PluginRowItem from '@/components/Projects/PluginRowItem.vue';
+import PluginRowItem from '@/components/Project/PluginRow/PluginRowItem.vue';
 
 const props = defineProps({
   plugins: {

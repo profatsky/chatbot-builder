@@ -1,5 +1,5 @@
 <script setup>
-import ProjectRowList from '@/components/Plugins/ProjectRowList.vue';
+import ProjectRowList from '@/components/Project/ProjectRow/ProjectRowList.vue';
 
 const props = defineProps({
   projects: {

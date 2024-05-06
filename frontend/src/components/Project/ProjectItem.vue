@@ -2,12 +2,14 @@
 import { ref, reactive } from 'vue';
 import { debounce } from 'lodash';
 import {useToast} from 'vue-toast-notification';
-import ChangeNameForm from '@/components/Projects/ChangeNameForm.vue';
-import PluginRowList from '@/components/Projects/PluginRowList.vue';
+
 import { removePluginFromProject } from '@/api/projects';
 import { updateDialogueTrigger, deleteDialogue } from '@/api/dialogues';
-import DialogueRowList from '@/components/Projects/DialogueRowList.vue';
 import { createDialogue } from '@/api/dialogues';
+
+import DialogueRowList from '@/components/Project/DialogueRow/DialogueRowList.vue';
+import PluginRowList from '@/components/Project/PluginRow/PluginRowList.vue';
+import ChangeNameForm from '@/components/Project/ChangeNameForm.vue';
 
 const toast = useToast();
 

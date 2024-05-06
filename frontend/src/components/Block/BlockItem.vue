@@ -1,12 +1,13 @@
 <script setup>
 import { shallowRef } from 'vue';
 import { debounce } from 'lodash';
-import TextBlockItem from '@/components/Dialogues/TextBlockItem.vue';
-import ImageBlockItem from '@/components/Dialogues/ImageBlockItem.vue';
-import QuestionBlockItem from '@/components/Dialogues/QuestionBlockItem.vue';
-import CSVBlockItem from '@/components/Dialogues/CSVBlockItem.vue';
-import EmailBlockItem from '@/components/Dialogues/EmailBlockItem.vue';
-import ApiBlockItem from '@/components/Dialogues/ApiBlockItem.vue';
+
+import TextBlockItem from '@/components/Block/BlockInstance/TextBlockItem.vue';
+import ImageBlockItem from '@/components/Block/BlockInstance/ImageBlockItem.vue';
+import QuestionBlockItem from '@/components/Block/BlockInstance/QuestionBlockItem.vue';
+import CSVBlockItem from '@/components/Block/BlockInstance/CSVBlockItem.vue';
+import EmailBlockItem from '@/components/Block/BlockInstance/EmailBlockItem.vue';
+import ApiBlockItem from '@/components/Block/BlockInstance/ApiBlockItem.vue';
 
 const props = defineProps({
   block: {

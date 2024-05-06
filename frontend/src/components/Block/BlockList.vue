@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onBeforeMount, onBeforeUpdate } from 'vue';
-import BlockItem from '@/components/Dialogues/BlockItem.vue';
+import BlockItem from '@/components/Block/BlockItem.vue';
 
 const props = defineProps({
   blocks: {

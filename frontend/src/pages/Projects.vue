@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useToast } from 'vue-toast-notification';
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
-import ProjectList from '@/components/Projects/ProjectList.vue';
+import ProjectList from '@/components/Project/ProjectList.vue';
 import { createProject, getUserProjects, updateProject, deleteProject } from '@/api/projects';
 
 const toast = useToast();

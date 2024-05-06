@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue';
 import { useToast } from 'vue-toast-notification';
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
-import PluginList from '@/components/Plugins/PluginList.vue';
+import PluginList from '@/components/Plugin/PluginList.vue';
 import { getPlugins } from '@/api/plugins';
 
 const toast = useToast();

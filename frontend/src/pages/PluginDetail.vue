@@ -2,11 +2,13 @@
 import { ref, onBeforeMount, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'vue-toast-notification';
+
 import { getPlugin, addPluginToProject } from '@/api/plugins';
 import { getUserProjects } from '@/api/projects';
 import apiClient from '@/api/apiClient';
+
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
-import AddPluginForm from '@/components/Plugins/AddPluginForm.vue';
+import AddPluginForm from '@/components/Plugin/AddPluginForm.vue';
 
 const toast = useToast();
 const route = useRoute();

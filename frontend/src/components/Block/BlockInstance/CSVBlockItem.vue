@@ -1,7 +1,6 @@
 <script setup>
-import { ref, reactive } from 'vue';
-import AddTableRowForm from '@/components/Dialogues/AddTableRowForm.vue';
-import KeyValueTable from '@/components/Dialogues/KeyValueTable.vue';
+import { reactive } from 'vue';
+import KeyValueTable from '@/components/Block/BlockInstance/BlockInstancePart/KeyValueTable.vue';
 
 const props = defineProps({
   block: {

@@ -1,6 +1,6 @@
 <script setup>
 import { reactive } from 'vue';
-import KeyValueTable from './KeyValueTable.vue';
+import KeyValueTable from '@/components/Block/BlockInstance/BlockInstancePart/KeyValueTable.vue';
 
 const props = defineProps({
   block: {

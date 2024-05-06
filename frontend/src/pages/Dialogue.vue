@@ -4,15 +4,17 @@ import { useRoute, useRouter } from 'vue-router';
 import { useToast } from 'vue-toast-notification';
 
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
-import BlockList from '@/components/Dialogues/BlockList.vue';
-import BlockTypeList from '@/components/Dialogues/BlockTypeList.vue';
-import emptyBlocks from '@/components/Dialogues/blocks'
+import BlockList from '@/components/Block/BlockList.vue';
+import BlockTypeList from '@/components/Block/BlockType/BlockTypeList.vue';
+import blockObjects from '@/components/Block/blocks'
+
 import msgPurpleIcon from '@/assets/icons/blocks/msg-purple.svg';
 import imgPurpleIcon from '@/assets/icons/blocks/img-purple.svg';
 import questionPurpleIcon from '@/assets/icons/blocks/question-purple.svg';
 import csvPurpleIcon from '@/assets/icons/blocks/csv-purple.svg';
 import emailPurpleIcon from '@/assets/icons/blocks/email-purple.svg';
 import requestPurpleIcon from '@/assets/icons/blocks/request-purple.svg';
+
 import { getBlocks, createBlock, updateBlock, deleteBlock, uploadImage } from '@/api/blocks';
 
 const blockTypes = ref([
@@ -33,7 +35,7 @@ const blocks = ref([]);
 const isBlocksLoading = ref(true);
 
 const handleAddBlockEvent = async (blockType) => {
-  const newBlock = { ...emptyBlocks[blockType.value] };
+  const newBlock = { ...blockObjects[blockType.value] };
   newBlock.sequence_number = blocks.value.length + 1;
 
   const { response, error } = await createBlock(

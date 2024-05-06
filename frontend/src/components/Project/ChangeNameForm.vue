@@ -1,7 +1,6 @@
 <script setup>
 import { ref } from 'vue';
 import { useToast } from 'vue-toast-notification';
-import 'vue-toast-notification/dist/theme-bootstrap.css';
 
 const toast = useToast();
 

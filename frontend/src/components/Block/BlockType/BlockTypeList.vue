@@ -1,5 +1,5 @@
 <script setup>
-import BlockTypeItem from '@/components/Dialogues/BlockTypeItem.vue';
+import BlockTypeItem from '@/components/Block/BlockType/BlockTypeItem.vue';
 
 const props = defineProps({
   blockTypes: {
