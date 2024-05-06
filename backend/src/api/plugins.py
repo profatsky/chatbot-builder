@@ -57,7 +57,13 @@ async def get_plugin(
 ):
     await auth_jwt.jwt_required()
 
-    plugin = await plugins_service.get_plugin(plugin_id, session)
+    try:
+        plugin = await plugins_service.get_plugin(plugin_id, session)
+    except plugins_exceptions.PluginNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail='Plugin does not exist',
+        )
     return plugin
 
 
