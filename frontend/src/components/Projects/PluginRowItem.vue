@@ -16,7 +16,10 @@ const removePluginEvent = () => {
   <div class="plugin-row">
     <div class="plugin-row__name">{{ plugin.name }}</div>
     <div class="plugin-row__btns">
-      <AppRoundButton buttonType="redirect"/>
+      <AppRoundButton 
+        buttonType="redirect"
+        @click="$router.push(`/plugins/${plugin.plugin_id}`)"
+      />
       <AppRoundButton 
         @click="removePluginEvent"
         buttonType="delete"

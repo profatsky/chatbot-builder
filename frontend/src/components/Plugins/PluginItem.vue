@@ -20,7 +20,7 @@ const summary = computed(() => {
 <template>
   <div class="plugin">
     <div class="plugin__img">
-      <img :src="`${apiClient.defaults.baseURL }/media/${plugin.image_path}`">
+      <img :src="`${apiClient.defaults.baseURL}/media/${plugin.image_path}`">
     </div>
     <div class="plugin__name">{{ plugin.name }}</div>
     <div class="plugin__summary">{{ summary }}</div>
@@ -34,6 +34,7 @@ const summary = computed(() => {
       <AppButton 
         size="small" 
         importance="secondary"
+        @click="$router.push(`/plugins/${plugin.plugin_id}`)"
       >
         Подробнее
       </AppButton>

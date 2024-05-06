@@ -1,0 +1,43 @@
+<script setup>
+import ProjectRowList from '@/components/Plugins/ProjectRowList.vue';
+
+const props = defineProps({
+  projects: {
+    type: Array,
+    required: true
+  }
+});
+
+const emits = defineEmits(['choose-project']);
+const chooseProjectEvent = (project) => {
+  emits('choose-project', project)
+};
+</script>
+
+<template>
+  <div class="add-plugin">
+    <h2 class="add-plugin__title">Добавить плагин в проект</h2>
+    <ProjectRowList 
+      :projects="projects"
+      @choose-project="chooseProjectEvent"
+    />
+  </div>
+</template>
+
+<style scoped>
+.add-plugin {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 500px;
+  padding: 0 24px;
+}
+
+.add-plugin__title {
+  font-size: 24px;
+  font-weight: 600px;
+  margin-top: 0;
+  margin-bottom: 28px;
+}
+</style>
