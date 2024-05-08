@@ -1,0 +1,88 @@
+from aiogram import types, filters, Router
+
+import config
+from db import support as support_db
+from db import base as base_db
+from loader import db_connector, bot
+
+router = Router()
+
+
+@router.message(filters.Command("support"))
+async def send_support_request(message: types.Message, command: filters.CommandObject):
+    if command.args is None:
+        return await message.answer(
+            "❗ Необходимо указать текст сообщения в тех.поддержку: /support [текст]"
+        )
+
+    if len(command.args) > 512:
+        return await message.answer(
+            "❗ Длина текста не должна превышать 512 символов!"
+        )
+
+    await support_db.create_support_request(
+        db_connector=db_connector,
+        question=command.args,
+        tg_id=message.from_user.id
+    )
+    await message.answer("✅ Обращение в тех.поддержку успешно отправлено")
+
+
+@router.message(filters.Command("requests"))
+async def get_opened_support_requests(message: types.Message):
+    user = await base_db.get_user(db_connector, tg_id=message.from_user.id)
+    if not user["is_admin"]:
+        return
+
+    support_requests = await support_db.get_open_support_requests(db_connector)
+
+    if not support_requests:
+        return await message.answer('❗ Нет открытых обращений в тех.поддержку!')
+
+    string_support_requests = '\n\n'.join([
+        f"ID {request['request_id']}: {request['question']}"
+        for request in support_requests
+    ])
+
+    await message.answer(
+        f"📑 Список приоритетных обращений в тех.поддержку\n\n"
+        f"{string_support_requests}\n\n"
+        "❗ Чтобы ответить на обращение введите: /answer [id обращения] [текст ответа]"
+    )
+
+
+@router.message(filters.Command("answer"))
+async def answer_to_support_request(message: types.Message, command: filters.CommandObject):
+    user = await base_db.get_user(db_connector, tg_id=message.from_user.id)
+    if not user["is_admin"]:
+        return
+
+    try:
+        request_id, answer_text = command.args.split(" ", maxsplit=1)
+    except (AttributeError, ValueError):
+        return await message.answer(
+            "❗ Необходимо указать id обращения и текст ответа: /answer [id обращения] [текст]"
+        )
+
+    support_request = await support_db.get_support_request(db_connector, request_id)
+    if not support_request or support_request['answer']:
+        return await message.answer("❗ Открытого обращения с указанным id не найдено!")
+
+    if len(answer_text) > 1024:
+        return await message.answer(
+            "❗ Длина текста не должна превышать 1024 символов!"
+        )
+
+    await support_db.save_answer_from_support(
+        db_connector=db_connector,
+        request_id=request_id,
+        answer=answer_text,
+        support_id=message.from_user.id,
+    )
+
+    await bot.send_message(
+        chat_id=support_request["tg_id"],
+        text="❗ Пришел ответ от тех.поддержки:\n\n"
+             f"<i>{answer_text}</i>"
+    )
+    await message.answer("✅ Ответ отправлен пользователю")

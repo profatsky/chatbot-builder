@@ -27,8 +27,7 @@ async def _create_user_table(db_connector: DatabaseConnector):
     async with db_connector as conn:
         await conn.execute('''
             CREATE TABLE IF NOT EXISTS users (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                user_id INTEGER UNIQUE,
+                tg_id INTEGER PRIMARY KEY,
                 first_name TEXT,
                 last_name TEXT,
                 username TEXT,
@@ -45,28 +44,35 @@ async def create_tables(db_connector: DatabaseConnector):
 
 async def add_user(
         db_connector: DatabaseConnector,
-        user_id: int,
+        tg_id: int,
         first_name: str,
         last_name: str,
         username: str,
         is_admin: bool,
 ):
-    created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    user = await get_user(db_connector, tg_id)
+
+    if user is None:
+        created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        async with db_connector as conn:
+            await conn.execute(
+                '''
+                    INSERT INTO users (tg_id, first_name, last_name, username, is_admin, created_at)
+                    VALUES (?, ?, ?, ?, ?, ?)
+                ''',
+                (tg_id, first_name, last_name, username, is_admin, created_at)
+            )
+            await conn.commit()
+
+
+async def get_user(db_connector: DatabaseConnector, tg_id: int):
     async with db_connector as conn:
         user = await conn.execute(
             '''
-               SELECT * FROM users WHERE user_id = ?
+               SELECT * FROM users WHERE tg_id = ?
             ''',
-            (user_id,)
+            (tg_id,)
         )
         user = await user.fetchone()
 
-        if user is None:
-            await conn.execute(
-                '''
-                    INSERT INTO users (user_id, first_name, last_name, username, is_admin, created_at)
-                    VALUES (?, ?, ?, ?, ?, ?)
-                ''',
-                (user_id, first_name, last_name, username, is_admin, created_at)
-            )
-            await conn.commit()
+    return user

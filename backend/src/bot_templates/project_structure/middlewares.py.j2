@@ -18,7 +18,7 @@ class UserMiddleware(BaseMiddleware):
         user = data['event_from_user']
         await add_user(
             db_connector=db_connector,
-            user_id=user.id,
+            tg_id=user.id,
             first_name=user.first_name,
             last_name=user.last_name,
             username=user.username,

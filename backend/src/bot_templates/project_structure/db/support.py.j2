@@ -1,0 +1,88 @@
+from datetime import datetime
+
+from db.base import DatabaseConnector
+
+
+async def create_tables(db_connector: DatabaseConnector):
+    await _create_support_requests_table(db_connector)
+
+
+async def _create_support_requests_table(db_connector: DatabaseConnector):
+    async with db_connector as conn:
+        await conn.execute('''
+            CREATE TABLE IF NOT EXISTS support_requests (
+                request_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                question VARCHAR(512) NOT NULL,
+                sender_id INTEGER NOT NULL,
+                created_at DATE NOT NULL,
+                answer VARCHAR(1024),
+                support_id TEXT,
+                FOREIGN KEY (sender_id) REFERENCES users(tg_id),
+                FOREIGN KEY (support_id) REFERENCES users(tg_id)
+            );
+        ''')
+
+
+async def create_support_request(
+        db_connector: DatabaseConnector,
+        question: str,
+        tg_id: int,
+):
+    created_at = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    async with db_connector as conn:
+        await conn.execute(
+            '''
+                INSERT INTO support_requests (question, sender_id, created_at) 
+                VALUES (?, ?, ?)
+            ''',
+            (question, tg_id, created_at)
+        )
+        await conn.commit()
+
+
+async def get_open_support_requests(db_connector: DatabaseConnector):
+    async with db_connector as conn:
+        support_requests = await conn.execute(
+            '''
+                SELECT * FROM support_requests 
+                WHERE answer IS NULL 
+                ORDER BY created_at 
+                LIMIT 5
+            '''
+        )
+        support_requests = await support_requests.fetchall()
+
+    return support_requests
+
+
+async def save_answer_from_support(
+        db_connector: DatabaseConnector,
+        request_id: int,
+        answer: str,
+        support_id: int,
+):
+    async with db_connector as conn:
+        await conn.execute(
+            '''
+                UPDATE support_requests 
+                SET answer = ?, support_id = ? 
+                WHERE request_id = ?
+            ''',
+            (answer, support_id, request_id)
+        )
+        await conn.commit()
+
+
+async def get_support_request(db_connector: DatabaseConnector, request_id: int):
+    async with db_connector as conn:
+        support_request = await conn.execute(
+            '''
+                SELECT * FROM support_requests 
+                JOIN users ON support_requests.sender_id = users.tg_id 
+                WHERE request_id = ?
+            ''',
+            (request_id,)
+        )
+        support_request = await support_request.fetchone()
+
+    return support_request
