@@ -1,6 +1,8 @@
+import aiogram.exceptions
 from aiogram import types, filters, Router
+from aiogram.fsm.context import FSMContext
+from aiogram.fsm.state import StatesGroup, State
 
-import config
 from db import support as support_db
 from db import base as base_db
 from loader import db_connector, bot
@@ -8,7 +10,7 @@ from loader import db_connector, bot
 router = Router()
 
 
-@router.message(filters.Command("support"))
+@router.message(filters.StateFilter(None), filters.Command("support"))
 async def send_support_request(message: types.Message, command: filters.CommandObject):
     if command.args is None:
         return await message.answer(
@@ -28,7 +30,7 @@ async def send_support_request(message: types.Message, command: filters.CommandO
     await message.answer("✅ Обращение в тех.поддержку успешно отправлено")
 
 
-@router.message(filters.Command("requests"))
+@router.message(filters.StateFilter(None), filters.Command("requests"))
 async def get_opened_support_requests(message: types.Message):
     user = await base_db.get_user(db_connector, tg_id=message.from_user.id)
     if not user["is_admin"]:
@@ -51,7 +53,7 @@ async def get_opened_support_requests(message: types.Message):
     )
 
 
-@router.message(filters.Command("answer"))
+@router.message(filters.StateFilter(None), filters.Command("answer"))
 async def answer_to_support_request(message: types.Message, command: filters.CommandObject):
     user = await base_db.get_user(db_connector, tg_id=message.from_user.id)
     if not user["is_admin"]:
@@ -86,3 +88,65 @@ async def answer_to_support_request(message: types.Message, command: filters.Com
              f"<i>{answer_text}</i>"
     )
     await message.answer("✅ Ответ отправлен пользователю")
+
+
+class OperatorState(StatesGroup):
+    connect = State()
+
+
+@router.message(filters.StateFilter(None), filters.Command("connect"))
+async def connect_support_to_chat(
+        message: types.Message,
+        command: filters.CommandObject,
+        state: FSMContext,
+):
+    user = await base_db.get_user(db_connector, tg_id=message.from_user.id)
+    if not user["is_admin"]:
+        return
+
+    recipient_id = command.args
+    if recipient_id is None:
+        return await message.answer(
+            "❗ Необходимо указать id пользователя, к чату с которым вы хотите подключиться: /connect [id пользователя]"
+        )
+
+    if not recipient_id.isdigit():
+        return await message.answer(
+            "❗ Необходимо указать число в качестве id пользователя!"
+        )
+
+    recipient = await base_db.get_user(db_connector, int(recipient_id))
+    if recipient is None:
+        return await message.answer(
+            "❗ Пользователя с указанным идентификатором в чат-боте не найдено!"
+        )
+
+    await state.set_state(OperatorState.connect)
+    await state.update_data(recipient_id=recipient_id)
+    await message.answer(
+        "✅ Вы подключились к чату с пользователем. Теперь каждое ваше сообщение, отправленное чат-боту, "
+        f"будет перенаправлено пользователю с id {recipient_id}\n\n"
+        "❗ Чтобы отключиться от чата с пользователем, напишите /exit"
+    )
+
+
+@router.message(filters.StateFilter(OperatorState.connect))
+async def chat_with_user(message: types.Message, state: FSMContext):
+    if message.text == '/exit':
+        await state.clear()
+        return await message.answer('✅ Вы отключились от чата с пользователем!')
+
+    data = await state.get_data()
+    try:
+        await bot.send_message(
+            chat_id=data["recipient_id"],
+            text=f"❗ Специалист тех.поддержки отправил вам сообщение:\n\n"
+                 f"<i>{message.text}</i>"
+        )
+    except aiogram.exceptions.TelegramForbiddenError:
+        await message.answer(
+            '❗ Не удалось отправить сообщение указанному пользователю чат-бота, т.к. '
+            'пользователь заблокировал чат-бота\n\n'
+            '✅ Вы были отключены от чата с этим пользователем'
+        )
+        await state.clear()
