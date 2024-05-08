@@ -72,6 +72,8 @@ async def check_access_and_add_plugin_to_project(
     if _project_contain_plugin_with_specified_id(project, plugin_id):
         raise plugins_exceptions.PluginAlreadyInProject
 
+    _ = await get_plugin(plugin_id, session)
+
     # TODO add a limit on the number of plugins in a project
     plugin = await plugins_persistence.add_plugin_to_project(project_id, plugin_id, session)
     return plugin

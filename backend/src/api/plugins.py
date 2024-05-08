@@ -62,7 +62,7 @@ async def get_plugin(
     except plugins_exceptions.PluginNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail='Plugin does not exist',
+            detail='The specified plugin does not exist',
         )
     return plugin
 
@@ -109,7 +109,7 @@ async def add_plugin_to_project(
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
+            detail='The specified project does not exist',
         )
     except projects_exceptions.NoPermissionForProject:
         raise HTTPException(
@@ -119,7 +119,12 @@ async def add_plugin_to_project(
     except plugins_exceptions.PluginAlreadyInProject:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='The specified plugin is already in the project'
+            detail='The specified plugin is already in the project',
+        )
+    except plugins_exceptions.PluginNotFound:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='The specified plugin does not exits',
         )
 
 
@@ -143,7 +148,7 @@ async def remove_plugin_from_project(
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
+            detail='The specified project does not exist',
         )
     except projects_exceptions.NoPermissionForProject:
         raise HTTPException(
