@@ -7,7 +7,7 @@ from loader import db_connector
 router = Router()
 
 
-@router.message(filters.Command("stats"))
+@router.message(filters.StateFilter(None), filters.Command("stats"))
 async def get_users_stats(message: types.Message):
     if message.from_user.id == int(config.ADMIN_ID):
         num_of_users = await count_users(db_connector)

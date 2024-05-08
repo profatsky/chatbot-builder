@@ -34,7 +34,7 @@ class {{ states_group.name }}(StatesGroup):
     {% endfor +%}
 {% endfor %}
 
-@router.message(filters.CommandStart())
+@router.message(filters.StateFilter(None), filters.CommandStart())
 async def handler_command_start(message: types.Message):
 {% if start_keyboard %}
     buttons = [
@@ -59,7 +59,7 @@ async def handler_command_start(message: types.Message):
 
 
 {% if commands_values %}
-@router.message(F.text, filters.Command('help'))
+@router.message(F.text, filters.Command('help'), filters.StateFilter(None))
 async def handler_get_commands(message: types.Message):
     message_text = 'Список доступных команд:\n\n'
     commands = {{ commands_values }}
