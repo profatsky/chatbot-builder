@@ -1,7 +1,7 @@
 import re
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ValidationError
 
 from src.enums import HandlerType
 
@@ -25,9 +25,10 @@ class HandlerSchema(BaseModel):
         code = code.replace('\'', '"')
         code = self._process_access_to_user_answers_in_code(code)
         code = self._process_access_to_api_response_in_code(code)
+        code = self._process_access_to_username_in_code(code)
         self.body.append(code.strip())
 
-    def _process_access_to_user_answers_in_code(self, code: str):
+    def _process_access_to_user_answers_in_code(self, code: str) -> str:
         pattern = r'answers\[(\d+)\]'
 
         code = self._format_string_if_pattern_found(pattern, code)
@@ -39,7 +40,7 @@ class HandlerSchema(BaseModel):
 
         return result
 
-    def _process_access_to_api_response_in_code(self, code: str):
+    def _process_access_to_api_response_in_code(self, code: str) -> str:
         pattern = r'response_data\["([a-zA-Z0-9_-]+)"\]'
 
         code = self._format_string_if_pattern_found(pattern, code)
@@ -51,8 +52,23 @@ class HandlerSchema(BaseModel):
 
         return result
 
+    def _process_access_to_username_in_code(self, code: str) -> str:
+        pattern = r'username'
+
+        code = self._format_string_if_pattern_found(pattern, code)
+
+        def replace_match(match):
+            if self.type == HandlerType.MESSAGE:
+                return '{message.from_user.full_name}'
+            else:
+                return '{callback.from_user.full_name}'
+
+        result = re.sub(pattern, replace_match, code)
+
+        return result
+
     @staticmethod
-    def _format_string_if_pattern_found(pattern, code):
+    def _format_string_if_pattern_found(pattern: str, code: str) -> str:
         search_from = 0
         while match := re.search(pattern, code[search_from:]):
             quote_index = code.rfind('"', 0, match.start() + search_from)
