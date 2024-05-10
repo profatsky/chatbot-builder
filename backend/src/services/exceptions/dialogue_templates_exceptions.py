@@ -1,0 +1,2 @@
+class DialogueTemplateNotFound(Exception):
+    pass

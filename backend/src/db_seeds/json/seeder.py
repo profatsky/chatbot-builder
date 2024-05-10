@@ -63,7 +63,6 @@ async def insert_data(sql_inserts: list[TextClause]):
                 pass
 
 
-
 async def main():
     file_paths = get_json_file_paths('data/')
     jsons_from_files = get_jsons_from_files(file_paths)

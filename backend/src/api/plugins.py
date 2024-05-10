@@ -123,7 +123,7 @@ async def add_plugin_to_project(
         )
     except plugins_exceptions.PluginNotFound:
         raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail='The specified plugin does not exits',
         )
 

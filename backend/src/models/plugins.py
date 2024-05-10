@@ -22,7 +22,7 @@ class PluginModel(Base):
     name: Mapped[str] = mapped_column(String(128), unique=True)
     summary: Mapped[str] = mapped_column(String(512))
     description: Mapped[str] = mapped_column(String(4096))
-    image_path: Mapped[str] = mapped_column(String(256))
+    image_path: Mapped[str] = mapped_column(String(512))
     created_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=func.now(),

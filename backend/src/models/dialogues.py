@@ -15,7 +15,7 @@ class DialogueModel(Base):
     trigger_id: Mapped[int] = mapped_column(ForeignKey('triggers.trigger_id', ondelete='RESTRICT'))
     trigger: Mapped['TriggerModel'] = relationship(back_populates='dialogue')
 
-    project_id: Mapped[int] = mapped_column(ForeignKey('projects.project_id', ondelete='CASCADE'))
+    project_id: Mapped[int] = mapped_column(ForeignKey('projects.project_id', ondelete='CASCADE'), nullable=True)
     project: Mapped['ProjectModel'] = relationship(back_populates='dialogues')
 
     blocks: Mapped[list['BlockModel']] = relationship(back_populates='dialogue')
@@ -25,7 +25,7 @@ class DialogueModel(Base):
         server_default=func.now(),
     )
 
-    # TODO add template_id
+    template: Mapped['DialogueTemplateModel'] = relationship(back_populates='dialogue')
 
 
 class TriggerModel(Base):
