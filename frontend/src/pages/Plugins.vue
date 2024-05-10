@@ -18,11 +18,7 @@ const chosenPlugin = ref({});
 onMounted(async () => {
   const { response, error } = await getPlugins();
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...')
   } else {
     isPluginsLoading.value = false;
     const responseData = response.value.data;
@@ -42,6 +38,7 @@ const closeProjectsListModal = () => {
   showProjectsListModal.value = false;
 };
 
+// TODO if user dont have projects
 const handleAddPluginEvent = async (plugin) => {
   const { response, error } = await getUserProjects();
   if (error.value) {
@@ -72,7 +69,7 @@ const handleChooseProjectEvent = async (project) => {
 <template>
   <AppModal
     v-if="showProjectsListModal"
-    @closeModal="closeProjectsListModal"
+    @close-modal="closeProjectsListModal"
   >
     <AddPluginForm
       :projects="projects"

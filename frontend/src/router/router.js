@@ -4,6 +4,8 @@ import PersonalDataProcessingPolicy from '@/pages/PersonalDataProcessingPolicy.v
 import Projects from '@/pages/Projects.vue';
 import Profile from '@/pages/Profile.vue';
 import Dialogue from '@/pages/Dialogue.vue';
+import DialogueTemplates from '@/pages/DialogueTemplates.vue';
+import DialogueTemplateDetail from '@/pages/DialogueTemplateDetail.vue';
 import Plugins from '@/pages/Plugins.vue';
 import PluginDetail from '@/pages/PluginDetail.vue';
 
@@ -15,6 +17,14 @@ const routes = [
   {
     path: '/projects',
     component: Projects
+  },
+  {
+    path: '/templates',
+    component: DialogueTemplates
+  },
+  {
+    path: '/templates/:templateId',
+    component: DialogueTemplateDetail
   },
   {
     path: '/plugins',
