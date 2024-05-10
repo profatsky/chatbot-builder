@@ -8,7 +8,8 @@ import { getUserProjects } from '@/api/projects';
 import apiClient from '@/api/apiClient';
 
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
-import createDialogueFromTemplateForm from '@/components/DialogueTemplate/createDialogueFromTemplateForm.vue';
+import ProjectRowForm from '@/components/Project/ProjectRow/ProjectRowForm.vue'
+
 const toast = useToast();
 const route = useRoute();
 const router = useRouter();
@@ -33,7 +34,7 @@ const closeProjectsListModal = () => {
   showProjectsListModal.value = false;
 };
 
-const handleCreateDialogueFromTemplateEvent = async (dialogueTemplate) => {
+const handleCreateDialogueFromTemplateEvent = async () => {
   const { response, error } = await getUserProjects();
   if (error.value) {
     toast.error('Что-то пошло не так...');
@@ -64,10 +65,12 @@ const handleChooseProjectEvent = async (project) => {
     v-if="showProjectsListModal"
     @closeModal="closeProjectsListModal"
   >
-    <createDialogueFromTemplateForm
+    <ProjectRowForm
       :projects="projects"
       @choose-project="handleChooseProjectEvent"
-    />
+    >
+      Добавить диалог в проект
+    </ProjectRowForm>
   </AppModal>
 
   <SidebarNavigation/>

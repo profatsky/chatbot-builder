@@ -6,7 +6,7 @@ import { getPlugins, addPluginToProject } from '@/api/plugins';
 import { getUserProjects } from '@/api/projects';
 
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
-import AddPluginForm from '@/components/Plugin/AddPluginForm.vue';
+import ProjectRowForm from '@/components/Project/ProjectRow/ProjectRowForm.vue';
 import PluginList from '@/components/Plugin/PluginList.vue';
 
 const toast = useToast();
@@ -71,10 +71,12 @@ const handleChooseProjectEvent = async (project) => {
     v-if="showProjectsListModal"
     @close-modal="closeProjectsListModal"
   >
-    <AddPluginForm
+    <ProjectRowForm
       :projects="projects"
       @choose-project="handleChooseProjectEvent"
-    />
+    >
+      Добавить плагин в проект
+    </ProjectRowForm>
   </AppModal>
 
   <SidebarNavigation/>

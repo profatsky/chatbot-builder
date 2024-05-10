@@ -6,7 +6,7 @@ import { getDialogueTemplates, createDialogueFromTemplate } from '@/api/dialogue
 import { getUserProjects } from '@/api/projects.js';
 
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
-import createDialogueFromTemplateForm from '@/components/DialogueTemplate/createDialogueFromTemplateForm.vue';
+import ProjectRowForm from '@/components/Project/ProjectRow/ProjectRowForm.vue'
 import DialogueTemplateList from '@/components/DialogueTemplate/DialogueTemplateList.vue';
 
 const toast = useToast();
@@ -65,10 +65,12 @@ const handleChooseProjectEvent = async (project) => {
     v-if="showProjectsListModal"
     @close-modal="closeProjectsListModal"
   >
-    <createDialogueFromTemplateForm
+    <ProjectRowForm
       :projects="projects"
       @choose-project="handleChooseProjectEvent"
-    />
+    >
+      Добавить диалог в проект
+    </ProjectRowForm>
   </AppModal>
 
   <SidebarNavigation/>

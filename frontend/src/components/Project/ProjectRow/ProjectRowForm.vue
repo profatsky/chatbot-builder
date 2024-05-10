@@ -15,8 +15,8 @@ const chooseProjectEvent = (project) => {
 </script>
 
 <template>
-  <div class="add-plugin">
-    <h2 class="add-plugin__title">Добавить плагин в проект</h2>
+  <div class="content">
+    <h2 class="content__title"><slot></slot></h2>
     <ProjectRowList 
       :projects="projects"
       @choose-project="chooseProjectEvent"
@@ -25,7 +25,7 @@ const chooseProjectEvent = (project) => {
 </template>
 
 <style scoped>
-.add-plugin {
+.content {
   display: flex;
   justify-content: center;
   flex-direction: column;
@@ -34,7 +34,7 @@ const chooseProjectEvent = (project) => {
   padding: 0 24px;
 }
 
-.add-plugin__title {
+.content__title {
   font-size: 24px;
   font-weight: 600px;
   margin-top: 0;
