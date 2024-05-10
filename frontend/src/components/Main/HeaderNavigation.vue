@@ -1,16 +1,11 @@
-<script>
-import AppButton from '@/components/UI/AppButton.vue';
-
-export default {
-  methods: {
-    openRegisterForm() {
-      this.$emit('openRegisterForm');
-    },
-    openLoginForm() {
-      this.$emit('openLoginForm');
-    }
-  }
-}
+<script setup>
+const emits = defineEmits(['open-register-form', 'open-login-form'])
+const openRegisterForm = () => {
+  emits('open-register-form');
+};
+const openLoginForm = () => {
+  emits('open-login-form');
+};
 </script>
 
 <template>
@@ -21,7 +16,7 @@ export default {
           <img src="@/assets/logo.png">
         </div>
         <div class="header-navbar__menu">
-          <ul>
+          <ul class="header-navbar__menu-list">
             <li><a href="#advantages-section">Возможности</a></li>
             <li><a href="#manual-section">Руководство</a></li>
             <li><a href="#support-section">Поддержка</a></li>
@@ -58,7 +53,7 @@ export default {
   flex-grow: 1;
 }
 
-.header-navbar__menu ul {
+.header-navbar__menu-list {
   list-style: none;
   font-weight: 400;
   display: flex;
@@ -77,5 +72,11 @@ export default {
 .login-btn {
   background: none;
   font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .header-navbar__menu-list {
+    display: none;
+  }
 }
 </style>

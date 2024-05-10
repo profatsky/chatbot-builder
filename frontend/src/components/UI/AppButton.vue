@@ -99,4 +99,35 @@ export default {
 
   padding: 8px;
 }
+
+@media (max-width: 768px) {
+  .btn-large {
+    height: 48px;
+    padding: 8px 16px;
+  }
+
+  .btn-medium {
+    height: 40px;
+    padding: 8px 16px;
+  }
+
+  .btn-small {
+    height: 28px;
+    padding: 8px 16px;
+  }
+}
+
+@media (max-width: 320px) {
+  .btn-large {
+    height: 40px;
+  }
+
+  .btn-medium {
+    height: 36px;
+  }
+
+  .btn-small {
+    height: 24px;
+  }
+}
 </style>

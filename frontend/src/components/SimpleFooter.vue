@@ -23,4 +23,10 @@
   gap: 271px;
   align-items: center;
 }
+
+@media (max-width: 768px) {
+  .footer {
+    gap: 40px;
+  }
+}
 </style>

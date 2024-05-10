@@ -99,7 +99,7 @@ const closeLoginFormHandler = () => {
             <div class="step__number">03</div>
             <h4 class="step__title">Генерация кода</h4>
             <p class="step__description">
-              Никаких подписок! Получите готовый код вашего чат-бота
+              Бесплатно получите готовый код вашего чат-бота
             </p>
           </div>
           <div class="step">
@@ -133,7 +133,7 @@ const closeLoginFormHandler = () => {
             <img src="@/assets/icons/code-purple.svg">
             <h4 class="advantage__title">Без программирования</h4>
             <p class="advantage__description">
-              Для создания чат-бота не потребуются навыки программирования
+              Для создания чат-бота не потребуются технические навыки
             </p>
           </div>
           <div class="advantage">
@@ -252,13 +252,11 @@ section {
 .steps {
   margin-top: 120px;
   display: flex;
-  justify-content: space-between;
   gap: 27px;
 }
 
 .step {
-  background-color: var(--light-gray) ;
-  width: 272px;
+  background-color: var(--light-gray);
   border-radius: 16px;
   padding: 16px 34px;
   box-shadow: 0 0 16px 0 rgba(17, 17, 17, 0.04);
@@ -316,6 +314,7 @@ section {
 
 .advantages {
   display: flex;
+  justify-content: center;
   flex-wrap: wrap;
   gap: 30px;
 }
@@ -361,5 +360,70 @@ section {
   font-size: 24px;
   letter-spacing: 1px;
   color: var(--primary);
+}
+
+@media (max-width: 768px) {
+  #main-section {
+    margin-top: 80px;
+  }
+
+  .offer__title {
+    font-size: 48px;
+    line-height: 56px;
+    width: 551px;
+  }
+
+  .offer__description {
+    font-size: 24px;
+    margin-top: 36px;
+  }
+
+  .offer__btn {
+    margin-top: 40px;
+  }
+
+  .steps {
+    margin: 80px 60px 0px 60px;
+    flex-wrap: wrap;
+  }
+
+  .step {
+    width: 204px;
+    flex-shrink: 0;
+  }
+
+  .primary-title {
+    font-size: 48px;
+    line-height: 56px;
+    margin-bottom: 36px;
+  }
+
+  .secondary-title {
+    margin-bottom: 4px;
+  }
+
+  .section-description {
+    font-size: 20px;
+    line-height: 24px;
+    margin-bottom: 36px;
+  }
+
+  .advantages {
+    gap: 28px;
+  }
+
+  .advantage {
+    width: 230px;
+    height: 104px;
+    padding: 28px;
+  }
+
+  .advantage__title {
+    font-size: 18px;
+  }
+
+  .advantage__description {
+    font-size: 12px;
+  }
 }
 </style>

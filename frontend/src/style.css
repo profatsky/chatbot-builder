@@ -96,3 +96,17 @@ button {
   margin: 0 auto;
   width: 1170px;
 }
+
+@media (max-width: 768px) {
+  .container {
+    margin: 0 30px;
+    width: 708px;
+  }
+}
+
+/* @media (max-width: 320px) {
+  .container {
+    margin: 0 20px;
+    width: 280px;
+  }
+} */
