@@ -27,17 +27,13 @@ func_signature_for_callback_handler_with_callback_and_state = (
 
 # blocks
 message_answer = 'await message.answer("{message_text}")'
-callback_message_answer = 'await callback.message.answer("{message_text}")'
 
 message_answer_with_reply_kb_remove = (
     'await message.answer("{message_text}", reply_markup=types.ReplyKeyboardRemove())'
 )
-callback_message_answer_with_reply_kb_remove = (
-    'await callback.message.answer("{message_text}", reply_markup=types.ReplyKeyboardRemove())'
-)
 
 callback_answer = 'await callback.answer()'
-
+callback_message = 'message = callback.message'
 
 image_block = '''
     # Отправка изображения
@@ -47,16 +43,6 @@ image_block = '''
     except Exception as e:
         logging.info(f"Ошибка при отправке изображения {image_path}: {{e}}")
 '''
-
-callback_image_block = '''
-    # Отправка изображения
-    try:
-        image = types.FSInputFile("{image_path}")
-        await callback.message.answer_photo(image)
-    except Exception as e:
-        logging.info(f"Ошибка при отправке изображения {image_path}: {{e}}")
-'''
-
 
 email_block = '''
     # Отправка Email

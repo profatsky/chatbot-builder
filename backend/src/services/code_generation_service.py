@@ -66,7 +66,7 @@ async def get_bot_code_in_zip(
     return zip_data
 
 
-# TODO need refactoring
+# TODO refactoring
 def _add_plugins_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
     handlers_file_names = []
     db_funcs_file_names = []
@@ -152,6 +152,7 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
                 )
                 handler.type = HandlerType.CALLBACK
                 handler.add_to_body(code.callback_answer)
+                handler.add_to_body(code.callback_message)
             else:
                 start_keyboard.add_to_buttons(
                     code.reply_keyboard_button.format(text=dialogue.trigger.value)
@@ -171,16 +172,10 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
                 continue
 
             if block.type == BlockType.TEXT_BLOCK.value:
-                if handler.type == HandlerType.CALLBACK:
-                    handler.add_to_body(code.callback_message_answer.format(message_text=block.message_text))
-                elif handler.type == HandlerType.MESSAGE:
-                    handler.add_to_body(code.message_answer.format(message_text=block.message_text))
+                handler.add_to_body(code.message_answer.format(message_text=block.message_text))
 
             elif block.type == BlockType.IMAGE_BLOCK.value:
-                if handler.type == HandlerType.CALLBACK:
-                    handler.add_to_body(code.callback_image_block.format(image_path=block.image_path))
-                elif handler.type == HandlerType.MESSAGE:
-                    handler.add_to_body(code.image_block.format(image_path=block.image_path))
+                handler.add_to_body(code.image_block.format(image_path=block.image_path))
 
             elif block.type == BlockType.QUESTION_BLOCK.value:
                 if states_group is None:
@@ -191,14 +186,9 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
                     )
                     states_groups.append(states_group)
 
-                    if handler.type == HandlerType.CALLBACK:
-                        handler.add_to_body(
-                            code.callback_message_answer_with_reply_kb_remove.format(message_text=block.message_text)
-                        )
-                    elif handler.type == HandlerType.MESSAGE:
-                        handler.add_to_body(
-                            code.message_answer_with_reply_kb_remove.format(message_text=block.message_text)
-                        )
+                    handler.add_to_body(
+                        code.message_answer_with_reply_kb_remove.format(message_text=block.message_text)
+                    )
 
                     handler.add_to_body(
                         code.set_state.format(states_group_name=states_group.name, state_name=state.name)
