@@ -39,7 +39,7 @@ async def create_survey_dialogue_template():
             QuestionBlockModel(
                 sequence_number=4,
                 message_text='Кем вы работаете?',
-                answer_type= AnswerMessageType.TEXT,
+                answer_type=AnswerMessageType.TEXT,
                 dialogue=dialogue,
             ),
             QuestionBlockModel(
@@ -80,7 +80,7 @@ async def create_survey_dialogue_template():
                         'род деятельности, номер телефона и электронная почта. Введенные пользователем данные будут '
                         'сохранены в csv-файл.',
             dialogue=dialogue,
-            image_path='plugins/statistic.png',
+            image_path='dialogue_templates/survey.png',
         )
 
         session.add(trigger)
