@@ -6,7 +6,7 @@
     <div class="container">
       <div class="header">
         <div class="header__logo">
-          <img src="@/assets/logo.png">
+          <img src="@/assets/icons/logo/full-logo.svg">
         </div>
       </div>
     </div>

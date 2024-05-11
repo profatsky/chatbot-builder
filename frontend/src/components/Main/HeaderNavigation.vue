@@ -13,7 +13,7 @@ const openLoginForm = () => {
     <div class="container">
       <nav class="header-navbar">
         <div class="header-navbar__logo">
-          <img src="@/assets/logo.png">
+          <img src="@/assets/icons/logo/full-logo.svg">
         </div>
         <div class="header-navbar__menu">
           <ul class="header-navbar__menu-list">
@@ -72,6 +72,7 @@ const openLoginForm = () => {
 .login-btn {
   background: none;
   font-size: 16px;
+  line-height: 24px;
 }
 
 @media (max-width: 768px) {

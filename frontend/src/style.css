@@ -33,6 +33,13 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: 'Roboto';
+  src: url('@/assets/fonts/Roboto-Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+}
+
 
 
 :root {
@@ -99,8 +106,8 @@ button {
 
 @media (max-width: 768px) {
   .container {
-    margin: 0 30px;
-    width: 708px;
+    margin: 0 32px;
+    width: 702px;
   }
 }
 

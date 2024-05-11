@@ -1,7 +1,7 @@
 <script setup>
 import { computed } from 'vue';
 import { useRoute } from 'vue-router';
-import { collapsed } from '@/components/Sidebar/sidebarCollapse';
+import { collapsed } from '@/components/Sidebar/sidebarUtils.js';
 
 const props = defineProps({
   to: {
@@ -58,5 +58,17 @@ const isActive = computed(() => route.path === props.to)
 
 .link:hover {
   background-color: var(--light-gray);
+}
+
+@media (max-width: 768px) {
+  .link {
+    gap: 10px;
+
+    font-size: 16px;
+    line-height: 28px;
+
+    padding: 16px 22px;
+    height: 28px;
+  }
 }
 </style>

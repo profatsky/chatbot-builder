@@ -1,5 +1,6 @@
 <script setup>
-import { collapsed, toggleSidebar, sidebarWidth } from '@/components/Sidebar/sidebarCollapse';
+import { onMounted, onUnmounted } from 'vue';
+import { collapsed, toggleSidebar, sidebarWidth, resizeSidebar } from '@/components/Sidebar/sidebarUtils';
 import SidebarLink from '@/components/Sidebar/SidebarLink.vue';
 
 import botGrayIcon from '@/assets/icons/bot-gray.svg';
@@ -8,21 +9,33 @@ import blockGrayIcon from '@/assets/icons/blocks-gray.svg';
 import scrollGrayIcon from '@/assets/icons/scroll-gray.svg';
 import profileGrayIcon from '@/assets/icons/profile-gray.svg';
 
+onMounted(() => {
+  window.addEventListener('resize', resizeSidebar);
+});
+
+onUnmounted(() => {
+  window.removeEventListener('resize', resizeSidebar);
+});
 </script>
 
 <template>
   <div class="sidebar" :style="{ width: sidebarWidth }">
 
-    <div>
-      <div v-if="collapsed">
-        <img src="@/assets/icons/logo-icon.png" class="logo">
-      </div>
-      <div v-else>
-        <transition name="logo">
-          <img src="@/assets/logo.png" class="logo">
-        </transition>
-      </div>
+    <div class="logo">
+        <img src="@/assets/icons/logo/simple-logo.svg" class="logo__img">
+      
+      <Transition name="logo-text">
+        <p v-if="!collapsed" class="logo__text">
+          <span style="color: var(--primary-dark)">Bot</span>Builder
+        </p>
+      </Transition>
     </div>
+    <!-- <div>
+      <transition>
+        <img v-if="collapsed" src="@/assets/icons/logo/simple-logo.svg" class="logo">
+        <img v-else src="@/assets/icons/logo/full-logo.svg" class="logo">
+      </transition>
+    </div> -->
     <SidebarLink to="/projects" :iconPath="botGrayIcon">Боты</SidebarLink>
     <SidebarLink to="/templates" :iconPath="layoutGrayIcon">Шаблоны</SidebarLink>
     <SidebarLink to="/plugins" :iconPath="blockGrayIcon">Плагины</SidebarLink>
@@ -38,17 +51,16 @@ import profileGrayIcon from '@/assets/icons/profile-gray.svg';
   </div>
 </template>
 
-<style>
-.logo-enter-active,
-.logo-leave-active {
-  transition: opacity 0.3s;
+<style scoped>
+.logo-text-enter-active,
+.logo-text-leave-active {
+  transition: opacity 0.2s;
 }
 
-.logo-enter-from,
-.logo-leave-to {
+.logo-text-enter-from,
+.logo-text-leave-to {
   opacity: 0;
 }
-
 
 .sidebar {
   color: var(--body-text);
@@ -69,7 +81,21 @@ import profileGrayIcon from '@/assets/icons/profile-gray.svg';
 }
 
 .logo {
-  margin: 48px 0px 28px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 36px 0px 28px 28px;
+}
+
+.logo__img {
+  height: 50px;
+}
+
+.logo__text {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--primary);
+  font-family: 'Roboto', 'sans-serif';
 }
 
 .collapse-icon {
@@ -80,8 +106,34 @@ import profileGrayIcon from '@/assets/icons/profile-gray.svg';
   transition: 0.2s linear;
 }
 
+.collapse-icon img {
+  height: 32px;
+}
+
 .rotate-180 {
   transform: rotate(180deg);
   transition: 0.2s linear;
+}
+
+@media (max-width: 768px) {
+  .logo {
+    margin: 28px 0px 18px 18px;
+  }
+
+  .logo__img {
+    height: 36px;
+  }
+  
+  .logo__text {
+    font-size: 24px;
+  }
+
+  .collapse-icon {
+    padding: 22px;
+  }
+
+  .collapse-icon img {
+    height: 28px;
+  }
 }
 </style>

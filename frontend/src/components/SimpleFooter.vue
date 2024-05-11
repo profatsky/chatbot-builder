@@ -6,7 +6,7 @@
     <div class="container">
       <div class="footer">
         <div class="footer__logo">
-          <img src="@/assets/logo.png">
+          <img src="@/assets/icons/logo/full-logo.svg">
         </div>
         <div class="footer__description">
           <p>developed by profatsky</p>
