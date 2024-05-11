@@ -7,6 +7,7 @@ export const SIDEBAR_WIDTH = ref(320);
 export const SIDEBAR_WIDTH_COLLAPSED = ref(96);
 
 export const sidebarWidth = computed(() => {
+  resizeSidebar();
   return `${collapsed.value ? SIDEBAR_WIDTH_COLLAPSED.value : SIDEBAR_WIDTH.value}px`
 });
 
