@@ -100,12 +100,8 @@ const handleChooseProjectEvent = async (project) => {
 </template>
 
 <style scoped>
-.page__content {
-  margin-left: 120px;
-}
-
 .page__header {
-  margin: 48px 0;
+  margin: 40px 0px 28px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -114,8 +110,22 @@ const handleChooseProjectEvent = async (project) => {
 .page__hint {
   font-size: 16px;
   font-weight: 500;
+  line-height: 28px;
   letter-spacing: 0.75px;
   color: var(--body-text);
   margin-bottom: 28px;
+}
+
+@media (max-width: 768px) {
+  .page__header {
+    margin: 28px 0px 20px 0px;
+  }
+
+  .page__hint {
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 20px;
+  }
+
 }
 </style>

@@ -104,10 +104,18 @@ button {
   width: 1170px;
 }
 
+.page__content {
+  margin-left: 120px;
+}
+
 @media (max-width: 768px) {
   .container {
     margin: 0 32px;
     width: 702px;
+  }
+
+  .page__content {
+    margin-left: 64px;
   }
 }
 

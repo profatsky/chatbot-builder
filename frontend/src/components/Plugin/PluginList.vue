@@ -31,4 +31,11 @@ const addPluginEvent = (plugin) => {
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
 }
+
+@media (max-width: 768px) {
+  .plugins-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
 </style>

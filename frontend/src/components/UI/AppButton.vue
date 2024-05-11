@@ -113,7 +113,7 @@ export default {
 
   .btn-small {
     height: 28px;
-    padding: 8px 16px;
+    padding: 2px 16px;
   }
 }
 

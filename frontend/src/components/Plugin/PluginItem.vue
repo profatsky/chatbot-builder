@@ -86,4 +86,28 @@ const summary = computed(() => {
   flex-direction: column;
   gap: 16px;
 }
+
+@media (max-width: 768px) {
+  .plugin {
+    padding: 20px 24px;
+  }
+
+  .plugin__img img {
+    height: 160px;
+  }
+
+  .plugin__name {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .plugin__summary {
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+
+  .plugin__buttons {
+    gap: 12px;
+  }
+}
 </style>
