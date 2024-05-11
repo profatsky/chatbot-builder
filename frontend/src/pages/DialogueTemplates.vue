@@ -94,10 +94,6 @@ const handleChooseProjectEvent = async (project) => {
 </template>
 
 <style scoped>
-.page__content {
-  margin-left: 120px;
-}
-
 .page__header {
   margin: 48px 0;
   display: flex;

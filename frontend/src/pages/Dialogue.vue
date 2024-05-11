@@ -177,10 +177,6 @@ onMounted(async () => { await getBlocksFromApi() });
 </template>
 
 <style scoped>
-.page-content {
-  margin-left: 120px;
-}
-
 .page-header {
   margin: 48px 0;
   display: flex;

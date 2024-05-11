@@ -40,51 +40,53 @@ onMounted(async () => {
   <SidebarNavigation/>
   <main>
     <div class="container">
-      <div class="profile">
-        <h1 class="profile__title">Профиль</h1>
-        <div class="profile__info">
-          <div class="column">
-            <div class="info-item">
-              <img src="@/assets/icons/mail-purple.svg">
-              <div class="info-item_text">
-                <div class="info-item__name">Почта</div>
-                <div class="info-item__value">{{ userData.email }}</div>
+      <div class="page__content">
+        <div class="profile">
+          <h1 class="profile__title">Профиль</h1>
+          <div class="profile__info">
+            <div class="column">
+              <div class="info-item">
+                <img src="@/assets/icons/mail-purple.svg">
+                <div class="info-item_text">
+                  <div class="info-item__name">Почта</div>
+                  <div class="info-item__value">{{ userData.email }}</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <img src="@/assets/icons/calendar-purple.svg">
+                <div class="info-item_text">
+                  <div class="info-item__name">Дата регистрации</div>
+                  <div class="info-item__value">{{ userData.registered_at }}</div>
+                </div>
+              </div>
+              <div class="info-item">
+                <img src="@/assets/icons/robot-face-purple.svg">
+                <div class="info-item_text">
+                  <div class="info-item__name">Количество чат-ботов</div>
+                  <div class="info-item__value">5</div>
+                </div>
               </div>
             </div>
-            <div class="info-item">
-              <img src="@/assets/icons/calendar-purple.svg">
-              <div class="info-item_text">
-                <div class="info-item__name">Дата регистрации</div>
-                <div class="info-item__value">{{ userData.registered_at }}</div>
-              </div>
-            </div>
-            <div class="info-item">
-              <img src="@/assets/icons/robot-face-purple.svg">
-              <div class="info-item_text">
-                <div class="info-item__name">Количество чат-ботов</div>
-                <div class="info-item__value">5</div>
-              </div>
-            </div>
-          </div>
 
-          <div class="column">
-            <AppNotification status="success" v-if="userData.is_verified">
-              <template v-slot:title>Email подтвержден</template>
-              <template v-slot:description>
-                Вам доступны все функции конструктора чат-ботов. Если вы захотите изменить электронную почту, вам снова потребуется подтверждение.
-              </template>
-            </AppNotification>
-            <AppNotification status="error" v-else>
-              <template v-slot:title>Email не подтвержден</template>
-              <template v-slot:description>
-                У вас нет доступа к основным функциям конструктора чат-ботов.<br>
-                Требуется подтверждение Email.
-              </template>
-            </AppNotification>
-            <div class="buttons">
-              <AppButton size="small" importance="secondary">Подтвердить Email</AppButton>
-              <AppButton size="small" importance="secondary">Изменить Email</AppButton>
-              <AppButton size="small" importance="secondary">Изменить пароль</AppButton>
+            <div class="column">
+              <AppNotification status="success" v-if="userData.is_verified">
+                <template v-slot:title>Email подтвержден</template>
+                <template v-slot:description>
+                  Вам доступны все функции конструктора чат-ботов. Если вы захотите изменить электронную почту, вам снова потребуется подтверждение.
+                </template>
+              </AppNotification>
+              <AppNotification status="error" v-else>
+                <template v-slot:title>Email не подтвержден</template>
+                <template v-slot:description>
+                  У вас нет доступа к основным функциям конструктора чат-ботов.<br>
+                  Требуется подтверждение Email.
+                </template>
+              </AppNotification>
+              <div class="buttons">
+                <AppButton size="small" importance="secondary">Подтвердить Email</AppButton>
+                <AppButton size="small" importance="secondary">Изменить Email</AppButton>
+                <AppButton size="small" importance="secondary">Изменить пароль</AppButton>
+              </div>
             </div>
           </div>
         </div>
@@ -94,10 +96,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-main {
-  margin-left: 120px;
-}
-
 .profile__title {
   margin: 48px 0;
 }

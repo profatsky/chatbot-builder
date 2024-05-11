@@ -95,8 +95,8 @@ onMounted(async () => {
   <SidebarNavigation/>
   <main>
     <div class="container">
-      <div class="page-content">
-        <div class="page-header">
+      <div class="page__content">
+        <div class="page__header">
           <h1 class="content__title">Чат-боты</h1>
           <AppButton
             size="large" 
@@ -118,11 +118,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.page-content {
-  margin-left: 120px;
-}
-
-.page-header {
+.page__header {
   margin: 48px 0;
   display: flex;
   justify-content: space-between;
