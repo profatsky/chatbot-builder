@@ -126,6 +126,5 @@ const handleChooseProjectEvent = async (project) => {
     line-height: 18px;
     margin-bottom: 20px;
   }
-
 }
 </style>

@@ -31,4 +31,11 @@ const createDialogueEvent = (template) => {
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
 }
+
+@media (max-width: 768px) {
+  .dialogue-templates-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+}
 </style>

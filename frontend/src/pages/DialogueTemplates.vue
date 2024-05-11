@@ -108,4 +108,16 @@ const handleChooseProjectEvent = async (project) => {
   color: var(--body-text);
   margin-bottom: 28px;
 }
+
+@media (max-width: 768px) {
+  .page__header {
+    margin: 28px 0px 20px 0px;
+  }
+
+  .page__hint {
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 20px;
+  }
+}
 </style>

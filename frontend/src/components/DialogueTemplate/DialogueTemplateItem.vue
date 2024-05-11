@@ -86,4 +86,28 @@ const summary = computed(() => {
   flex-direction: column;
   gap: 16px;
 }
+
+@media (max-width: 768px) {
+  .dialogue-template {
+    padding: 20px 24px;
+  }
+
+  .dialogue-template__img img {
+    height: 160px;
+  }
+
+  .dialogue-template__name {
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+
+  .dialogue-template__summary {
+    font-size: 14px;
+    margin-bottom: 18px;
+  }
+
+  .dialogue-template__buttons {
+    gap: 12px;
+  }
+}
 </style>
