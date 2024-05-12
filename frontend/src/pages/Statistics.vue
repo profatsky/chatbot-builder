@@ -62,10 +62,11 @@ onMounted(async () => {
   background-color: var(--light-gray);
   border-radius: 16px;
   padding: 28px 32px;
+  margin-bottom: 10px;
 
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 30px;
   text-align: center;
   align-items: center;
 
@@ -79,7 +80,7 @@ onMounted(async () => {
 .card__name {
   font-size: 28px;
   font-weight: 500;
-  width: 225px;
+  width: 250px;
   line-height: 40px;
   letter-spacing: 1px;
 }
@@ -89,5 +90,36 @@ onMounted(async () => {
   font-weight: 700;
   letter-spacing: 1px;
   color: var(--primary);
+}
+
+@media (max-width: 768px) {
+  .statistics__title {
+    margin: 28px 0px 24px 0px;
+  }
+
+  .statistics__cards-list {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .card {
+    padding: 20px 24px;
+    gap: 20px;
+    margin-bottom: 4px;
+  }
+
+  .card__img {
+    height: 160px;
+  }
+
+  .card__name {
+    font-size: 24px;
+    line-height: 36px;
+    width: 210px;
+  }
+
+  .card__value {
+    font-size: 48px;
+  }
 }
 </style>
