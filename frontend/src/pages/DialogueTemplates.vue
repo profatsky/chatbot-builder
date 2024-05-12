@@ -101,6 +101,11 @@ const handleChooseProjectEvent = async (project) => {
   align-items: center;
 }
 
+.header__title {
+  font-size: 32px;
+  line-height: 40px;
+}
+
 .page__hint {
   font-size: 16px;
   font-weight: 500;
@@ -112,6 +117,11 @@ const handleChooseProjectEvent = async (project) => {
 @media (max-width: 768px) {
   .page__header {
     margin: 28px 0px 20px 0px;
+  }
+
+  .header__title {
+    font-size: 24px;
+    line-height: 28px;
   }
 
   .page__hint {

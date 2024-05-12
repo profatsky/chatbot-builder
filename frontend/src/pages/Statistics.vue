@@ -47,12 +47,12 @@ onMounted(async () => {
 
 <style scoped>
 .statistics__title {
-  margin-top: 40px;
   font-size: 32px;
+  line-height: 40px;
+  margin: 40px 0px 36px 0px;
 }
 
 .statistics__cards-list {
-  margin-top: 36px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 30px;
@@ -94,6 +94,8 @@ onMounted(async () => {
 
 @media (max-width: 768px) {
   .statistics__title {
+    font-size: 24px;
+    line-height: 28px;
     margin: 28px 0px 24px 0px;
   }
 
