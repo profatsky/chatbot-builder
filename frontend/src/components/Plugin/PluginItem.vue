@@ -54,6 +54,7 @@ const summary = computed(() => {
   padding: 28px 32px;
   border-radius: 16px;
   margin-bottom: 10px;
+  box-shadow: 0 0 16px 0 rgba(17, 17, 17, 0.04);
 }
 
 .plugin__img img {
