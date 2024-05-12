@@ -1,3 +1,4 @@
+# TODO divide into two layers - service and persistence
 from typing import Optional
 
 from passlib.hash import bcrypt
