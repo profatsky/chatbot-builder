@@ -223,7 +223,7 @@ async def login(
     if user is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Неверный данные для входа!'
+            detail='Неверные данные для входа!'
         )
 
     await auth_service.set_auth_tokens(user, auth_jwt)
