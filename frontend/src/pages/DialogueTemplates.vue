@@ -95,7 +95,7 @@ const handleChooseProjectEvent = async (project) => {
 
 <style scoped>
 .page__header {
-  margin: 48px 0;
+  margin: 40px 0px 28px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;

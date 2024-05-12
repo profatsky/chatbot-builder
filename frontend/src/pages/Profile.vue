@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import AppNotification from '@/components/UI/AppNotification.vue';
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import { getUserProfile } from '@/api/users';
-import {useToast} from 'vue-toast-notification';
+import { useToast } from 'vue-toast-notification';
 
 
 const userData = ref({});
@@ -21,17 +21,13 @@ function formatDate(dateObject) {
 onMounted(async () => {
   const { response, error } = await getUserProfile();
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...');
   } else {
     const responseData = response.value.data;
     userData.value = response.value.data;
 
     const dateObject = new Date(responseData.registered_at);
-    userData.value.registered_at = formatDate(dateObject)
+    userData.value.registered_at = formatDate(dateObject);
   }
 });
 </script>

@@ -8,6 +8,7 @@ import DialogueTemplates from '@/pages/DialogueTemplates.vue';
 import DialogueTemplateDetail from '@/pages/DialogueTemplateDetail.vue';
 import Plugins from '@/pages/Plugins.vue';
 import PluginDetail from '@/pages/PluginDetail.vue';
+import Statistics from '@/pages/Statistics.vue';
 
 const routes = [
   {
@@ -45,6 +46,10 @@ const routes = [
   {
     path: '/personal-data-processing-policy',
     component: PersonalDataProcessingPolicy
+  },
+  {
+    path: '/statistics',
+    component: Statistics
   }
 ]
 

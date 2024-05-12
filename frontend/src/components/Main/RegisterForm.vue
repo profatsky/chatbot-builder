@@ -23,13 +23,13 @@ const toast = useToast();
 
 
 const submitForm = async () => {
-  if (!checkPasswordsMatch()) {
-    toast.error('Введенные пароли должны совпадать!');
+  if (!checkPasswordLength()) {
+    toast.error('Длина пароля должна быть от 8 до 32 символов!');
     return
   }
 
-  if (!checkPasswordLength()) {
-    toast.error('Длина пароля должна быть от 8 до 32 символов!');
+  if (!checkPasswordsMatch()) {
+    toast.error('Введенные пароли должны совпадать!');
     return
   }
 

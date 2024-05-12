@@ -1,0 +1,93 @@
+<script setup>
+import { ref, onMounted } from 'vue';
+import { useRouter } from 'vue-router';
+import { getStatistics } from '@/api/statistics.js';
+import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
+
+const router = useRouter();
+const userCount = ref(0);
+const projectCount = ref(0); 
+
+onMounted(async () => {
+  const { response, error } = await getStatistics();
+  if (error.value) {
+    router.push('/');
+  } else {
+    const responseData = response.value.data;
+    userCount.value = responseData.user_count;
+    projectCount.value = responseData.project_count;
+  }
+});
+</script>
+
+<template>
+  <SidebarNavigation/>
+  <main>
+    <div class="container">
+      <div class="page__content">
+        <div class="statistics">
+          <h1 class="statistics__title">Статистика конструктора</h1>
+        </div>
+        <div class="statistics__cards-list">
+          <div class="card">
+              <img src="@/assets/img/users.svg" class="card__img">
+              <h3 class="card__name">Количество пользователей</h3>
+              <p class="card__value">{{ userCount }}</p>
+          </div>
+          <div class="card">
+              <img src="@/assets/img/chatbot.svg" class="card__img">
+              <h3 class="card__name">Количество чат-ботов</h3>
+              <p class="card__value">{{ projectCount }}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</template>
+
+<style scoped>
+.statistics__title {
+  margin-top: 40px;
+  font-size: 32px;
+}
+
+.statistics__cards-list {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+}
+
+.card {
+  background-color: var(--light-gray);
+  border-radius: 16px;
+  padding: 28px 32px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  text-align: center;
+  align-items: center;
+
+  box-shadow: 0 0 16px 0 rgba(17, 17, 17, 0.04);
+}
+
+.card__img {
+  height: 200px;
+}
+
+.card__name {
+  font-size: 28px;
+  font-weight: 500;
+  width: 225px;
+  line-height: 40px;
+  letter-spacing: 1px;
+}
+
+.card__value {
+  font-size: 64px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--primary);
+}
+</style>
