@@ -5,15 +5,13 @@ import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import { getUserProfile } from '@/api/users';
 import { useToast } from 'vue-toast-notification';
 
-
 const userData = ref({});
-
 const toast = useToast();
 
 function formatDate(dateObject) {
   const day = dateObject.getDate();
   const month = dateObject.getMonth() + 1;
-  const year = dateObject.getFullYear()
+  const year = dateObject.getFullYear();
   const formattedDate = `${day < 10 ? '0' + day : day}.${month < 10 ? '0' + month : month}.${year}`
   return formattedDate;
 };
@@ -37,10 +35,15 @@ onMounted(async () => {
   <main>
     <div class="container">
       <div class="page__content">
-        <div class="profile">
-          <h1 class="profile__title">Профиль</h1>
-          <div class="profile__info">
-            <div class="column">
+        <div class="page__header">
+          <h1 class="header__title">Профиль</h1>
+        </div>
+        <div class="page__body">
+          <div class="profile">
+            <div class="profile__img">
+              <img src="@/assets/img/base-avatar.svg">
+            </div>
+            <div class="profile__info">
               <div class="info-item">
                 <img src="@/assets/icons/mail-purple.svg">
                 <div class="info-item_text">
@@ -63,28 +66,27 @@ onMounted(async () => {
                 </div>
               </div>
             </div>
-
-            <div class="column">
-              <AppNotification status="success" v-if="userData.is_verified">
-                <template v-slot:title>Email подтвержден</template>
-                <template v-slot:description>
-                  Вам доступны все функции конструктора чат-ботов. Если вы захотите изменить электронную почту, вам снова потребуется подтверждение.
-                </template>
-              </AppNotification>
-              <AppNotification status="error" v-else>
-                <template v-slot:title>Email не подтвержден</template>
-                <template v-slot:description>
-                  У вас нет доступа к основным функциям конструктора чат-ботов.<br>
-                  Требуется подтверждение Email.
-                </template>
-              </AppNotification>
-              <div class="buttons">
-                <AppButton size="small" importance="secondary">Подтвердить Email</AppButton>
-                <AppButton size="small" importance="secondary">Изменить Email</AppButton>
-                <AppButton size="small" importance="secondary">Изменить пароль</AppButton>
-              </div>
-            </div>
           </div>
+          <AppNotification status="primary">
+            <template v-slot:title>Вы среди первой тысячи зарегистрированных пользователей</template>
+            <template v-slot:description>
+              <p class="description__main">
+                Вам доступен весь функционал нашего конструктора чат-ботов без ограничений! Мы будем очень признательны, если вы поделитесь обратной связью, пожеланиями и замечаниями по нашему сервису.
+              </p>
+              <p class="description__contacts">
+                Связяться с нами в ВКонтакте: 
+                <a class="social-network-link" href="https://vk.com/profatsky" target="_blank">
+                  vk.com/profatsky
+                </a>
+              </p>
+              <p class="description__contacts">
+                Связаться с нами в Telegram: 
+                <a class="social-network-link" href="https://t.me/profatsky" target="_blank">
+                  t.me/profatsky
+                </a>
+              </p>
+            </template>
+          </AppNotification>
         </div>
       </div>
     </div>
@@ -92,16 +94,36 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.profile__title {
-  margin: 48px 0;
+
+.page__content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.page__header {
+  margin: 40px 0px 40px 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header__title {
+  font-size: 32px;
+  line-height: 40px;
+}
+
+.page__body {
+  margin: 0 auto;
+}
+
+.profile {
+  display: flex;
+  align-items: center;
+  gap: 118px;
+  margin-bottom: 80px;
 }
 
 .profile__info {
-  display: flex;
-  gap: 98px;
-}
-
-.column  {
   display: flex;
   flex-direction: column;
   gap: 48px;
@@ -110,12 +132,6 @@ onMounted(async () => {
 .info-item {
   display: flex;
   gap: 16px;
-}
-
-.info-item__text {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
 }
 
 .info-item__name {
@@ -132,10 +148,11 @@ onMounted(async () => {
   color: var(--body-text);
 }
 
-.buttons {
-  display: flex;
-  flex-direction: row;
-  gap: 42px
+.description__main {
+  margin-bottom: 12px;
 }
 
+.social-network-link {
+  color: var(--primary);
+}
 </style>

@@ -72,7 +72,7 @@ const handleRemovePluginEvent = async (plugin) => {
 
 const handleUpdateDialogueEvent = async (dialogue) => {
   if (dialogue.trigger.value.length > 64) {
-    toast.error('Введенное значение было ограничено 64 символами');
+    toast.warning('Введенное значение было ограничено 64 символами');
     dialogue.trigger.value = dialogue.trigger.value.substring(0, 64);
   }
 

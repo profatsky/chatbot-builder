@@ -5,7 +5,7 @@ const props = defineProps({
   status: {
     type: String,
     required: true,
-    validator: (value) => ['error', 'success'].includes(value)
+    validator: (value) => ['error', 'success', 'primary'].includes(value)
   },
 });
 
@@ -13,6 +13,7 @@ const computedClasses = computed(() => ({
   'notification': true,
   'success': props.status === 'success',
   'error': props.status === 'error',
+  'primary': props.status === 'primary',
 }));
 
 </script>
@@ -35,8 +36,16 @@ const computedClasses = computed(() => ({
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   border-radius: 16px;
-  padding: 24px 20px;
+  padding: 20px 24px;
   width: 685px;
+}
+
+.notification__title {
+  font-size: 16px;
+  letter-spacing: 0.25px;
+  line-height: 20px;
+  font-weight: 600;
+  margin-bottom: 16px;
 }
 
 .success {
@@ -46,10 +55,6 @@ const computedClasses = computed(() => ({
 
 .success .notification__title {
   color: var(--success-dark);
-  font-size: 14px;
-  letter-spacing: 0.25px;
-  line-height: 16px;
-  font-weight: 600;
 }
 
 .error {
@@ -59,15 +64,20 @@ const computedClasses = computed(() => ({
 
 .error .notification__title {
   color: var(--error-dark);
-  font-size: 14px;
-  letter-spacing: 0.25px;
-  line-height: 16px;
-  font-weight: 600;
+}
+
+.primary {
+  background-color: var(--main-white);
+  border: 2px solid var(--primary);
+}
+
+.primary .notification__title {
+  color: var(--primary-dark);
 }
 
 .notification__description {
   font-size: 16px;
   letter-spacing: 0.75px;
-  line-height: 28px;
+  line-height: 24px;
 }
 </style>
