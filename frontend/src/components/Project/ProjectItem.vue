@@ -72,13 +72,20 @@ const handleRemovePluginEvent = async (plugin) => {
 
 const handleUpdateDialogueEvent = async (dialogue) => {
   if (dialogue.trigger.value.length > 64) {
-    toast.error('Сообщение, на которое будет реагировать чат-бот, не должно превышать 64 символа!');
+    toast.error('Введенное значение было ограничено 64 символами');
     dialogue.trigger.value = dialogue.trigger.value.substring(0, 64);
   }
 
-  if (dialogue.trigger.event_type == 'command' && dialogue.trigger.value.startsWith('/')) {
-    toast.warning('Cимвол "/" в Команде будет подставлен автоматически');
-    dialogue.trigger.value = dialogue.trigger.value.substring(1);
+  if (dialogue.trigger.event_type == 'command') {
+    if (dialogue.trigger.value.startsWith('/')) {
+      toast.warning('Cимвол "/" в Команде будет подставлен автоматически');
+      dialogue.trigger.value = dialogue.trigger.value.substring(1);
+    };
+    
+    if (dialogue.trigger.value.includes(' ')) {
+      toast.warning('Команда не должна содержать пробелов');
+      dialogue.trigger.value = dialogue.trigger.value.replace(/\s/g, '');
+    };
   }
 
   const { response, error } = await updateDialogueTrigger(
