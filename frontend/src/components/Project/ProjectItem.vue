@@ -97,11 +97,7 @@ const handleUpdateDialogueEvent = async (dialogue) => {
 const handleDeleteDialogueEvent = async (dialogue) => {
   const { response, error } = await deleteDialogue(editedProject.project_id, dialogue.dialogue_id);
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...')
   } else {
     editedProject.dialogues = editedProject.dialogues.filter(d => d.dialogue_id !== dialogue.dialogue_id);
     toast.success('Диалог успешно удален');
@@ -109,22 +105,23 @@ const handleDeleteDialogueEvent = async (dialogue) => {
 };
 
 const handleCreateDialogueEvent = async () => {
+  if (editedProject.dialogues.length >= 10) {
+    toast.error('В этом чат-боте максимальное количество диалогов!');
+    return;
+  }
+
   const dialogue = {
     triggerEventType: 'text',
     triggerValue: '',
   };
-
+  
   const { response, error } = await createDialogue(
     editedProject.project_id, 
     dialogue.triggerEventType, 
     dialogue.triggerValue
   );
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...')
   } else {
     const responseData = response.value.data;
     editedProject.dialogues.push(responseData);
@@ -183,7 +180,7 @@ const handleCreateDialogueEvent = async () => {
       </div>
     </div>
     <div class="dialogues">
-        <h3 class="dialogues__title">Диалоги ({{ editedProject.dialogues.length }}/15)</h3>
+        <h3 class="dialogues__title">Диалоги ({{ editedProject.dialogues.length }}/10)</h3>
         
         <p class="hint">
           При добавлении диалога необходимо указать на какое сообщение будет реагировать ваш чат-бот, чтобы запустить этот диалог. На выбор представлены 3 типа событий: текстовое сообщение, команда, нажатие кнопки.
@@ -204,7 +201,7 @@ const handleCreateDialogueEvent = async () => {
         </AppButton>
       </div>
       <div class="plugins">
-        <h3 class="plugins__title">Плагины ({{ editedProject.plugins.length }}/15)</h3>
+        <h3 class="plugins__title">Плагины ({{ editedProject.plugins.length }}/3)</h3>
         <PluginRowList 
           :plugins="editedProject.plugins"
           @remove-plugin="handleRemovePluginEvent"
