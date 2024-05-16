@@ -1,6 +1,6 @@
 import datetime
 
-from pydantic import BaseModel, field_validator
+from pydantic import BaseModel, field_validator, Field
 
 from src.enums import TriggerEventType
 from src.schemas.blocks_schemas import UnionBlockReadSchema
@@ -22,7 +22,7 @@ class DialogueReadSchema(BaseModel):
 
 class TriggerCreateSchema(BaseModel):
     event_type: TriggerEventType
-    value: str
+    value: str = Field(max_length=64)
 
 
 class TriggerUpdateSchema(TriggerCreateSchema):
@@ -32,7 +32,7 @@ class TriggerUpdateSchema(TriggerCreateSchema):
 class TriggerReadSchema(BaseModel):
     trigger_id: int
     event_type: TriggerEventType
-    value: str
+    value: str = Field(max_length=64)
 
     class Config:
         from_attributes = True
