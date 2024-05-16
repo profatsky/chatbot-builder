@@ -4,3 +4,7 @@ class DialogueNotFound(Exception):
 
 class NoDialoguesInProject(Exception):
     pass
+
+
+class DialogueLimitExceeded(Exception):
+    pass

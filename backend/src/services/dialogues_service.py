@@ -10,7 +10,7 @@ from src.schemas.dialogues_schemas import (
     TriggerUpdateSchema,
 )
 from src.services import projects_service
-from src.services.exceptions.dialogues_exceptions import DialogueNotFound
+from src.services.exceptions.dialogues_exceptions import DialogueNotFound, DialogueLimitExceeded
 
 
 async def check_access_and_create_dialogue(
@@ -19,7 +19,10 @@ async def check_access_and_create_dialogue(
         dialogue_data: DialogueCreateSchema,
         session: AsyncSession,
 ) -> DialogueReadSchema:
-    _ = await projects_service.check_access_and_get_project(user_id, project_id, session)
+    project = await projects_service.check_access_and_get_project(user_id, project_id, session)
+    if len(project.dialogues) >= 10:
+        raise DialogueLimitExceeded
+
     dialogue = await dialogues_persistence.create_dialogue(project_id, dialogue_data, session)
     return dialogue
 

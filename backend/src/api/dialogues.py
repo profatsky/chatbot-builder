@@ -42,6 +42,11 @@ async def create_dialogue(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Don\t have permission',
         )
+    except dialogues_exceptions.DialogueLimitExceeded:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='The specified project has the maximum number of dialogues',
+        )
     return dialogue
 
 
