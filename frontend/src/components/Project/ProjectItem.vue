@@ -71,6 +71,11 @@ const handleRemovePluginEvent = async (plugin) => {
 };
 
 const handleUpdateDialogueEvent = async (dialogue) => {
+  if (dialogue.trigger.value.length > 64) {
+    toast.error('Сообщение, на которое будет реагировать чат-бот, не должно превышать 64 символа!');
+    dialogue.trigger.value = dialogue.trigger.value.substring(0, 64);
+  }
+
   const { response, error } = await updateDialogueTrigger(
     editedProject.project_id,
     dialogue.dialogue_id,
