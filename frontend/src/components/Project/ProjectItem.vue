@@ -76,6 +76,11 @@ const handleUpdateDialogueEvent = async (dialogue) => {
     dialogue.trigger.value = dialogue.trigger.value.substring(0, 64);
   }
 
+  if (dialogue.trigger.event_type == 'command' && dialogue.trigger.value.startsWith('/')) {
+    toast.warning('Cимвол "/" в Команде будет подставлен автоматически');
+    dialogue.trigger.value = dialogue.trigger.value.substring(1);
+  }
+
   const { response, error } = await updateDialogueTrigger(
     editedProject.project_id,
     dialogue.dialogue_id,
