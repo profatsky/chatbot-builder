@@ -101,7 +101,7 @@ onMounted(async () => {
   justify-content: center;
 }
 .page__header {
-  margin: 40px 0px 40px 0px;
+  margin: 40px 0px 36px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;

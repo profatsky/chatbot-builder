@@ -91,6 +91,7 @@ const summary = computed(() => {
 @media (max-width: 768px) {
   .dialogue-template {
     padding: 20px 24px;
+    margin-bottom: 4px;
   }
 
   .dialogue-template__img img {
