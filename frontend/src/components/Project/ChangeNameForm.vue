@@ -1,8 +1,5 @@
 <script setup>
 import { ref } from 'vue';
-import { useToast } from 'vue-toast-notification';
-
-const toast = useToast();
 
 const props = defineProps({
   projectName: {
@@ -11,24 +8,16 @@ const props = defineProps({
   }
 });
 
-const name = ref('')
+const name = ref('');
 
 const emits = defineEmits(['update-project']);
 const updateProjectNameEvent = () => {
-  emits('update-project', name)
-}
-
-const checkNameLength = () => {
-  return (name.value.length >=1 && name.value.length <= 256);
-}
+  emits('update-project', name);
+};
 
 const submitForm = async () => {
-  if (!checkNameLength) {
-    toast.error('Длина названия должна быть от 1 до 256 символов!');
-    return;
-  }
   updateProjectNameEvent();
-}
+};
 </script>
 
 <template>
@@ -39,6 +28,8 @@ const submitForm = async () => {
         v-model="name"
         required 
         placeholder="Введите новое название"
+        minlength="1"
+        maxlength="256"
       />
       <AppButton 
         type="submit" 
