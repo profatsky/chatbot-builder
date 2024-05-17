@@ -1,5 +1,6 @@
 <script setup>
 import { reactive } from 'vue';
+import { useToast } from 'vue-toast-notification';
 import apiClient from '@/api/apiClient';
 
 const props = defineProps({
@@ -9,15 +10,28 @@ const props = defineProps({
   }
 });
 
+const toast = useToast();
 const editedBlock = reactive({ ...props.block });
 
 const emits = defineEmits(['upload-image', 'delete-block']);
-
 const deleteBlockEvent = () => {
   emits('delete-block', editedBlock)
 };
 
 const uploadFileEvent = (file) => {
+  const maxSize = 1024 * 1024 * 4;
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/jpg'];
+
+  if (file.size > maxSize) {
+    toast.error('Размер изображения не должен превышать 4 Мб!');
+    return;
+  }
+
+  if (!allowedTypes.includes(file.type)) {
+    toast.error('Неподходящий формат изображения!');
+    return;
+  }
+
   const formData = new FormData();
   formData.append('image', file);
   emits('upload-image', editedBlock, formData)
