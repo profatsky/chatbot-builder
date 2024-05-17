@@ -53,6 +53,7 @@ const dialogueTrigerTypes = ref([
         placeholder="Введите текст"
         @input="updateDialogueTriggerValueEvent"
         class="trigger__input"
+        maxlength="64"
       />
     </div>
     <div class="dialogue-row__btns">

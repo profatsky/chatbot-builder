@@ -43,6 +43,7 @@ const deleteBlockEvent = () => {
       class="textarea" 
       required
       @input="updateBlockTextMessageEvent"
+      maxlength="4096"
     />
     <div class="block__answer-type">
       <p class="block__hint">

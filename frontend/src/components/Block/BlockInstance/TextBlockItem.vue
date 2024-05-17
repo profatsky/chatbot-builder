@@ -8,19 +8,17 @@ const props = defineProps({
   }
 });
 
-const editedBlock = reactive({ ...props.block })
+const editedBlock = reactive({ ...props.block });
 
 const emits = defineEmits(['update-text-in-block', 'delete-block']);
 
 const updateBlockTextMessageEvent = () => {
-  emits('update-text-in-block', editedBlock)
+  emits('update-text-in-block', editedBlock);
 };
 
 const deleteBlockEvent = () => {
-  emits('delete-block', editedBlock)
+  emits('delete-block', editedBlock);
 };
-
-
 </script>
 
 <template>
@@ -41,6 +39,7 @@ const deleteBlockEvent = () => {
       class="textarea" 
       required
       @input="updateBlockTextMessageEvent"
+      maxlength="4096"
     />
   </div>
 </template>

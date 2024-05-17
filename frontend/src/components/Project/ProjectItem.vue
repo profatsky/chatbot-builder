@@ -71,11 +71,6 @@ const handleRemovePluginEvent = async (plugin) => {
 };
 
 const handleUpdateDialogueEvent = async (dialogue) => {
-  if (dialogue.trigger.value.length > 64) {
-    toast.warning('Введенное значение было ограничено 64 символами');
-    dialogue.trigger.value = dialogue.trigger.value.substring(0, 64);
-  }
-
   if (dialogue.trigger.event_type == 'command') {
     if (dialogue.trigger.value.startsWith('/')) {
       toast.warning('Cимвол "/" в Команде будет подставлен автоматически');
@@ -185,6 +180,7 @@ const handleCreateDialogueEvent = async () => {
         class="textarea" 
         required
         @input="updateProjectStartMessageEvent"
+        maxlength="4000"
       />
       <div class="project__keyboard">
         <p class="hint">Выберите тип кнопок для главного меню</p>
