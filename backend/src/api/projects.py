@@ -24,7 +24,13 @@ async def create_project(
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
-    project = await projects_service.create_project(user_id, project_data, session)
+    try:
+        project = await projects_service.create_project(user_id, project_data, session)
+    except projects_exceptions.ProjectsLimitExceeded:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail='You have the maximum number of projects',
+        )
     return project
 
 

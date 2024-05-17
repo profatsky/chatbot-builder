@@ -6,5 +6,5 @@ class NoDialoguesInProject(Exception):
     pass
 
 
-class DialogueLimitExceeded(Exception):
+class DialoguesLimitExceeded(Exception):
     pass

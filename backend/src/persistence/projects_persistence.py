@@ -1,6 +1,6 @@
 from typing import Optional
 
-from sqlalchemy import select, delete
+from sqlalchemy import select, delete, func
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload, joinedload
 
@@ -96,6 +96,14 @@ async def delete_project(project_id: int, session: AsyncSession):
         )
     )
     await session.commit()
+
+
+async def count_projects(user_id: int, session: AsyncSession) -> int:
+    project_count = await session.scalar(
+        select(func.count()).select_from(ProjectModel)
+        .where(ProjectModel.user_id == user_id)
+    )
+    return project_count
 
 
 async def _get_project_model_instance(

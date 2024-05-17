@@ -4,3 +4,7 @@ class ProjectNotFound(Exception):
 
 class NoPermissionForProject(Exception):
     pass
+
+
+class ProjectsLimitExceeded(Exception):
+    pass

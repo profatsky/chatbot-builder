@@ -5,10 +5,10 @@ from src.models import UserModel, ProjectModel
 
 
 async def count_users(session: AsyncSession) -> int:
-    project_count = await session.scalar(
+    user_count = await session.scalar(
         select(func.count()).select_from(UserModel)
     )
-    return project_count
+    return user_count
 
 
 async def count_projects(session: AsyncSession) -> int:

@@ -11,7 +11,7 @@ from src.schemas.projects_schemas import (
     ProjectUpdateSchema,
     ProjectToGenerateCodeReadSchema,
 )
-from src.services.exceptions.projects_exceptions import ProjectNotFound, NoPermissionForProject
+from src.services.exceptions.projects_exceptions import ProjectNotFound, NoPermissionForProject, ProjectsLimitExceeded
 
 
 async def create_project(
@@ -19,6 +19,10 @@ async def create_project(
         project_data: ProjectCreateSchema,
         session: AsyncSession,
 ) -> ProjectReadSchema:
+    project_count = await projects_persistence.count_projects(user_id, session)
+    if project_count >= 5:
+        raise ProjectsLimitExceeded
+
     project = await projects_persistence.create_project(user_id, project_data, session)
     return project
 
