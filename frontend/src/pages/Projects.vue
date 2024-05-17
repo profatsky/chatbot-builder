@@ -6,9 +6,7 @@ import ProjectList from '@/components/Project/ProjectList.vue';
 import { createProject, getUserProjects, updateProject, deleteProject } from '@/api/projects';
 
 const toast = useToast();
-
 const projects = ref([]);
-
 const isProjectsLoading = ref(true);
 
 const handleUpdateProjectEvent = async (editedProject) => {
@@ -19,11 +17,7 @@ const handleUpdateProjectEvent = async (editedProject) => {
     editedProject.start_keyboard_type
   );
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...');
   } else {
     const index = projects.value.findIndex(
       project => project.project_id === editedProject.project_id
@@ -38,11 +32,7 @@ const handleUpdateProjectEvent = async (editedProject) => {
 const handleDeleteProjectEvent = async (projectID) => {
   const { response, error } = await deleteProject(projectID);
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...');
   } else {
     projects.value = projects.value.filter(p => p.project_id !== projectID);
     toast.success('Чат-бот успешно удален');
@@ -50,6 +40,11 @@ const handleDeleteProjectEvent = async (projectID) => {
 };
 
 const handleCreateProjectEvent = async () => {
+  if (projects.value.length >= 5) {
+    toast.error('У вас максимальное количество чат-ботов!');
+    return;
+  };
+
   const project = {
     name: 'Новый чат-бот',
     start_message: '',
@@ -63,11 +58,7 @@ const handleCreateProjectEvent = async () => {
   );
 
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...');
   } else {
     const responseData = response.value.data;
     projects.value.push(responseData);
@@ -78,11 +69,7 @@ const handleCreateProjectEvent = async () => {
 onMounted(async () => {
   const { response, error } = await getUserProjects();
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...')
   } else {
     isProjectsLoading.value = false;
     const responseData = response.value.data;
