@@ -35,6 +35,11 @@ const blocks = ref([]);
 const isBlocksLoading = ref(true);
 
 const handleAddBlockEvent = async (blockType) => {
+  if (blocks.value.length >= 15) {
+    toast.error('В этом диалоге максимальное количество блоков!');
+    return;
+  };
+
   const newBlock = { ...blockObjects[blockType.value] };
   newBlock.sequence_number = blocks.value.length + 1;
 
@@ -44,11 +49,7 @@ const handleAddBlockEvent = async (blockType) => {
     newBlock
   );
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...')
   } else {
     const responseData = response.value.data;
     blocks.value.push(responseData);
@@ -63,11 +64,7 @@ const handleUpdateBlockEvent = async (editedBlock) => {
     editedBlock
   );
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...')
   } else {
     const responseData = response.value.data;
     const index = blocks.value.findIndex(
@@ -88,11 +85,7 @@ const handleDeleteBlockEvent = async (block) => {
   );
 
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...')
   } else {
     await getBlocksFromApi();
     toast.success('Блок успешно удален')
@@ -108,11 +101,7 @@ const handleUploadImageEvent = async (editedBlock, formData) => {
   );
 
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...')
   } else {
     const responseData = response.value.data;
     const index = blocks.value.findIndex(
@@ -130,11 +119,7 @@ const getBlocksFromApi = async () => {
   );
 
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...')
   } else {
     isBlocksLoading.value = false;
     const responseData = response.value.data;

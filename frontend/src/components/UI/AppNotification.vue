@@ -97,5 +97,4 @@ const computedClasses = computed(() => ({
     line-height: 20px;
   }
 }
-
 </style>
