@@ -69,7 +69,7 @@ const handleChooseProjectEvent = async (project) => {
       :projects="projects"
       @choose-project="handleChooseProjectEvent"
     >
-      Добавить диалог в проект
+      Добавить диалог в чат-бота
     </ProjectRowForm>
   </AppModal>
 

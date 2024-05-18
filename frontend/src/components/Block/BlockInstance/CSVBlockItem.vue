@@ -39,10 +39,11 @@ const deleteBlockEvent = () => {
     </div>
     <AppInput
       v-model="editedBlock.file_path"
-      placeholder="Введите название файла"
+      placeholder="Введите название файла без расширения"
       class="input" 
       required
       @input="updateBlockFileNameEvent"
+      maxlength="256"
     />
     <div class="block__saving-data">
       <p class="block__hint">

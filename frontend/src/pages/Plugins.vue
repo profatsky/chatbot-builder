@@ -31,7 +31,7 @@ const openProjectsListForm = () => {
   if (projects.value.length > 0) {
     showProjectsListModal.value = true;
   } else {
-    toast.error('Этот плагин добавлен во все ваши проекты!')
+    toast.error('Этот плагин добавлен во всех ваших чат-ботов!')
   }
 };
 const closeProjectsListModal = () => {
@@ -60,7 +60,7 @@ const handleChooseProjectEvent = async (project) => {
     toast.error('Что-то пошло не так...')
   } else {
     projects.value = projects.value.filter(p => p.project_id !== project.project_id);
-    toast.success('Плагин добавлен в проект');
+    toast.success('Плагин добавлен в чат-бота');
   }
   closeProjectsListModal();
 };
@@ -75,7 +75,7 @@ const handleChooseProjectEvent = async (project) => {
       :projects="projects"
       @choose-project="handleChooseProjectEvent"
     >
-      Добавить плагин в проект
+      Добавить плагин в чат-бота
     </ProjectRowForm>
   </AppModal>
 

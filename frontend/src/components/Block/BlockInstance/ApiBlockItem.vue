@@ -140,7 +140,7 @@ const deleteBlockEvent = () => {
 
     <div class="block__headers">
       <p class="block__hint">
-        Укажите заголовки
+        Укажите заголовки запроса
       </p>
 
       <KeyValueTable
