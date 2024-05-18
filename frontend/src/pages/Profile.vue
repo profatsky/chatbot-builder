@@ -123,6 +123,11 @@ onMounted(async () => {
   margin-bottom: 80px;
 }
 
+.profile__img img {
+  width: 250px;
+  height: 250px;
+}
+
 .profile__info {
   display: flex;
   flex-direction: column;
@@ -132,6 +137,11 @@ onMounted(async () => {
 .info-item {
   display: flex;
   gap: 16px;
+}
+
+.info__item img {
+  width: 36px;
+  height: 36px;
 }
 
 .info-item__name {
@@ -154,5 +164,51 @@ onMounted(async () => {
 
 .social-network-link {
   color: var(--primary);
+}
+
+@media (max-width: 768px) {
+  .page__header {
+    margin: 28px 0px 40px 0px;
+  }
+
+  .header__title {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  .page__body {
+    margin: 0;
+  }
+
+  .profile {
+    gap: 60px;
+    margin-bottom: 48px;
+  }
+
+  .profile__img img {
+    width: 200px;
+    height: 200px;
+  }
+
+  .profile__info {
+    gap: 24px;
+  }
+
+  .info-item {
+    gap: 12px;
+  }
+
+  .info__item img {
+    width: 30px;
+    height: 30px;
+  }
+
+  .info-item__name {
+    font-size: 18px;
+  }
+
+  .info-item__value {
+    font-size: 14px;
+  }
 }
 </style>

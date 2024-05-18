@@ -80,4 +80,22 @@ const computedClasses = computed(() => ({
   letter-spacing: 0.75px;
   line-height: 24px;
 }
+
+@media (max-width: 768px) {
+  .notification {
+    padding: 16px 20px;
+    width: 590px;
+  }
+
+  .notification__title {
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .notification__description {
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+
 </style>
