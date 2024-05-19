@@ -8,14 +8,18 @@ const props = defineProps({
   }
 });
 
-const emits = defineEmits(['update-project', 'delete-project']);
+const emits = defineEmits(['update-project', 'delete-project', 'download-code']);
 
 const updateProjectEvent = (editedProject) => {
   emits('update-project', editedProject)
 };
 
-const deleteProjectEvent = (projectID) => {
-  emits('delete-project', projectID)
+const deleteProjectEvent = (projectId) => {
+  emits('delete-project', projectId)
+};
+
+const downloadCodeEvent = (projectId) => {
+  emits('download-code', projectId);
 };
 </script>
 
@@ -27,6 +31,7 @@ const deleteProjectEvent = (projectID) => {
       :project="project"
       @update-project="updateProjectEvent"
       @delete-project="deleteProjectEvent"
+      @download-code="downloadCodeEvent"
     />
   </div>
 </template>

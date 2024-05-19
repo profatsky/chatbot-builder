@@ -36,7 +36,7 @@ const props = defineProps({
 
 const editedProject = reactive({ ...props.project });
 
-const emits = defineEmits(['update-project', 'delete-project', 'create-dialogue']);
+const emits = defineEmits(['update-project', 'delete-project', 'create-dialogue', 'download-code']);
 
 const updateProjectStartMessageEvent = debounce(() => {
   emits('update-project', editedProject)
@@ -46,24 +46,24 @@ const updateProjectKeyboardTypeEvent = () => {
   emits('update-project', editedProject)
 };
 
+const downloadCodeEvent = () => {
+  emits('download-code', editedProject.project_id);
+};
+
 const updateProjectNameEvent = (name) => {
   editedProject.name = name;
-  emits('update-project', editedProject)
+  emits('update-project', editedProject);
   closeChangeNameForm();
 };
 
 const deleteProjectEvent = () => {
-  emits('delete-project', editedProject.project_id)
+  emits('delete-project', editedProject.project_id);
 };
 
 const handleRemovePluginEvent = async (plugin) => {
   const { response, error } = await removePluginFromProject(editedProject.project_id, plugin.plugin_id);
   if (error.value) {
-    if (error.value.response) {
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...');
   } else {
     editedProject.plugins = editedProject.plugins.filter(p => p.plugin_id !== plugin.plugin_id);
     toast.success('Плагин успешно удален');
@@ -90,12 +90,7 @@ const handleUpdateDialogueEvent = async (dialogue) => {
     dialogue.trigger.value
   );
   if (error.value) {
-    if (error.value.response) {
-      console.log(error.value.response)
-      toast.error(error.value.response.data.detail)
-    } else {
-      toast.error('Что-то пошло не так...')
-    }
+    toast.error('Что-то пошло не так...');
   } else {
     const index = editedProject.dialogues.findIndex(
       d => d.dialogue_id === dialogue.dialogue_id
@@ -109,7 +104,7 @@ const handleUpdateDialogueEvent = async (dialogue) => {
 const handleDeleteDialogueEvent = async (dialogue) => {
   const { response, error } = await deleteDialogue(editedProject.project_id, dialogue.dialogue_id);
   if (error.value) {
-    toast.error('Что-то пошло не так...')
+    toast.error('Что-то пошло не так...');
   } else {
     editedProject.dialogues = editedProject.dialogues.filter(d => d.dialogue_id !== dialogue.dialogue_id);
     toast.success('Диалог успешно удален');
@@ -133,14 +128,13 @@ const handleCreateDialogueEvent = async () => {
     dialogue.triggerValue
   );
   if (error.value) {
-    toast.error('Что-то пошло не так...')
+    toast.error('Что-то пошло не так...');
   } else {
     const responseData = response.value.data;
     editedProject.dialogues.push(responseData);
     toast.success('Диалог успешно создан');
   }
-}
-
+};
 </script>
 
 <template>
@@ -161,7 +155,7 @@ const handleCreateDialogueEvent = async () => {
         <h2 class="name__text">{{ project.name }}</h2>
       </div>
       <div class="project__actions">
-        <div class="action">
+        <div @click="downloadCodeEvent" class="action">
           <img src="@/assets/icons/export-gray.svg">
           <div>Получить код</div>
         </div>
@@ -183,7 +177,7 @@ const handleCreateDialogueEvent = async () => {
         maxlength="4000"
       />
       <div class="project__keyboard">
-        <p class="hint">Выберите тип кнопок для главного меню</p>
+        <p class="hint">Выберите тип кнопок для диалогов</p>
         <AppSelect 
           v-model="editedProject.start_keyboard_type"
           :options="keyboardTypes"

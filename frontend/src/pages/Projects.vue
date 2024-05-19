@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue';
 import { useToast } from 'vue-toast-notification';
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import ProjectList from '@/components/Project/ProjectList.vue';
-import { createProject, getUserProjects, updateProject, deleteProject } from '@/api/projects';
+import { createProject, getUserProjects, updateProject, deleteProject, getCode } from '@/api/projects';
 
 const toast = useToast();
 const projects = ref([]);
@@ -29,12 +29,12 @@ const handleUpdateProjectEvent = async (editedProject) => {
   }
 };
 
-const handleDeleteProjectEvent = async (projectID) => {
-  const { response, error } = await deleteProject(projectID);
+const handleDeleteProjectEvent = async (projectId) => {
+  const { response, error } = await deleteProject(projectId);
   if (error.value) {
     toast.error('Что-то пошло не так...');
   } else {
-    projects.value = projects.value.filter(p => p.project_id !== projectID);
+    projects.value = projects.value.filter(p => p.project_id !== projectId);
     toast.success('Чат-бот успешно удален');
   }
 };
@@ -63,6 +63,22 @@ const handleCreateProjectEvent = async () => {
     const responseData = response.value.data;
     projects.value.push(responseData);
     toast.success('Новый чат-бот успешно создан');
+  }
+};
+
+const handleDownloadCodeEvent = async (projectId) => {
+  const { response, error } = await getCode(projectId);
+
+  if (error.value) {
+    toast.error('Что-то пошло не так...');
+  } else {
+    const url = window.URL.createObjectURL(new Blob([response.value.data]));
+    const link = document.createElement('a');
+
+    link.href = url;
+    link.setAttribute('download', 'bot.zip');
+    document.body.appendChild(link);
+    link.click();
   }
 };
 
@@ -98,6 +114,7 @@ onMounted(async () => {
           :projects="projects"
           @update-project="handleUpdateProjectEvent"
           @delete-project="handleDeleteProjectEvent"
+          @download-code="handleDownloadCodeEvent"
         />
       </div>
     </div>

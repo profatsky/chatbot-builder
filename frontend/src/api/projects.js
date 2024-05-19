@@ -28,12 +28,12 @@ export async function getUserProjects() {
 }
 
 export async function updateProject(
-  projectID, name, startMessage, startKeyboardType
+  projectId, name, startMessage, startKeyboardType
 ) {
   const response = ref(null);
   const error = ref(null);
   
-  await apiClient.put(`/projects/${projectID}`, {
+  await apiClient.put(`/projects/${projectId}`, {
     name: name,
     start_message: startMessage,
     start_keyboard_type: startKeyboardType,
@@ -44,22 +44,35 @@ export async function updateProject(
   return { response, error };
 }
 
-export async function deleteProject(projectID) {
+export async function deleteProject(projectId) {
   const response = ref(null);
   const error = ref(null);
   
-  await apiClient.delete(`/projects/${projectID}`)
+  await apiClient.delete(`/projects/${projectId}`)
   .then(res => response.value = res)
   .catch(err => error.value = err);
 
   return { response, error };
 }
 
-export async function removePluginFromProject(projectID, pluginID) {
+export async function removePluginFromProject(projectId, pluginId) {
   const response = ref(null);
   const error = ref(null);
   
-  await apiClient.delete(`/projects/${projectID}/plugins/${pluginID}`)
+  await apiClient.delete(`/projects/${projectId}/plugins/${pluginId}`)
+  .then(res => response.value = res)
+  .catch(err => error.value = err);
+
+  return { response, error };
+}
+
+export async function getCode(projectId) {
+  const response = ref(null);
+  const error = ref(null);
+
+  await apiClient.get(`/projects/${projectId}/code`, {
+    responseType: 'blob'
+  })
   .then(res => response.value = res)
   .catch(err => error.value = err);
 
