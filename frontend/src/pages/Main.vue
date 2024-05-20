@@ -260,6 +260,8 @@ section {
   border-radius: 16px;
   padding: 16px 34px;
   box-shadow: 0 0 16px 0 rgba(17, 17, 17, 0.04);
+  width: 272px;
+  height: 235px;
 }
 
 .step__number {
