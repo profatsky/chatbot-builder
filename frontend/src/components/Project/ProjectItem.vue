@@ -149,78 +149,87 @@ const handleCreateDialogueEvent = async () => {
   </AppModal>
 
   <div class="project">
-    <div class="project__management">
-      <div class="project__name">
-        <img src="@/assets/icons/telegram-purple.svg">
-        <h2 class="name__text">{{ project.name }}</h2>
+
+    <div class="project__name">
+      <img src="@/assets/icons/telegram-purple.svg">
+      <h2 class="name__text">{{ project.name }}</h2>
+    </div>
+
+    <div class="project__actions">
+      <div @click="downloadCodeEvent" class="action">
+        <img src="@/assets/icons/export-gray.svg">
+        <div>Получить код</div>
       </div>
-      <div class="project__actions">
-        <div @click="downloadCodeEvent" class="action">
-          <img src="@/assets/icons/export-gray.svg">
-          <div>Получить код</div>
-        </div>
-        <div @click="openChangeNameForm" class="action">
-          <img src="@/assets/icons/pencil-gray.svg">
-          <div>Изменить название</div>
-        </div>
-        <div @click="deleteProjectEvent" class="action">
-          <img src="@/assets/icons/remove-gray.svg">
-          <div>Удалить чат-бота</div>
-        </div>
+      <div @click="openChangeNameForm" class="action">
+        <img src="@/assets/icons/pencil-gray.svg">
+        <div>Изменить название</div>
       </div>
+      <div @click="deleteProjectEvent" class="action">
+        <img src="@/assets/icons/remove-gray.svg">
+        <div>Удалить чат-бота</div>
+      </div>
+    </div>
+
+    <div class="menu-message">
+      <p class="hint">
+        Введите текст, который чат-бот будет отправлять пользователям в главном меню. Советуем описать возможности чат-бота и текстовые команды, доступные пользователям.
+      </p>
       <AppTextarea 
         v-model="editedProject.start_message"
-        placeholder="Введите текст приветственного сообщения"
+        placeholder="Введите текст сообщения"
         class="textarea" 
         required
         @input="updateProjectStartMessageEvent"
         maxlength="4000"
       />
-      <div class="project__keyboard">
-        <p class="hint">Выберите тип кнопок для диалогов</p>
-        <AppSelect 
-          v-model="editedProject.start_keyboard_type"
-          :options="keyboardTypes"
-          required
-          @change="updateProjectKeyboardTypeEvent"
-        />
-      </div>
     </div>
+    
+    <div class="project__keyboard">
+      <p class="hint">Выберите тип кнопок для диалогов</p>
+      <AppSelect 
+        v-model="editedProject.start_keyboard_type"
+        :options="keyboardTypes"
+        required
+        @change="updateProjectKeyboardTypeEvent"
+      />
+    </div>
+
     <div class="dialogues">
-        <h3 class="dialogues__title">Диалоги ({{ editedProject.dialogues.length }}/10)</h3>
-        
-        <p class="hint">
-          При добавлении диалога необходимо указать на какое сообщение будет реагировать ваш чат-бот, чтобы запустить этот диалог. На выбор представлены 3 типа событий: текстовое сообщение, команда, нажатие кнопки.
-        </p>
-        <DialogueRowList
-          :dialogues="editedProject.dialogues"
-          :projectID="project.project_id"
-          @update-dialogue="handleUpdateDialogueEvent"
-          @delete-dialogue="handleDeleteDialogueEvent"
-        />
-        <AppButton 
-          size="large" 
-          importance="secondary"
-          class="dialogue__add-btn"
-          @click="handleCreateDialogueEvent"
-        >
-          Добавить диалог
-        </AppButton>
-      </div>
-      <div class="plugins">
-        <h3 class="plugins__title">Плагины ({{ editedProject.plugins.length }}/3)</h3>
-        <PluginRowList 
-          :plugins="editedProject.plugins"
-          @remove-plugin="handleRemovePluginEvent"
-        />
-        <AppButton 
-          size="large" 
-          importance="secondary"
-          class="plugin__add-btn"
-        >
-          Добавить плагин
-        </AppButton>
-      </div>
+      <h3 class="dialogues__title">Диалоги ({{ editedProject.dialogues.length }}/10)</h3>
+      
+      <p class="hint">
+        При добавлении диалога необходимо указать на какое сообщение будет реагировать ваш чат-бот, чтобы запустить этот диалог. На выбор представлены 3 типа событий: текстовое сообщение, команда, нажатие кнопки.
+      </p>
+      <DialogueRowList
+        :dialogues="editedProject.dialogues"
+        :projectID="project.project_id"
+        @update-dialogue="handleUpdateDialogueEvent"
+        @delete-dialogue="handleDeleteDialogueEvent"
+      />
+      <AppButton 
+        size="medium" 
+        importance="secondary"
+        class="dialogue__add-btn"
+        @click="handleCreateDialogueEvent"
+      >
+        Добавить диалог
+      </AppButton>
+    </div>
+
+    <div class="plugins">
+      <h3 class="plugins__title">Плагины ({{ editedProject.plugins.length }}/3)</h3>
+      <PluginRowList 
+        :plugins="editedProject.plugins"
+        @remove-plugin="handleRemovePluginEvent"
+      />
+      <AppButton 
+        size="medium" 
+        importance="secondary"
+        class="plugin__add-btn"
+      >
+        Добавить плагин
+      </AppButton>
+    </div>
   </div>
 </template>
 
@@ -240,18 +249,14 @@ const handleCreateDialogueEvent = async () => {
   box-shadow: 0 0 16px 0 rgba(17, 17, 17, 0.04);
 }
 
-.project__management {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
 .project__name {
   display: flex;
   align-items: center;
   gap: 12px;
 
   text-wrap: nowrap;
+
+  margin-bottom: 24px;
 }
 
 .name__text {
@@ -268,6 +273,8 @@ const handleCreateDialogueEvent = async () => {
   font-size: 16px;
   letter-spacing: 0.75px;
   line-height: 34px;
+
+  margin-bottom: 28px;
 }
 
 .action {
@@ -286,6 +293,10 @@ const handleCreateDialogueEvent = async () => {
   margin-bottom: 12px;
 }
 
+.menu-message {
+  margin-bottom: 24px;
+}
+
 .dialogues,
 .plugins {
   margin-top: 40px;
@@ -299,6 +310,6 @@ const handleCreateDialogueEvent = async () => {
   line-height: 32px;
   color: var(--primary);
   text-transform: uppercase;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 }
 </style>

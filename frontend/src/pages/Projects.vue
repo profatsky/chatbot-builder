@@ -100,14 +100,17 @@ onMounted(async () => {
     <div class="container">
       <div class="page__content">
         <div class="page__header">
-          <h1 class="content__title">Чат-боты</h1>
+          <h1 class="header__title">Чат-боты</h1>
           <AppButton
-            size="large" 
+            size="medium" 
             importance="secondary"
             @click="handleCreateProjectEvent"
           >
             Создать чат-бота
           </AppButton>
+        </div>
+        <div class="page__hint">
+          Чат-боты для Telegram - это автоматизированные собеседники, которые выполняют любые задачи: отвечают на вопросы, продают товары, предоставляют инфомормацию. 
         </div>
         <ProjectList
           v-if="!isProjectsLoading"
@@ -123,9 +126,23 @@ onMounted(async () => {
 
 <style scoped>
 .page__header {
-  margin: 48px 0;
+  margin: 32px 0px 20px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.header__title {
+  font-size: 32px;
+  line-height: 40px;
+}
+
+.page__hint {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: 0.75px;
+  color: var(--body-text);
+  margin-bottom: 28px;
 }
 </style>
