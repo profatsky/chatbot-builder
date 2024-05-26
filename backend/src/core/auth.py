@@ -6,14 +6,14 @@ from src.core import settings
 auth_dep = AuthJWTBearer()
 
 
-class Settings(BaseModel):
+class AuthSettings(BaseModel):
     authjwt_secret_key: str = settings.JWT_SECRET
     authjwt_token_location: set = {"cookies"}
-    authjwt_cookie_secure: bool = True
+    authjwt_cookie_secure: bool = not settings.DEBUG
     authjwt_cookie_csrf_protect: bool = False
-    authjwt_cookie_samesite: str = 'lax'
+    authjwt_cookie_samesite: str = 'lax' if not settings.DEBUG else 'none'
 
 
 @AuthJWT.load_config
 def get_config():
-    return Settings()
+    return AuthSettings()
