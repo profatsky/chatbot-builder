@@ -42,6 +42,7 @@ async def get_bot_code_in_zip(
 
         _add_custom_handlers_code_to_zip(project, zipf)
         _add_plugins_code_to_zip(project, zipf)
+        _add_images_to_zip(project, zipf)
 
         main_file = 'src/bot_templates/project_structure/main.py.j2'
         zipf.write(main_file, 'main.py')
@@ -106,7 +107,15 @@ def _add_plugins_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file:
     db_funcs_init_in_memory_file = io.BytesIO(str.encode(db_funcs_init_code))
     zip_file.writestr('db/__init__.py', db_funcs_init_in_memory_file.getvalue())
 
+
+def _add_images_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
     zip_file.writestr('img/', 'img/')
+
+    for dialogue in project.dialogues:
+        for block in dialogue.blocks:
+            if block.type == BlockType.IMAGE_BLOCK.value:
+                image_path = os.path.join('src', 'media', block.image_path)
+                zip_file.write(image_path, os.path.join('img', os.path.basename(block.image_path)))
 
 
 def _add_custom_handlers_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
@@ -175,7 +184,8 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
                 handler.add_to_body(code.message_answer.format(message_text=block.message_text))
 
             elif block.type == BlockType.IMAGE_BLOCK.value:
-                handler.add_to_body(code.image_block.format(image_path=block.image_path))
+                image_path_in_bot_project = os.path.join('img/', os.path.basename(block.image_path))
+                handler.add_to_body(code.image_block.format(image_path=image_path_in_bot_project))
 
             elif block.type == BlockType.QUESTION_BLOCK.value:
                 if states_group is None:
