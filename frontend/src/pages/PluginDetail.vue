@@ -40,6 +40,7 @@ onMounted(async () => {
 });
 
 const showProjectsListModal = ref(false);
+
 const openProjectsListForm = () => {
   if (projects.value.length > 0) {
     showProjectsListModal.value = true;
@@ -47,6 +48,7 @@ const openProjectsListForm = () => {
     toast.error('Этот плагин добавлен во все ваши проекты!')
   }
 };
+
 const closeProjectsListModal = () => {
   showProjectsListModal.value = false;
 };

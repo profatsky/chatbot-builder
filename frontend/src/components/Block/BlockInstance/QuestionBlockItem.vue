@@ -97,7 +97,7 @@ const deleteBlockEvent = () => {
       </div>
       <p class="block__hint block__hint--last">
         Вы можете использовать ответ на вопрос в других блоках. <br>
-        Для этого указывайте answer[номер ответа]. Например: answer[1]
+        Для этого указывайте answers[номер ответа]. Например: answers[1]
       </p>
     </div>
   </div>
