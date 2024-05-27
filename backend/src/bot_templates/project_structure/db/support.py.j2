@@ -86,3 +86,27 @@ async def get_support_request(db_connector: DatabaseConnector, request_id: int):
         support_request = await support_request.fetchone()
 
     return support_request
+
+
+async def set_admin(db_connector: DatabaseConnector, tg_id: int):
+    async with db_connector as conn:
+        await conn.execute(
+            '''
+                UPDATE users SET is_admin = 1
+                WHERE tg_id = ?
+            ''',
+            (tg_id,)
+        )
+        await conn.commit()
+
+
+async def unset_admin(db_connector: DatabaseConnector, tg_id: int):
+    async with db_connector as conn:
+        await conn.execute(
+            '''
+                UPDATE users SET is_admin = 0
+                WHERE tg_id = ?
+            ''',
+            (tg_id,)
+        )
+        await conn.commit()

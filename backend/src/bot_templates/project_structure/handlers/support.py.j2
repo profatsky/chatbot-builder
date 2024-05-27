@@ -3,6 +3,7 @@ from aiogram import types, filters, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
 
+import config
 from db import support as support_db
 from db import base as base_db
 from loader import db_connector, bot
@@ -107,25 +108,26 @@ async def connect_support_to_chat(
     recipient_id = command.args
     if recipient_id is None:
         return await message.answer(
-            "❗ Необходимо указать id пользователя, к чату с которым вы хотите подключиться: /connect [id пользователя]"
+            "❗ Необходимо указать идентификатор пользователя, к чату с которым вы хотите подключиться: "
+            "/connect [id пользователя]"
         )
 
     if not recipient_id.isdigit():
         return await message.answer(
-            "❗ Необходимо указать число в качестве id пользователя!"
+            "❗ Необходимо указать число в качестве идентификатора пользователя!"
         )
 
     recipient = await base_db.get_user(db_connector, int(recipient_id))
     if recipient is None:
         return await message.answer(
-            "❗ Пользователя с указанным идентификатором в чат-боте не найдено!"
+            "❗ Пользователь с указанным идентификатором в чат-боте не найден!"
         )
 
     await state.set_state(OperatorState.connect)
     await state.update_data(recipient_id=recipient_id)
     await message.answer(
         "✅ Вы подключились к чату с пользователем. Теперь каждое ваше сообщение, отправленное чат-боту, "
-        f"будет перенаправлено пользователю с id {recipient_id}\n\n"
+        f"будет перенаправлено пользователю с идентификатором {recipient_id}\n\n"
         "❗ Чтобы отключиться от чата с пользователем, напишите /exit"
     )
 
@@ -145,8 +147,94 @@ async def chat_with_user(message: types.Message, state: FSMContext):
         )
     except aiogram.exceptions.TelegramForbiddenError:
         await message.answer(
-            '❗ Не удалось отправить сообщение указанному пользователю чат-бота, т.к. '
-            'пользователь заблокировал чат-бота\n\n'
-            '✅ Вы были отключены от чата с этим пользователем'
+            "❗ Не удалось отправить сообщение указанному пользователю, т.к. пользователь заблокировал чат-бота\n\n"
+            "✅ Вы были отключены от чата с этим пользователем"
         )
         await state.clear()
+
+
+@router.message(filters.StateFilter(None), filters.Command('setadmin'))
+async def set_admin(message: types.Message, command: filters.CommandObject,):
+    user = await base_db.get_user(db_connector, tg_id=message.from_user.id)
+    if not user["is_admin"]:
+        return
+
+    recipient_id = command.args
+    if recipient_id is None:
+        return await message.answer(
+            "❗ Необходимо указать идентификатор пользователя, которого вы хотите назначить на должность администратора"
+        )
+
+    if not recipient_id.isdigit():
+        return await message.answer(
+            "❗ Необходимо указать число в качестве идентификатора пользователя!"
+        )
+
+    recipient = await base_db.get_user(db_connector, int(recipient_id))
+    if recipient is None:
+        return await message.answer(
+            "❗ Пользователь с указанным идентификатором в чат-боте не найден!"
+        )
+
+    if recipient["is_admin"]:
+        return await message.answer(
+            "❗ Пользователь с указанным идентификатором уже является администратором!"
+        )
+
+    await support_db.set_admin(db_connector, int(recipient_id))
+    await message.answer(f"✅ Вы выдали права администратора пользователю с идентификатором {recipient_id}!")
+    try:
+        await bot.send_message(
+            chat_id=int(recipient_id),
+            text=f"✅ Вам выдали права администратора!"
+        )
+    except aiogram.exceptions.TelegramForbiddenError:
+        await message.answer(
+            "❗ Не удалось отправить сообщение указанному пользователю, т.к. пользователь заблокировал чат-бота"
+        )
+
+
+@router.message(filters.StateFilter(None), filters.Command('unsetadmin'))
+async def unset_admin(message: types.Message, command: filters.CommandObject,):
+    user = await base_db.get_user(db_connector, tg_id=message.from_user.id)
+    if not user["is_admin"]:
+        return
+
+    recipient_id = command.args
+    if recipient_id is None:
+        return await message.answer(
+            "❗ Необходимо указать идентификатор пользователя, которого вы хотите снять с должности администратора"
+        )
+
+    if not recipient_id.isdigit():
+        return await message.answer(
+            "❗ Необходимо указать число в качестве идентификатора пользователя!"
+        )
+
+    recipient = await base_db.get_user(db_connector, int(recipient_id))
+    if recipient is None:
+        return await message.answer(
+            "❗ Пользователь с указанным идентификатором в чат-боте не найден!"
+        )
+
+    if not recipient["is_admin"]:
+        return await message.answer(
+            "❗ Пользователь с указанным идентификатором не является администратором!"
+        )
+
+    if recipient_id == int(config.ADMIN_ID):
+        return await message.answer(
+            "❌ Нельзя разжаловать главного администратора!"
+        )
+
+    await support_db.unset_admin(db_connector, int(recipient_id))
+    await message.answer(f"✅ Вы лишили прав администратора пользователя с идентификатором {recipient_id}!")
+    try:
+        await bot.send_message(
+            chat_id=recipient_id,
+            text=f"❌ Вас лишили прав администратора!"
+        )
+    except aiogram.exceptions.TelegramForbiddenError:
+        await message.answer(
+            "❗ Не удалось отправить сообщение указанному пользователю, т.к. пользователь заблокировал чат-бота"
+        )
