@@ -22,20 +22,13 @@ onUnmounted(() => {
   <div class="sidebar" :style="{ width: sidebarWidth }">
 
     <div class="logo">
-        <img src="@/assets/icons/logo/simple-logo.svg" class="logo__img">
-      
+      <img src="@/assets/icons/logo/simple-logo.svg" class="logo__img">
       <Transition name="logo-text">
         <p v-if="!collapsed" class="logo__text">
           <span style="color: var(--primary-dark)">Bot</span>Builder
         </p>
       </Transition>
     </div>
-    <!-- <div>
-      <transition>
-        <img v-if="collapsed" src="@/assets/icons/logo/simple-logo.svg" class="logo">
-        <img v-else src="@/assets/icons/logo/full-logo.svg" class="logo">
-      </transition>
-    </div> -->
     <SidebarLink to="/projects" :iconPath="botGrayIcon">Боты</SidebarLink>
     <SidebarLink to="/templates" :iconPath="layoutGrayIcon">Шаблоны</SidebarLink>
     <SidebarLink to="/plugins" :iconPath="blockGrayIcon">Плагины</SidebarLink>

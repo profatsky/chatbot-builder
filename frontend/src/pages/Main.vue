@@ -116,42 +116,42 @@ const closeLoginFormHandler = () => {
         <h2 class="primary-title">Наши преимущества</h2>
         <div class="advantages">
           <div class="advantage">
-            <img src="@/assets/icons/star-purple.svg">
+            <img src="@/assets/icons/star-purple.svg" class="advantage__img">
             <h4 class="advantage__title">Бесплатно</h4>
             <p class="advantage__description">
               Неограниченный доступ к конструктору чат-ботов
             </p>
           </div>
           <div class="advantage">
-            <img src="@/assets/icons/cpu-purple.svg">
+            <img src="@/assets/icons/cpu-purple.svg" class="advantage__img">
             <h4 class="advantage__title">Генерация кода</h4>
             <p class="advantage__description">
               Конструктор предоставит вам готовый программный код чат-бота
             </p>
           </div>
           <div class="advantage">
-            <img src="@/assets/icons/code-purple.svg">
+            <img src="@/assets/icons/code-purple.svg" class="advantage__img">
             <h4 class="advantage__title">Без программирования</h4>
             <p class="advantage__description">
               Для создания чат-бота не потребуются технические навыки
             </p>
           </div>
           <div class="advantage">
-            <img src="@/assets/icons/layout-purple.svg">
+            <img src="@/assets/icons/layout-purple.svg" class="advantage__img">
             <h4 class="advantage__title">Шаблоны чат-ботов</h4>
             <p class="advantage__description">
               Шаблоны с базовой структурой для быстрого создания чат-ботов
             </p>
           </div>
           <div class="advantage">
-            <img src="@/assets/icons/blocks-purple.svg">
+            <img src="@/assets/icons/blocks-purple.svg" class="advantage__img">
             <h4 class="advantage__title">Плагины</h4>
             <p class="advantage__description">
               Готовые программные дополнения для решения типовых задач
             </p>
           </div>
           <div class="advantage">
-            <img src="@/assets/icons/scroll-purple.svg">
+            <img src="@/assets/icons/scroll-purple.svg" class="advantage__img">
             <h4 class="advantage__title">Руководство</h4>
             <p class="advantage__description">
               Разобраться в работе с конструктором не составит труда
@@ -330,6 +330,10 @@ section {
   box-shadow: 0 0 16px 0 rgba(17, 17, 17, 0.04);
 }
 
+.advantage__img {
+  width: 32px;
+}
+
 .advantage__title {
   font-size: 20px;
   font-weight: 500;
@@ -358,6 +362,11 @@ section {
   align-items: center;
 }
 
+.social-network__icon {
+  width: 32px;
+  height: 32px;
+}
+
 .social-network__nickname {
   font-size: 24px;
   letter-spacing: 1px;
@@ -365,6 +374,11 @@ section {
 }
 
 @media (max-width: 768px) {
+  section {
+    margin-bottom: 72px;
+  }
+
+
   #main-section {
     margin-top: 80px;
   }
@@ -426,6 +440,124 @@ section {
 
   .advantage__description {
     font-size: 12px;
+  }
+}
+
+@media (max-width: 320px) {
+  section {
+    margin-bottom: 48px;
+  }
+
+  #main-section {
+    margin-top: 20px;
+  }
+
+  .offer__title {
+    font-size: 22px;
+    line-height: 28px;
+    padding: 0;
+    width: 100%;
+  }
+
+  .offer__description {
+    font-size: 12px;
+    line-height: 20px;
+    margin-top: 24px;
+    width: 100%;
+  }
+
+  .offer__btn {
+    margin-top: 32px;
+    width: 200px;
+  }
+
+  .steps {
+    margin-top: 44px;
+    gap: 24px;
+    justify-content: center;
+  }
+
+  .step {
+    width: 152px;
+    height: 176px;
+    padding: 12px 24px;
+  }
+
+  .step__number {
+    font-size: 44px;
+  }
+
+  .step__title {
+    font-size: 18px;
+  }
+
+  .step__description {
+    font-size: 14px;
+    margin-top: 12px;
+  }
+
+  .primary-title {
+    font-size: 22px;
+    line-height: 28px;
+    margin-bottom: 20px;
+  }
+
+  .secondary-title {
+    font-size: 10px;
+    letter-spacing: 2px;
+    line-height: 22px;
+    margin-bottom: 0;
+  }
+
+  .section-description {
+    font-size: 12px;
+    line-height: 20px;
+    margin-bottom: 20px;
+    text-align: justify;
+  }
+
+  .advantages {
+    gap: 20px;
+  }
+
+  .advantage {
+    width: 208px;
+    height: 99px;
+    padding: 22px 26px;
+  }
+
+  .advantage__img {
+    width: 24px;
+  }
+
+  .advantage__title {
+    font-size: 16px;
+    margin-top: 8px;
+  }
+
+  .advantage__description {
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  .social-networks {
+    gap: 32px
+  }
+
+  .social-network {
+    gap: 6px;
+    height: 20px;
+    align-items: center;
+  }
+  
+  .social-network__icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .social-network__nickname {
+    font-size: 14px;
+    letter-spacing: 0px;
   }
 }
 </style>

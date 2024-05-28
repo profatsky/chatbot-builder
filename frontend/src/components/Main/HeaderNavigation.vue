@@ -13,7 +13,10 @@ const openLoginForm = () => {
     <div class="container">
       <nav class="header-navbar">
         <div class="header-navbar__logo">
-          <img src="@/assets/icons/logo/full-logo.svg">
+          <img src="@/assets/icons/logo/simple-logo.svg" class="logo__img">
+          <p class="logo__text">
+            <span style="color: var(--primary-dark)">Bot</span>Builder
+          </p>
         </div>
         <div class="header-navbar__menu">
           <ul class="header-navbar__menu-list">
@@ -53,6 +56,23 @@ const openLoginForm = () => {
   flex-grow: 1;
 }
 
+.header-navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo__img {
+  height: 50px;
+}
+
+.logo__text {
+  font-size: 32px;
+  font-weight: 600;
+  color: var(--primary);
+  font-family: 'Roboto', 'sans-serif';
+}
+
 .header-navbar__menu-list {
   list-style: none;
   font-weight: 400;
@@ -78,6 +98,24 @@ const openLoginForm = () => {
 @media (max-width: 768px) {
   .header-navbar__menu-list {
     display: none;
+  }
+}
+
+@media (max-width: 320px) {
+  .header-navbar__auth {
+    display: none;
+  }
+
+  .header-navbar__logo {
+    gap: 8px;
+  }
+
+  .logo__img {
+    height: 28px;
+  }
+
+  .logo__text {
+    font-size: 18px;
   }
 }
 </style>
