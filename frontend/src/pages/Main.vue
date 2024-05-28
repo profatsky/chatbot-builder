@@ -374,11 +374,10 @@ section {
   color: var(--primary);
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   section {
     margin-bottom: 72px;
   }
-
 
   #main-section {
     margin-top: 80px;
@@ -444,7 +443,7 @@ section {
   }
 }
 
-@media (max-width: 320px) {
+@media (max-width: 767px) {
   section {
     margin-bottom: 48px;
   }
@@ -476,6 +475,7 @@ section {
     margin-top: 44px;
     gap: 24px;
     justify-content: center;
+    flex-wrap: wrap;
   }
 
   .step {

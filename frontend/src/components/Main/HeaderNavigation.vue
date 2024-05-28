@@ -95,13 +95,17 @@ const openLoginForm = () => {
   line-height: 24px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .header-navbar__menu-list {
     display: none;
   }
 }
 
-@media (max-width: 320px) {
+@media (max-width: 767px) {
+  .header-navbar__menu-list {
+    display: none;
+  }
+  
   .header-navbar__auth {
     display: none;
   }

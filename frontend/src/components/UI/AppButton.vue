@@ -100,7 +100,7 @@ export default {
   padding: 8px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .btn-large {
     height: 48px;
     padding: 8px 16px;
@@ -117,19 +117,22 @@ export default {
   }
 }
 
-@media (max-width: 320px) {
+@media (max-width: 767px) {
   .btn-large {
     height: 40px;
     font-size: 12px;
+    padding: 6px 16px;
   }
 
   .btn-medium {
     height: 36px;
     font-size: 12px;
+    padding: 8px 16px;
   }
 
   .btn-small {
     height: 24px;
+    font-size: 12px;
   }
 }
 </style>

@@ -48,13 +48,13 @@
   font-size: 16px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .footer {
     gap: 40px;
   }
 }
 
-@media (max-width: 320px) {
+@media (max-width: 767px) {
   .footer {
     flex-direction: column;
     gap: 12px;

@@ -78,8 +78,17 @@ body {
   padding: 0;
 }
 
+header {
+  margin: 0 auto;
+}
+
 main {
   flex: 1 1 auto;
+  margin: 0 auto;
+}
+
+footer {
+  margin: 0 auto;
 }
 
 a {
@@ -108,7 +117,7 @@ button {
   margin-left: 120px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .container {
     margin: 0 32px;
     width: 702px;
@@ -119,7 +128,7 @@ button {
   }
 }
 
-@media (max-width: 320px) {
+@media (max-width: 767px) {
   .container {
     margin: 0 20px;
     width: 280px;
