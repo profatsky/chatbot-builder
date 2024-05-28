@@ -69,7 +69,7 @@ const closeLoginFormHandler = () => {
             Получи <span style="color:var(--primary)">готовый код</span>
           </h1>
           <p class="offer__description">
-            Конструктор сгенерирует и предоставит готовый программный код чат-бота, которым вы сможете распоряжаться самостоятельно!
+            Конструктор чат-ботов для Telegram c бесплатной генерацией программного кода для скачивания!
           </p>
           <AppButton 
             size="large" 
@@ -238,7 +238,7 @@ section {
   color: var(--body-text);
 
   text-align: center;
-  width: 850px;
+  width: 900px;
 
   margin-top: 44px;
   margin-bottom: 0;
@@ -463,7 +463,7 @@ section {
     font-size: 12px;
     line-height: 20px;
     margin-top: 24px;
-    width: 100%;
+    width: 270px;
   }
 
   .offer__btn {
