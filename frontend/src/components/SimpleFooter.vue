@@ -6,9 +6,9 @@
     <div class="container">
       <div class="footer">
         <div class="footer__logo">
-          <img src="@/assets/icons/logo/simple-logo.svg" class="logo__img">
+          <img src="@/assets/icons/logo.svg" class="logo__img">
           <p class="logo__text">
-            <span style="color: var(--primary-dark)">Bot</span>Builder
+            <span style="color: var(--primary-dark)">Free</span>Bots
           </p>
         </div>
         <div class="footer__description">

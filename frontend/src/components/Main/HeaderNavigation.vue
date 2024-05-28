@@ -13,9 +13,9 @@ const openLoginForm = () => {
     <div class="container">
       <nav class="header-navbar">
         <div class="header-navbar__logo">
-          <img src="@/assets/icons/logo/simple-logo.svg" class="logo__img">
+          <img src="@/assets/icons/logo.svg" class="logo__img">
           <p class="logo__text">
-            <span style="color: var(--primary-dark)">Bot</span>Builder
+            <span style="color: var(--primary-dark)">Free</span>Bots
           </p>
         </div>
         <div class="header-navbar__menu">
