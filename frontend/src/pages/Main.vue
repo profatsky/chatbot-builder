@@ -332,6 +332,7 @@ section {
 
 .advantage__img {
   width: 32px;
+  height: 32px;
 }
 
 .advantage__title {
@@ -528,6 +529,7 @@ section {
 
   .advantage__img {
     width: 24px;
+    height: 24px;
   }
 
   .advantage__title {
