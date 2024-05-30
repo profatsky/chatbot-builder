@@ -69,7 +69,7 @@ const deleteRow = (key) => {
     </tbody>
   </table>
 
-  <AppButton
+  <AppButton v-if="Object.keys(keyValueData).length <= 25"
     size="small"
     importance="secondary"
     @click="openAddRowModal"
@@ -77,7 +77,6 @@ const deleteRow = (key) => {
   >
     Добавить новую строку в таблицу
   </AppButton>
-
 </template>
 
 <style scoped>
