@@ -1,6 +1,6 @@
 from typing import Union, Literal, Annotated
 
-from pydantic import BaseModel, Field, HttpUrl, field_serializer
+from pydantic import BaseModel, Field, HttpUrl, field_serializer, field_validator
 
 from src.enums import BlockType, AnswerMessageType, HTTPMethod
 
@@ -115,8 +115,15 @@ class EmailBlockUpdateSchema(EmailBlockSchema, BlockUpdateSchema):
 # CSV block
 class CSVBlockSchema(BaseModel):
     file_path: str = Field(max_length=256)
-    data: dict
+    data: dict[str, Union[int, str]]
     type: Literal[BlockType.CSV_BLOCK.value]
+
+    @field_validator('data')
+    @classmethod
+    def check_data_length(cls, v: dict[str, Union[int, str]]) -> dict[str, Union[int, str]]:
+        if len(v) > 25:
+            raise ValueError('The length of the "data" field should not exceed 25')
+        return v
 
     @property
     def is_draft(self) -> bool:
@@ -140,9 +147,23 @@ class CSVBlockUpdateSchema(CSVBlockSchema, BlockUpdateSchema):
 class APIBlockSchema(BaseModel):
     url: Union[HttpUrl, str]
     http_method: HTTPMethod
-    headers: dict
-    body: dict
+    headers: dict[str, str]
+    body: dict[str, Union[str, int]]
     type: Literal[BlockType.API_BLOCK.value]
+
+    @field_validator('headers')
+    @classmethod
+    def check_headers_length(cls, v: dict[str, str]) -> dict[str, str]:
+        if len(v) > 25:
+            raise ValueError('The length of the "headers" field should not exceed 25')
+        return v
+
+    @field_validator('body')
+    @classmethod
+    def check_body_length(cls, v: dict[str, Union[str, int]]) -> dict[str, Union[str, int]]:
+        if len(v) > 25:
+            raise ValueError('The length of the "body" field should not exceed 25')
+        return v
 
     @property
     def is_draft(self) -> bool:
