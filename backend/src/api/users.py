@@ -5,6 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.auth import auth_dep
 from src.core.db import get_async_session
+from src.persistence import projects_persistence
 from src.schemas.users_schemas import UserReadSchema
 from src.services import users_service
 from src.services import auth_service
@@ -15,6 +16,7 @@ router = APIRouter(
 )
 
 
+# TODO refactor
 @router.get('/me', response_model=UserReadSchema)
 async def get_user(
         session: AsyncSession = Depends(get_async_session),
@@ -31,4 +33,6 @@ async def get_user(
             detail='Missing cookie access_token_cookie.'
         )
 
-    return user
+    project_count = await projects_persistence.count_projects(user_id, session)
+
+    return UserReadSchema(**user.__dict__, project_count=project_count)

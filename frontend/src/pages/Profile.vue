@@ -62,7 +62,7 @@ onMounted(async () => {
                 <img src="@/assets/icons/robot-face-purple.svg">
                 <div class="info-item_text">
                   <div class="info-item__name">Количество чат-ботов</div>
-                  <div class="info-item__value">5</div>
+                  <div class="info-item__value">{{ userData.project_count }}</div>
                 </div>
               </div>
             </div>
