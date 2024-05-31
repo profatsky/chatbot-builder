@@ -9,9 +9,9 @@ auth_dep = AuthJWTBearer()
 class AuthSettings(BaseModel):
     authjwt_secret_key: str = settings.JWT_SECRET
     authjwt_token_location: set = {"cookies"}
-    authjwt_cookie_secure: bool = not settings.DEBUG
+    authjwt_cookie_secure: bool = True
     authjwt_cookie_csrf_protect: bool = False
-    authjwt_cookie_samesite: str = 'lax' if not settings.DEBUG else 'none'
+    authjwt_cookie_samesite: str = 'lax'
 
 
 @AuthJWT.load_config
