@@ -8,6 +8,7 @@ from aiogram import types, filters, F, Router
 from aiogram.fsm.state import StatesGroup, State
 from aiogram.fsm.context import FSMContext
 from aiosmtplib import SMTP
+from pydantic import BaseModel, EmailStr
 
 import config
 

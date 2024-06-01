@@ -229,4 +229,4 @@ async def delete_block(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Block does not exits',
         )
-    return {'detail': 'Блок успешно удален'}
+    return {'detail': 'Block was successfully deleted'}

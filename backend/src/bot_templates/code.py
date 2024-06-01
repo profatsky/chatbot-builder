@@ -35,6 +35,7 @@ message_answer_with_reply_kb_remove = (
 callback_answer = 'await callback.answer()'
 callback_message = 'message = callback.message'
 
+
 image_block = '''
     # Отправка изображения
     try:
@@ -44,11 +45,10 @@ image_block = '''
         logging.info(f"Ошибка при отправке изображения {image_path}: {{e}}")
 '''
 
+
 email_block = '''
     # Отправка Email
     recipient_email = "{recipient_email}"
-    if is_answer_from_user(recipient_email):
-        recipient_email = (await state.get_data()).get(recipient_email)
     try:
         await send_email(
             title="{subject}",
@@ -112,19 +112,29 @@ answer_email_type_check = '''
 
 answer_phone_number_type_check = '''
     if not is_phone_number(message.text):
-        return await message.answer("Неверный тип сообщения! Необходимо ввести номер телефона!")
+        return await message.answer(
+            "Неверный тип сообщения!" 
+            "Необходимо ввести номер телефона, начинающийся с символа \"+\". Например: +79995552233."
+        )
 '''
 
 # funcs
 is_email = '''
+class EmailModel(BaseModel):
+    email: EmailStr
+
+
 def is_email(string: str) -> bool:
-    pattern = r"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"
-    return bool(re.fullmatch(pattern, string))
+    try:
+        _ = EmailModel(email=string)
+        return True
+    except ValueError as e:
+        return False
 '''
 
 is_phone_number = '''
 def is_phone_number(string: str) -> bool:
-    pattern = r"^8[0-9]{10}$"
+    pattern = r"^+[0-9][0-9]{10}$"
     return bool(re.fullmatch(pattern, string))
 '''
 
