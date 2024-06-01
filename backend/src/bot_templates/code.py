@@ -128,7 +128,7 @@ def is_email(string: str) -> bool:
     try:
         _ = EmailModel(email=string)
         return True
-    except ValueError as e:
+    except ValueError:
         return False
 '''
 

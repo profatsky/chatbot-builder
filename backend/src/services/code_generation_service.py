@@ -21,6 +21,8 @@ from src.services import projects_service
 from src.services.exceptions.dialogues_exceptions import NoDialoguesInProject
 from src.bot_templates import code
 
+BOT_FILE_TEMPLATES_DIR = os.path.join('src', 'bot_templates', 'project_structure')
+
 
 async def get_bot_code_in_zip(
         user_id: int,
@@ -44,23 +46,26 @@ async def get_bot_code_in_zip(
         _add_plugins_code_to_zip(project, zipf)
         _add_images_to_zip(project, zipf)
 
-        main_file = 'src/bot_templates/project_structure/main.py.j2'
+        main_file = os.path.join(BOT_FILE_TEMPLATES_DIR, 'main.py.j2')
         zipf.write(main_file, 'main.py')
 
-        loader_file = 'src/bot_templates/project_structure/loader.py.j2'
+        loader_file = os.path.join(BOT_FILE_TEMPLATES_DIR, 'loader.py.j2')
         zipf.write(loader_file, 'loader.py')
 
-        config_file = 'src/bot_templates/project_structure/config.py.j2'
+        config_file = os.path.join(BOT_FILE_TEMPLATES_DIR, 'config.py.j2')
         zipf.write(config_file, 'config.py')
 
-        db_file = 'src/bot_templates/project_structure/db/base.py.j2'
-        zipf.write(db_file, 'db/base.py')
+        db_file = os.path.join(BOT_FILE_TEMPLATES_DIR, 'db', 'base.py.j2')
+        zipf.write(db_file, os.path.join('db', 'base.py'))
 
-        middlewares_file = 'src/bot_templates/project_structure/middlewares.py.j2'
+        middlewares_file = os.path.join(BOT_FILE_TEMPLATES_DIR, 'middlewares.py.j2')
         zipf.write(middlewares_file, 'middlewares.py')
 
-        env_file = 'src/bot_templates/project_structure/.env.example.j2'
+        env_file = os.path.join(BOT_FILE_TEMPLATES_DIR, '.env.example.j2')
         zipf.write(env_file, '.env.example')
+
+        requirements_file = os.path.join(BOT_FILE_TEMPLATES_DIR, 'requirements.txt.j2')
+        zipf.write(requirements_file, 'requirements.txt')
 
     zip_data.seek(0)
 
@@ -80,8 +85,8 @@ def _add_plugins_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file:
         handlers_file_name_without_extension = os.path.splitext(handlers_file_name_with_py_extension)[0]
         handlers_file_names.append(handlers_file_name_without_extension)
 
-        handlers_file_path = os.path.join('src/', plugin.handlers_file_path)
-        zip_file.write(handlers_file_path, os.path.join('handlers/', handlers_file_name_with_py_extension))
+        handlers_file_path = os.path.join('src', plugin.handlers_file_path)
+        zip_file.write(handlers_file_path, os.path.join('handlers', handlers_file_name_with_py_extension))
 
         # database funcs
         db_funcs_file_name = os.path.basename(plugin.handlers_file_path)
@@ -90,22 +95,22 @@ def _add_plugins_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file:
         db_funcs_file_name_without_extension = os.path.splitext(db_funcs_file_name_with_py_extension)[0]
         db_funcs_file_names.append(db_funcs_file_name_without_extension)
 
-        db_funcs_file_path = os.path.join('src/', plugin.db_funcs_file_path)
-        zip_file.write(db_funcs_file_path, os.path.join('db/', db_funcs_file_name_with_py_extension))
+        db_funcs_file_path = os.path.join('src', plugin.db_funcs_file_path)
+        zip_file.write(db_funcs_file_path, os.path.join('db', db_funcs_file_name_with_py_extension))
 
-    handlers_init_template = _get_template('src/bot_templates/project_structure/handlers/__init__.py.j2')
+    handlers_init_template = _get_template(os.path.join(BOT_FILE_TEMPLATES_DIR, 'handlers', '__init__.py.j2'))
     handlers_init_code = handlers_init_template.render({
         'handlers_file_names': handlers_file_names,
     })
     handlers_init_in_memory_file = io.BytesIO(str.encode(handlers_init_code))
-    zip_file.writestr('handlers/__init__.py', handlers_init_in_memory_file.getvalue())
+    zip_file.writestr(os.path.join('handlers', '__init__.py'), handlers_init_in_memory_file.getvalue())
 
-    db_funcs_init_template = _get_template('src/bot_templates/project_structure/db/__init__.py.j2')
+    db_funcs_init_template = _get_template(os.path.join(BOT_FILE_TEMPLATES_DIR, 'db', '__init__.py.j2'))
     db_funcs_init_code = db_funcs_init_template.render({
         'db_funcs_file_names': db_funcs_file_names,
     })
     db_funcs_init_in_memory_file = io.BytesIO(str.encode(db_funcs_init_code))
-    zip_file.writestr('db/__init__.py', db_funcs_init_in_memory_file.getvalue())
+    zip_file.writestr(os.path.join('db', '__init__.py'), db_funcs_init_in_memory_file.getvalue())
 
 
 def _add_images_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
@@ -121,7 +126,7 @@ def _add_images_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfi
 def _add_custom_handlers_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
     custom_handlers_code = _generate_custom_handlers_code(project)
     custom_handlers_in_memory_file = io.BytesIO(str.encode(custom_handlers_code))
-    zip_file.writestr('handlers/custom.py', custom_handlers_in_memory_file.getvalue())
+    zip_file.writestr(os.path.join('handlers', 'custom.py'), custom_handlers_in_memory_file.getvalue())
 
 
 # TODO refactoring
@@ -289,7 +294,7 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
     if not start_keyboard.buttons:
         start_keyboard = None
 
-    template = _get_template('src/bot_templates/project_structure/handlers/custom.py.j2')
+    template = _get_template(os.path.join(BOT_FILE_TEMPLATES_DIR, 'handlers', 'custom.py.j2'))
     bot_code = template.render({
         'utils_funcs': utils_funcs,
         'states_groups': states_groups,
