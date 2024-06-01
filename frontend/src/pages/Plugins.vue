@@ -38,20 +38,23 @@ const closeProjectsListModal = () => {
   showProjectsListModal.value = false;
 };
 
-// TODO if user dont have projects
 const handleAddPluginEvent = async (plugin) => {
   const { response, error } = await getUserProjects();
   if (error.value) {
     toast.error('Что-то пошло не так...')
   } else {
     const responseData = response.value.data;
-    const filteredProjects = responseData.filter(proj => {
-      return !proj.plugins.some(plug => plug.plugin_id === plugin.plugin_id);
-    });
-    projects.value = filteredProjects;
-    chosenPlugin.value = plugin;
+    if (responseData.length === 0) {
+      toast.error('Вы еще не создали ни одного чат-бота!')
+    } else {
+      const filteredProjects = responseData.filter(proj => {
+        return !proj.plugins.some(plug => plug.plugin_id === plugin.plugin_id);
+      });
+      projects.value = filteredProjects;
+      chosenPlugin.value = plugin;
+      openProjectsListForm();
+    }
   }
-  openProjectsListForm()
 };
 
 const handleChooseProjectEvent = async (project) => {
@@ -121,7 +124,7 @@ const handleChooseProjectEvent = async (project) => {
   margin-bottom: 28px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .page__header {
     margin: 28px 0px 20px 0px;
   }

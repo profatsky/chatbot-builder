@@ -88,7 +88,7 @@ const summary = computed(() => {
   gap: 16px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .plugin {
     padding: 20px 24px;
     margin-bottom: 4px;

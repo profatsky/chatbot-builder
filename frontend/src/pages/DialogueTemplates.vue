@@ -114,7 +114,7 @@ const handleChooseProjectEvent = async (project) => {
   margin-bottom: 28px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .page__header {
     margin: 28px 0px 20px 0px;
   }

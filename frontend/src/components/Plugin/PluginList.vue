@@ -32,7 +32,7 @@ const addPluginEvent = (plugin) => {
   gap: 30px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .plugins-list {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
