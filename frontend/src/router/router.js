@@ -9,6 +9,7 @@ import DialogueTemplateDetail from '@/pages/DialogueTemplateDetail.vue';
 import Plugins from '@/pages/Plugins.vue';
 import PluginDetail from '@/pages/PluginDetail.vue';
 import Statistics from '@/pages/Statistics.vue';
+import NotFound from '@/pages/NotFound.vue';
 
 const routes = [
   {
@@ -50,6 +51,10 @@ const routes = [
   {
     path: '/statistics',
     component: Statistics
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    component: NotFound
   }
 ]
 

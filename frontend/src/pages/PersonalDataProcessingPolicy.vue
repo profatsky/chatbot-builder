@@ -1,7 +1,6 @@
 <script setup>
 import SimpleHeader from '@/components/SimpleHeader.vue';
 import SimpleFooter from '@/components/SimpleFooter.vue';
-
 </script>
 
 <template>
