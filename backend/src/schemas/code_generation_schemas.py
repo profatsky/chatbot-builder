@@ -41,7 +41,7 @@ class HandlerSchema(BaseModel):
         return result
 
     def _process_access_to_api_response_in_code(self, code: str) -> str:
-        pattern = r'<response_data\["([a-zA-Z0-9_-]+)"\]>'
+        pattern = r'<response\["([a-zA-Z0-9_-]+)"\]>'
 
         code = self._format_string_if_pattern_found(pattern, code)
 

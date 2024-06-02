@@ -58,11 +58,11 @@ async def create_survey_dialogue_template():
                 sequence_number=7,
                 file_path='survey.csv',
                 data={
-                    'age': 'answers[2]',
-                    'job': 'answers[3]',
-                    'name': 'answers[1]',
-                    'email': 'answers[5]',
-                    'phone_number': 'answers[4]'
+                    'name': '<answers[1]>',
+                    'age': '<answers[2]>',
+                    'job': '<answers[3]>',
+                    'phone_number': '<answers[4]>',
+                    'email': '<answers[5]>'
                 },
                 dialogue=dialogue,
             ),
