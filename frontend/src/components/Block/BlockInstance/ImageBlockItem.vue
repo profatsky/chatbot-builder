@@ -72,7 +72,7 @@ const uploadFileEvent = (file) => {
 
 <style scoped>
 .block {
-  width: 342px;
+  width: 340px;
 }
 
 .block__image {

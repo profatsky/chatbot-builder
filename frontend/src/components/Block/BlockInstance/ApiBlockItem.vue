@@ -142,7 +142,7 @@ const deleteBlockEvent = () => {
       <p class="block__hint">
         Укажите заголовки запроса
       </p>
-
+    
       <KeyValueTable
         :key-value-data="editedBlock.headers"
         @update-data="updateBlockHeadersEvent"
@@ -154,7 +154,7 @@ const deleteBlockEvent = () => {
 
     <div class="block__request-body">
       <p class="block__hint">
-        Введите пары “ключ-значение” для тела запроса. Строковые значения указывайте в кавычках.
+        Укажите содержимое тела запроса
       </p>
 
       <KeyValueTable

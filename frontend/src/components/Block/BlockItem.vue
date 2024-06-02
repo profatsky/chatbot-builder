@@ -79,9 +79,12 @@ switch (props.block.type) {
     <div class="user-answer block">
       <div class="block__header">
         <img src="@/assets/icons/blocks/msg-purple.svg">
-        <p class="block__type">*Пользователь отвечает на вопрос*</p>
+        <p class="block__type">Ответ от пользователя на вопрос №{{ questionCounter }}</p>
       </div>
-      <p class="block__hint">Ответ №{{ questionCounter }}</p>
+      <p class="block__hint block__hint--last">
+        Вы можете использовать ответ в сообщениях чат-бота, 
+        для этого указывайте в тексте: {answers[{{ questionCounter }}]}
+      </p>
     </div>
   </div>
 </template>
@@ -98,7 +101,7 @@ switch (props.block.type) {
 }
 
 .user-answer {
-  width: 424px;
+  width: 448px;
   margin-left: 0;
 }
 
@@ -127,5 +130,9 @@ switch (props.block.type) {
   letter-spacing: 0.75px;
   line-height: 24px;
   margin-bottom: 8px;
+}
+
+.block__hint--last {
+  margin-bottom: 0;
 }
 </style>

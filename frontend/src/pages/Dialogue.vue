@@ -135,10 +135,13 @@ onMounted(async () => { await getBlocksFromApi() });
   <SidebarNavigation/>
   <main>
     <div class="container">
-      <div class="page-content">
-        <div class="page-header">
-          <h1 class="content__title">Диалог</h1>
+      <div class="page__content">
+        <div class="page__header">
+          <h1 class="header__title">Диалог</h1>
         </div>
+        <p class="page__hint">
+          Диалоги - это сценарии общения чат-бота с пользователями. Каждый диалог состоит из различных блоков: отправить текст, отправить изображение, спросить у пользователя имя и т.д.
+        </p>
         <div class="workspace">
           <BlockList
             v-if="!isBlocksLoading"
@@ -162,11 +165,22 @@ onMounted(async () => { await getBlocksFromApi() });
 </template>
 
 <style scoped>
-.page-header {
-  margin: 48px 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.page__header {
+  margin: 40px 0px 28px 0px;
+}
+
+.header__title {
+  font-size: 32px;
+  line-height: 40px;
+}
+
+.page__hint {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 28px;
+  letter-spacing: 0.75px;
+  color: var(--body-text);
+  margin-bottom: 28px;
 }
 
 .workspace {

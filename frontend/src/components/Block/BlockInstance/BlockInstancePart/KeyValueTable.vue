@@ -85,11 +85,17 @@ table {
   border-collapse: collapse;
   overflow: hidden;
   margin-bottom: 12px;
+  table-layout: fixed;
 }
 
 th:not(:last-child), td:not(:last-child) {
   border: 1px solid var(--gray-lines);
-  width: 273px;
+  width: 252px;
+}
+
+th:last-child, td:last-child {
+  background: none;
+  border: 0;
 }
 
 th {
@@ -113,12 +119,12 @@ td {
   color: var(--body-text);
 
   background-color: var(--main-white);
-  padding: 12px;
+  padding: 10px;
 }
 
-td:last-child {
+/* td:last-child {
   background-color: var(--light-gray);
-}
+} */
 
 .btn {
   width: 100%;

@@ -24,8 +24,9 @@ const addBlockEvent = () => {
 <style scoped>
 .block-type {
   font-size: 16px;
-  letter-spacing: 0.75px;
   font-weight: 500;
+  line-height: 20px;
+  letter-spacing: 0.75px;
   color: var(--body-text);
 
   display: flex;

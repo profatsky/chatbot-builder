@@ -95,10 +95,6 @@ const deleteBlockEvent = () => {
         >
         <label :for="`phone_number${editedBlock.block_id}`">Номер телефона</label>
       </div>
-      <p class="block__hint block__hint--last">
-        Вы можете использовать ответ на вопрос в других блоках. <br>
-        Для этого указывайте answers[номер ответа]. Например: answers[1]
-      </p>
     </div>
   </div>
 </template>
@@ -109,10 +105,6 @@ const deleteBlockEvent = () => {
   width: 100%;
   height: 112px;
   resize: none;
-  margin-bottom: 20px;
-}
-
-.answer-type__select {
   margin-bottom: 20px;
 }
 
@@ -135,9 +127,5 @@ input[type="radio"] + label {
 input[type="radio"]:checked + label {
   background-color: var(--primary);
   color: var(--main-white);
-}
-
-.block__hint--last {
-  margin-bottom: 0;
 }
 </style>

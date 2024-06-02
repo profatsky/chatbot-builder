@@ -33,6 +33,9 @@ const deleteBlockEvent = () => {
       <img src="@/assets/icons/blocks/msg-purple.svg">
       <p class="block__type">Текст</p>
     </div>
+    <p class="block__hint">
+      Чтобы обратиться к пользователю чат-бота по имени в Telegram, указывайте в тексте: {username}
+    </p>
     <AppTextarea
       v-model="editedBlock.message_text"
       placeholder="Введите текст"
