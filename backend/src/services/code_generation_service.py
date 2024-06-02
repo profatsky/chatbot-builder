@@ -114,8 +114,6 @@ def _add_plugins_code_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file:
 
 
 def _add_images_to_zip(project: ProjectToGenerateCodeReadSchema, zip_file: zipfile.ZipFile):
-    zip_file.writestr('img/', 'img/')
-
     for dialogue in project.dialogues:
         for block in dialogue.blocks:
             if block.type == BlockType.IMAGE_BLOCK.value:
@@ -141,6 +139,9 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
     start_keyboard = _get_start_keyboard(project.start_keyboard_type)
 
     for dialogue in project.dialogues:
+
+        if not dialogue.trigger.value:
+            continue
 
         states_group = None
 
