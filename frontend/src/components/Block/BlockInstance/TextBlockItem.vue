@@ -34,7 +34,7 @@ const deleteBlockEvent = () => {
       <p class="block__type">Текст</p>
     </div>
     <p class="block__hint">
-      Чтобы обратиться к пользователю чат-бота по имени в Telegram, указывайте в тексте: {username}
+      Чтобы обратиться к пользователю чат-бота по имени в Telegram, указывайте в тексте: &ltusername&gt
     </p>
     <AppTextarea
       v-model="editedBlock.message_text"

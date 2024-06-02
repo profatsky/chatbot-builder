@@ -29,7 +29,7 @@ class HandlerSchema(BaseModel):
         self.body.append(code.strip())
 
     def _process_access_to_user_answers_in_code(self, code: str) -> str:
-        pattern = r'answers\[(\d+)\]'
+        pattern = r'<answers\[(\d+)\]>'
 
         code = self._format_string_if_pattern_found(pattern, code)
 
@@ -41,7 +41,7 @@ class HandlerSchema(BaseModel):
         return result
 
     def _process_access_to_api_response_in_code(self, code: str) -> str:
-        pattern = r'response_data\["([a-zA-Z0-9_-]+)"\]'
+        pattern = r'<response_data\["([a-zA-Z0-9_-]+)"\]>'
 
         code = self._format_string_if_pattern_found(pattern, code)
 
@@ -53,7 +53,7 @@ class HandlerSchema(BaseModel):
         return result
 
     def _process_access_to_username_in_code(self, code: str) -> str:
-        pattern = r'username'
+        pattern = r'<username>'
 
         code = self._format_string_if_pattern_found(pattern, code)
 

@@ -83,7 +83,7 @@ switch (props.block.type) {
       </div>
       <p class="block__hint block__hint--last">
         Вы можете использовать ответ в сообщениях чат-бота, 
-        для этого указывайте в тексте: {answers[{{ questionCounter }}]}
+        для этого указывайте в тексте: &ltanswers[{{ questionCounter }}]&gt
       </p>
     </div>
   </div>
