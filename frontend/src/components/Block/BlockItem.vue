@@ -133,6 +133,7 @@ switch (props.block.type) {
 }
 
 .block__hint--last {
+  margin-top: 20px;
   margin-bottom: 0;
 }
 </style>

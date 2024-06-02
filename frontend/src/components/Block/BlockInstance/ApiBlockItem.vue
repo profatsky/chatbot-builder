@@ -27,6 +27,14 @@ const updateBlockHeadersEvent = (headers) => {
 };
 
 const updateBlockBodyEvent = (body) => {
+  for (let key in body) {
+    if (!isNaN(body[key])) {
+      body[key] = Number(body[key]);
+    } else {
+      body[key] = body[key].replace(/"/g, '');
+    }
+  }
+  console.log("asa", body)
   editedBlock.body = body;
   emits('update-block', editedBlock)
 }
@@ -154,7 +162,7 @@ const deleteBlockEvent = () => {
 
     <div class="block__request-body">
       <p class="block__hint">
-        Укажите содержимое тела запроса
+        Укажите содержимое тела запроса. Строковые значения необходимо указывать в двойных кавычках
       </p>
 
       <KeyValueTable
@@ -165,7 +173,10 @@ const deleteBlockEvent = () => {
         <template v-slot:valueColumnTitle>Значение</template>
       </KeyValueTable>
     </div>
-
+  
+    <p class="block__hint block__hint--last">
+      Вы можете отправить в тексте сообщения значение из ответа от API, для этого указывайте в тексте: &ltresponse[“ключ”]&gt. Например: &ltresponse[“id”]&gt
+    </p>
   </div>
 </template>
 

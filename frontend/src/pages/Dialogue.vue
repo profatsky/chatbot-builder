@@ -124,7 +124,6 @@ const getBlocksFromApi = async () => {
     isBlocksLoading.value = false;
     const responseData = response.value.data;
     blocks.value = responseData;
-    console.log(blocks.value);
   }
 };
 
