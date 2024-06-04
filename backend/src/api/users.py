@@ -5,10 +5,10 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.auth import auth_dep
 from src.core.db import get_async_session
-from src.persistence import projects_persistence
-from src.schemas.users_schemas import UserReadSchema
+from src.schemas.users_schemas import UserWithStatsReadSchema
 from src.services import users_service
 from src.services import auth_service
+from src.services.exceptions import users_exceptions
 
 router = APIRouter(
     prefix='/users',
@@ -16,8 +16,7 @@ router = APIRouter(
 )
 
 
-# TODO refactor
-@router.get('/me', response_model=UserReadSchema)
+@router.get('/me', response_model=UserWithStatsReadSchema)
 async def get_user(
         session: AsyncSession = Depends(get_async_session),
         auth_jwt: AuthJWT = Depends(auth_dep),
@@ -25,14 +24,13 @@ async def get_user(
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
-    user = await users_service.get_user_by_id(user_id, session)
-    if user is None:
+    try:
+        user = await users_service.get_user_with_stats(user_id, session)
+    except users_exceptions.UserNotFound:
         await auth_service.unset_auth_tokens(auth_jwt)
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Missing cookie access_token_cookie.'
+            detail='Unauthorized user'
         )
 
-    project_count = await projects_persistence.count_projects(user_id, session)
-
-    return UserReadSchema(**user.__dict__, project_count=project_count)
+    return user
