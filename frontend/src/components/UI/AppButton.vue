@@ -122,17 +122,22 @@ export default {
     height: 40px;
     font-size: 12px;
     padding: 6px 16px;
+    min-width: 100px;
   }
 
   .btn-medium {
     height: 36px;
     font-size: 12px;
     padding: 8px 16px;
+    min-width: 100px;
   }
 
   .btn-small {
-    height: 24px;
-    font-size: 12px;
+    height: 18px;
+    font-size: 8px;
+    line-height: 10px;
+    padding: 0;
+    min-width: 100px;
   }
 }
 </style>

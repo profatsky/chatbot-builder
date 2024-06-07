@@ -56,11 +56,15 @@ const isActive = computed(() => route.path === props.to)
   height: 34px;
 }
 
+.link img {
+  height: 32px;
+}
+
 .link:hover {
   background-color: var(--light-gray);
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .link {
     gap: 10px;
 
@@ -69,6 +73,26 @@ const isActive = computed(() => route.path === props.to)
 
     padding: 16px 22px;
     height: 28px;
+  }
+
+  .link img {
+    height: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .link {
+    gap: 6px;
+    
+    font-size: 12px;
+    line-height: 20px;
+
+    padding: 12px;
+    height: 20px;
+  }
+
+  .link img {
+    height: 20px;
   }
 }
 </style>

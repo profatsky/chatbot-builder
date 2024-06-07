@@ -88,12 +88,12 @@ const summary = computed(() => {
   gap: 16px;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .dialogue-template {
     padding: 20px 24px;
     margin-bottom: 4px;
   }
-
+  
   .dialogue-template__img img {
     height: 160px;
   }
@@ -110,6 +110,38 @@ const summary = computed(() => {
 
   .dialogue-template__buttons {
     gap: 12px;
+  }
+}
+
+@media (max-width: 767px) {
+  .dialogue-template {
+    width: 160px;
+    padding: 12px 18px;
+    margin: 0;
+    border-radius: 12px;
+  }
+
+  .dialogue-template__img {
+    margin-bottom: 12px;
+  }
+
+  .dialogue-template__img img {
+    height: 100px;
+  }
+
+  .dialogue-template__name {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .dialogue-template__summary {
+    font-size: 8px;
+    margin-bottom: 8px;
+  }
+
+  .dialogue-template__buttons {
+    width: 160px;
+    gap: 6px;
   }
 }
 </style>

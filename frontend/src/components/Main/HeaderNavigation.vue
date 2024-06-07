@@ -36,6 +36,7 @@ const openLoginForm = () => {
             size="medium" 
             importance="secondary"
             @click="openRegisterForm"
+            class="register-btn"
           >
             Регистрация
           </AppButton>
@@ -48,7 +49,7 @@ const openLoginForm = () => {
 <style scoped>
 .header-navbar {
   display: flex;
-  padding: 20px 0;
+  padding: 23px 0;
   align-items: center;
 }
 
@@ -102,11 +103,11 @@ const openLoginForm = () => {
 }
 
 @media (max-width: 767px) {
-  .header-navbar__menu-list {
-    display: none;
+  .header-navbar {
+    padding: 12px 0;
   }
-  
-  .header-navbar__auth {
+
+  .header-navbar__menu-list {
     display: none;
   }
 
@@ -120,6 +121,14 @@ const openLoginForm = () => {
 
   .logo__text {
     font-size: 18px;
+  }
+
+  .login-btn {
+    font-size: 12px;
+  }
+
+  .register-btn {
+    display: none;
   }
 }
 </style>

@@ -108,7 +108,7 @@ onUnmounted(() => {
   transition: 0.2s linear;
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .logo {
     margin: 28px 0px 18px 18px;
   }
@@ -127,6 +127,30 @@ onUnmounted(() => {
 
   .collapse-icon img {
     height: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .logo {
+    margin: 18px 0px 16px 8px;
+    gap: 8px;
+  }
+
+  .logo__img {
+    height: 28px;
+  }
+
+  .logo__text {
+    font-size: 18px;
+    line-height: 20px;
+  }
+
+  .collapse-icon {
+    padding: 10px;
+  }
+
+  .collapse-icon img {
+    height: 24px;
   }
 }
 </style>

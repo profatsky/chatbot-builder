@@ -38,4 +38,12 @@ const createDialogueEvent = (template) => {
     gap: 20px;
   }
 }
+
+@media (max-width: 767px) {
+  .dialogue-templates-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
 </style>

@@ -12,11 +12,14 @@ export const sidebarWidth = computed(() => {
 });
 
 export const resizeSidebar = () => {
-  if (window.innerWidth > 768) {
+  if (window.innerWidth > 1169) {
     SIDEBAR_WIDTH.value = 280;
     SIDEBAR_WIDTH_COLLAPSED.value = 96;
-  } else if (window.innerWidth <= 768) {
+  } else if (window.innerWidth <= 1169 && window.innerWidth >= 768) {
     SIDEBAR_WIDTH.value = 210;
-    SIDEBAR_WIDTH_COLLAPSED.value = 72
-  };
+    SIDEBAR_WIDTH_COLLAPSED.value = 72;
+  } else {
+    SIDEBAR_WIDTH.value = 148;
+    SIDEBAR_WIDTH_COLLAPSED.value = 44;
+  }
 };

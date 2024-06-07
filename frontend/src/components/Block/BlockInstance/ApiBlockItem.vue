@@ -34,7 +34,6 @@ const updateBlockBodyEvent = (body) => {
       body[key] = body[key].replace(/"/g, '');
     }
   }
-  console.log("asa", body)
   editedBlock.body = body;
   emits('update-block', editedBlock)
 }

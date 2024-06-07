@@ -57,6 +57,7 @@
 @media (max-width: 767px) {
   .footer {
     flex-direction: column;
+    padding: 12px 0;
     gap: 12px;
   }
 

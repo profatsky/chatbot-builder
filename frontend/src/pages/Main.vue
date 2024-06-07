@@ -392,6 +392,7 @@ section {
   .offer__description {
     font-size: 24px;
     margin-top: 36px;
+    width: 700px;
   }
 
   .offer__btn {

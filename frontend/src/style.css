@@ -139,4 +139,8 @@ button {
     margin: 0 20px;
     width: 280px;
   }
+
+  .page__content {
+    margin-left: 36px;
+  }
 }
