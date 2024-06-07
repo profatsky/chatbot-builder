@@ -139,7 +139,7 @@ onMounted(async () => {
   gap: 16px;
 }
 
-.info__item img {
+.info-item img {
   width: 36px;
   height: 36px;
 }
@@ -166,7 +166,7 @@ onMounted(async () => {
   color: var(--primary);
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .page__header {
     margin: 28px 0px 40px 0px;
   }
@@ -198,7 +198,7 @@ onMounted(async () => {
     gap: 12px;
   }
 
-  .info__item img {
+  .info-item img {
     width: 30px;
     height: 30px;
   }
@@ -209,6 +209,56 @@ onMounted(async () => {
 
   .info-item__value {
     font-size: 14px;
+  }
+}
+
+@media (max-width: 767px) {
+  .page__header {
+    margin: 18px 0px 16px 0px;
+  }
+
+  .header__title {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .profile {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 28px;
+  }
+
+  .profile__info {
+    gap: 16px;
+  }
+
+  .profile__img img {
+    width: 100px;
+    height: 100px;
+  }
+
+  .info-item {
+    gap: 6px;
+  }
+
+  .info-item img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .info-item__name {
+    font-size: 12px;
+    line-height: 14px;
+  }
+
+  .info-item__value {
+    font-size: 8px;
+    line-height: 10px;
+  }
+
+  .description__main {
+    margin-bottom: 8px;
   }
 }
 </style>
