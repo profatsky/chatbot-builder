@@ -109,6 +109,7 @@ const handleChooseProjectEvent = async (project) => {
 .page__hint {
   font-size: 16px;
   font-weight: 500;
+  line-height: 28px;
   letter-spacing: 0.75px;
   color: var(--body-text);
   margin-bottom: 28px;
@@ -143,7 +144,7 @@ const handleChooseProjectEvent = async (project) => {
 
   .page__hint {
     font-size: 8px;
-    line-height: auto;
+    line-height: 10px;
     letter-spacing: 0px;
     margin-bottom: 12px;
     width: 220px;

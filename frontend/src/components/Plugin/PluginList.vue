@@ -38,4 +38,12 @@ const addPluginEvent = (plugin) => {
     gap: 20px;
   }
 }
+
+@media (max-width: 767px) {
+  .plugins-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+}
 </style>

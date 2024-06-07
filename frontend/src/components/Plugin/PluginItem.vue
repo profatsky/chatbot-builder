@@ -112,4 +112,36 @@ const summary = computed(() => {
     gap: 12px;
   }
 }
+
+@media (max-width: 767px) {
+  .plugin {
+    width: 160px;
+    padding: 12px 18px;
+    margin: 0;
+    border-radius: 12px;
+  }
+
+  .plugin__img {
+    margin-bottom: 12px;
+  }
+
+  .plugin__img img {
+    height: 100px;
+  }
+
+  .plugin__name {
+    font-size: 12px;
+    margin-bottom: 8px;
+  }
+
+  .plugin__summary {
+    font-size: 8px;
+    margin-bottom: 8px;
+  }
+
+  .plugin__buttons {
+    width: 160px;
+    gap: 6px;
+  }
+}
 </style>
