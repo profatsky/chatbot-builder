@@ -97,23 +97,26 @@ export default {
   font-size: 14px;
   letter-spacing: 0.75px;
 
-  padding: 8px;
+  padding: 8px 16px;
 }
 
 @media (min-width: 768px) and (max-width: 1169px) {
   .btn-large {
     height: 48px;
     padding: 8px 16px;
+    min-width: 150px;
   }
 
   .btn-medium {
     height: 40px;
     padding: 8px 16px;
+    min-width: 150px;
   }
 
   .btn-small {
-    height: 28px;
-    padding: 2px 16px;
+    height: 32px;
+    padding: 4px 16px;
+    min-width: 150px;
   }
 }
 
@@ -136,7 +139,7 @@ export default {
     height: 18px;
     font-size: 8px;
     line-height: 10px;
-    padding: 0;
+    padding: 2px 8px;
     min-width: 100px;
   }
 }

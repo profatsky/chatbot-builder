@@ -46,6 +46,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+
 .statistics__title {
   font-size: 32px;
   line-height: 40px;
@@ -92,7 +93,7 @@ onMounted(async () => {
   color: var(--primary);
 }
 
-@media (max-width: 768px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .statistics__title {
     font-size: 24px;
     line-height: 28px;
@@ -122,6 +123,42 @@ onMounted(async () => {
 
   .card__value {
     font-size: 48px;
+  }
+}
+
+@media (max-width: 768px) {
+  .statistics__title {
+    font-size: 16px;
+    line-height: 20px;
+    margin: 18px 0px 20px 0px;
+  }
+
+  .statistics__cards-list {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .card {
+    padding: 18px 12px;
+    width: 160px;
+    gap: 12px;
+  }
+
+  .card__img {
+    height: 60px;
+  }
+
+  .card__name {
+    font-size: 12px;
+    line-height: 15px;
+    width: 85px;
+  }
+
+  .card__value {
+    font-size: 36px;
+    line-height: 44px;
   }
 }
 </style>

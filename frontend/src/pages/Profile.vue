@@ -37,6 +37,16 @@ onMounted(async () => {
       <div class="page__content">
         <div class="page__header">
           <h1 class="header__title">Профиль</h1>
+          
+          <AppButton
+            v-if="userData.is_superuser"
+            size="small" 
+            importance="primary"
+            @click="$router.push(`/statistics`)"
+            class="admin-stats_btn"
+          >
+            Статистика конструктора
+          </AppButton>
         </div>
         <div class="page__body">
           <div class="profile">
