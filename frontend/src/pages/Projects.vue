@@ -145,4 +145,21 @@ onMounted(async () => {
   color: var(--body-text);
   margin-bottom: 28px;
 }
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .page__header {
+    margin: 28px 0px 20px 0px;
+  }
+
+  .header__title {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  .page__hint {
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 20px;
+  }
+}
 </style>

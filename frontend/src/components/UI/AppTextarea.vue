@@ -39,4 +39,14 @@ function updateTextarea(event) {
 .textarea::-webkit-input-placeholder {
   color: var(--placeholder); 
 }
+
+@media (min-width: 768px) and (max-width: 1169px) { 
+  .textarea {
+    border-radius: 12px;
+    padding: 12px 20px;
+    font-size: 14px;
+    line-height: 20px;
+  }
+}
+
 </style>

@@ -104,19 +104,20 @@ export default {
   .btn-large {
     height: 48px;
     padding: 8px 16px;
-    min-width: 150px;
+    min-width: 160px;
   }
 
   .btn-medium {
     height: 40px;
     padding: 8px 16px;
-    min-width: 150px;
+    min-width: 160px;
+    font-size: 14px;
   }
 
   .btn-small {
     height: 32px;
     padding: 4px 16px;
-    min-width: 150px;
+    min-width: 160px;
   }
 }
 

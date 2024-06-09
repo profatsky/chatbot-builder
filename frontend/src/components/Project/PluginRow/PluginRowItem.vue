@@ -33,7 +33,7 @@ const removePluginEvent = () => {
   display: flex;
   gap: 24px;
   align-items: center;
-  margin-top: 12px;
+  margin-bottom: 12px;
 }
 
 .plugin-row__name {
@@ -42,7 +42,7 @@ const removePluginEvent = () => {
   font-weight: 400;
   letter-spacing: 0.75px;
 
-  border-radius: 10px;
+  border-radius: 16px;
   background-color: var(--main-white);
   padding: 12px 28px;
   flex-grow: 1;
@@ -51,5 +51,25 @@ const removePluginEvent = () => {
 .plugin-row__btns {
   display: flex;
   gap: 12px;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .plugin-row {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .plugin-row__name {
+    font-size: 14px;
+    line-height: 28px;
+
+    border-radius: 12px;
+    padding: 6px 20px;
+  }
+
+  .plugin-row__btns {
+    display: flex;
+    gap: 8px;
+  }
 }
 </style>

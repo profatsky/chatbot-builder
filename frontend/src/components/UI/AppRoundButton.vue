@@ -40,4 +40,11 @@ const computedClasses = computed(() => ({
 .btn-delete{
   background-color: var(--error-dark);
 }
+
+@media (min-width: 768px) and (max-width: 1169px) { 
+  .btn {
+    width: 32px;
+    height: 32px;
+  }
+}
 </style>

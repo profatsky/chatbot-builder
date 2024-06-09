@@ -150,22 +150,22 @@ const handleCreateDialogueEvent = async () => {
 
   <div class="project">
 
-    <div class="project__name">
-      <img src="@/assets/icons/telegram-purple.svg">
-      <h2 class="name__text">{{ project.name }}</h2>
+    <div class="project__header">
+      <img src="@/assets/icons/telegram-purple.svg" class="header__img">
+      <p class="header__text">{{ project.name }}</p>
     </div>
 
     <div class="project__actions">
       <div @click="downloadCodeEvent" class="action">
-        <img src="@/assets/icons/export-gray.svg">
+        <img src="@/assets/icons/export-gray.svg" class="action__img">
         <div>Получить код</div>
       </div>
       <div @click="openChangeNameForm" class="action">
-        <img src="@/assets/icons/pencil-gray.svg">
+        <img src="@/assets/icons/pencil-gray.svg" class="action__img">
         <div>Изменить название</div>
       </div>
       <div @click="deleteProjectEvent" class="action">
-        <img src="@/assets/icons/remove-gray.svg">
+        <img src="@/assets/icons/remove-gray.svg" class="action__img">
         <div>Удалить чат-бота</div>
       </div>
     </div>
@@ -226,6 +226,7 @@ const handleCreateDialogueEvent = async () => {
         size="medium" 
         importance="secondary"
         class="plugin__add-btn"
+        @click="$router.push(`/plugins`)"
       >
         Добавить плагин
       </AppButton>
@@ -249,7 +250,7 @@ const handleCreateDialogueEvent = async () => {
   box-shadow: 0 0 16px 0 rgba(17, 17, 17, 0.04);
 }
 
-.project__name {
+.project__header {
   display: flex;
   align-items: center;
   gap: 12px;
@@ -259,9 +260,14 @@ const handleCreateDialogueEvent = async () => {
   margin-bottom: 24px;
 }
 
-.name__text {
+.header__img {
+  width: 32px;
+  height: 32px;
+}
+
+.header__text {
   font-size: 20px;
-  font-weight: 500px;
+  font-weight: 500;
   letter-spacing: 1px;
 }
 
@@ -282,6 +288,11 @@ const handleCreateDialogueEvent = async () => {
   align-items: center;
   gap: 8px;
   cursor: pointer;
+}
+
+.action__img {
+  width: 24px;
+  height: 24px;;
 }
 
 .hint {
@@ -311,5 +322,75 @@ const handleCreateDialogueEvent = async () => {
   color: var(--primary);
   text-transform: uppercase;
   margin-bottom: 12px;
+}
+
+.dialogue__add-btn,
+.plugin__add-btn {
+  width: 220px;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) { 
+  .project {
+    padding: 20px 24px;
+    margin-bottom: 28px;
+    border-radius: 12px;
+  }
+
+  .project__header {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .header__img {
+    width: 28px;
+    height: 28px;
+  }
+
+  .header__text {
+    font-size: 18px;
+  }
+
+  .project__actions {
+    gap: 48px;
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 20px;
+  }
+
+  .action__img {
+    width: 20px;
+    height: 20px;;
+  }
+
+  .hint {
+    font-size: 12px;
+    line-height: 20px;
+    margin-bottom: 8px;
+  }
+
+  .textarea {
+    height: 84px;
+  }
+
+  .menu-message {
+    margin-bottom: 20px;
+  }
+
+  .dialogues,
+  .plugins {
+    margin-top: 32px;
+  }
+
+  .dialogues__title,
+  .plugins__title {
+    font-size: 14px;
+    line-height: 24px;
+    margin-bottom: 8px;
+  }
+
+  .dialogue__add-btn,
+  .plugin__add-btn {
+    width: 180px;
+  }
 }
 </style>

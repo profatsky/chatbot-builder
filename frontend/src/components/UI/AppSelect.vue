@@ -83,4 +83,29 @@ const computedClasses = computed(() => ({
 select::-ms-expand {
   display: none;
 }
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .select {
+    min-width: 160px;
+  }
+  .select-medium {
+    font-size: 14px;
+    line-height: 28px;
+
+    padding: 6px 40px 6px 20px;
+    border-radius: 12px;
+  }
+
+  .select-small {
+    font-size: 14px;
+    line-height: 20px;
+
+    padding: 6px 40px 6px 20px;
+    border-radius: 8px;
+  }
+
+  .select:not([multiple]) {
+    background-position-x: calc(100% - 20px);
+  }
+}
 </style>

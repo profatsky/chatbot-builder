@@ -72,14 +72,14 @@ const dialogueTrigerTypes = ref([
 <style scoped>
 .dialogue-row {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   align-items: center;
   margin-bottom: 20px;
 }
 
 .dialogue-row__trigger {
   display: flex;
-  gap: 24px;
+  gap: 20px;
   flex-grow: 1;
 }
 
@@ -90,5 +90,20 @@ const dialogueTrigerTypes = ref([
 .dialogue-row__btns {
   display: flex;
   gap: 12px;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .dialogue-row {
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  .dialogue-row__trigger {
+    gap: 12px;
+  }
+
+  .dialogue-row__btns {
+    gap: 8px;
+  }
 }
 </style>

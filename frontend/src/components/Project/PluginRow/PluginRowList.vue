@@ -29,4 +29,11 @@ const removePluginEvent = (plugin) => {
 .plugin-list {
   margin: 24px 0;
 }
+
+@media (min-width: 768px) and (max-width: 1169px) { 
+  .plugin-list {
+    margin: 16px 0;
+  }
+}
+
 </style>
