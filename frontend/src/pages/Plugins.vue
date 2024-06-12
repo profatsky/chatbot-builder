@@ -148,7 +148,7 @@ const handleChooseProjectEvent = async (project) => {
 
   .header__title {
     font-size: 16px;
-    line-height: 28px;
+    line-height: 20px;
   }
 
   .page__hint {

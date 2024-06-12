@@ -46,4 +46,13 @@ export default {
     border-radius: 12px;
   }
 }
+
+@media (max-width: 767px) {
+  .input {
+    font-size: 8px;
+    line-height: 12px;
+    padding: 6px 8px;
+    border-radius: 8px;
+  }
+}
 </style>

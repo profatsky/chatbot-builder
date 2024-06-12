@@ -36,4 +36,9 @@ const removePluginEvent = (plugin) => {
   }
 }
 
+@media (max-width: 767px) { 
+  .plugin-list {
+    margin: 12px 0;
+  }
+}
 </style>

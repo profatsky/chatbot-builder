@@ -46,4 +46,10 @@ const deleteDialogueEvent = (dialogue) => {
     margin-bottom: 20px;
   }
 }
+
+@media (max-width: 767px) {
+  .dialogue-list {
+    margin-bottom: 10px;
+  }
+}
 </style>

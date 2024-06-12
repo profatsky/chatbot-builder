@@ -393,4 +393,70 @@ const handleCreateDialogueEvent = async () => {
     width: 180px;
   }
 }
+
+@media (max-width: 767px) {
+  .project {
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+  }
+
+  .project__header {
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .header__img {
+    width: 20px;
+    height: 20px;
+  }
+
+  .header__text {
+    font-size: 12px;
+  }
+
+  .project__actions {
+    flex-direction: column;
+    gap: 8px;
+    font-size: 8px;
+    line-height: 16px;
+    margin-bottom: 16px;
+  }
+
+  .action__img {
+    width: 16px;
+    height: 16px;;
+  }
+
+  .hint {
+    font-size: 8px;
+    line-height: 12px;
+    margin-bottom: 8px;
+  }
+
+  .textarea {
+    height: 64px;
+  }
+
+  .menu-message {
+    margin-bottom: 16px;
+  }
+
+  .dialogues,
+  .plugins {
+    margin-top: 20px;
+  }
+
+  .dialogues__title,
+  .plugins__title {
+    font-size: 10px;
+    line-height: 16px;
+    margin-bottom: 8px;
+  }
+
+  .dialogue__add-btn,
+  .plugin__add-btn {
+    width: 130px;
+  }
+}
 </style>

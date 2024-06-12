@@ -47,4 +47,11 @@ const computedClasses = computed(() => ({
     height: 32px;
   }
 }
+
+@media (max-width: 767px) {
+  .btn {
+    width: 16px;
+    height: 16px;
+  }
+}
 </style>

@@ -162,4 +162,23 @@ onMounted(async () => {
     margin-bottom: 20px;
   }
 }
+
+@media (max-width: 767px) {
+  .page__header {
+    margin: 18px 0px 12px 0px;
+  }
+
+  .header__title {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .page__hint {
+    font-size: 8px;
+    line-height: 10px;
+    letter-spacing: 0px;
+    margin-bottom: 12px;
+    width: 100%;
+  }
+}
 </style>

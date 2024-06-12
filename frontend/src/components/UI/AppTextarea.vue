@@ -49,4 +49,13 @@ function updateTextarea(event) {
   }
 }
 
+@media (max-width: 767px) {
+  .textarea {
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 8px;
+    line-height: 16px;
+  }
+}
+
 </style>

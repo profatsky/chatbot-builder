@@ -88,6 +88,7 @@ select::-ms-expand {
   .select {
     min-width: 160px;
   }
+
   .select-medium {
     font-size: 14px;
     line-height: 28px;
@@ -106,6 +107,31 @@ select::-ms-expand {
 
   .select:not([multiple]) {
     background-position-x: calc(100% - 20px);
+  }
+}
+
+@media (max-width: 767px) {
+  .select {
+    min-width: 60px;
+  }
+  .select-medium {
+    font-size: 8px;
+    line-height: 12px;
+
+    padding: 6px 24px 6px 8px;
+    border-radius: 8px;
+  }
+
+  .select-small {
+    font-size: 8px;
+    line-height: 12px;
+
+    padding: 4px 24px 4px 8px;
+    border-radius: 8px;
+  }
+
+  .select:not([multiple]) {
+    background-position-x: calc(100% - 12px);
   }
 }
 </style>

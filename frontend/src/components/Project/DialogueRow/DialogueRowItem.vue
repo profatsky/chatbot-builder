@@ -106,4 +106,23 @@ const dialogueTrigerTypes = ref([
     gap: 8px;
   }
 }
+
+@media (max-width: 767px) {
+  .dialogue-row {
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .dialogue-row__trigger {
+    gap: 6px;
+  }
+
+  .trigger__input {
+    width: 66px;
+  }
+
+  .dialogue-row__btns {
+    gap: 4px;
+  }
+}
 </style>

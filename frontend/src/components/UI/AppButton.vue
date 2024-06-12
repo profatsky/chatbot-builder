@@ -123,16 +123,17 @@ export default {
 
 @media (max-width: 767px) {
   .btn-large {
-    height: 40px;
+    height: 32px;
     font-size: 12px;
     padding: 6px 16px;
     min-width: 100px;
   }
 
   .btn-medium {
-    height: 36px;
-    font-size: 12px;
-    padding: 8px 16px;
+    height: 24px;
+    font-size: 8px;
+    line-height: 10px;
+    padding: 6px 16px;
     min-width: 100px;
   }
 

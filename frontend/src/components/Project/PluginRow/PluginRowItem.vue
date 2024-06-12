@@ -72,4 +72,24 @@ const removePluginEvent = () => {
     gap: 8px;
   }
 }
+
+@media (max-width: 767px) {
+  .plugin-row {
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .plugin-row__name {
+    font-size: 8px;
+    line-height: 12px;
+
+    border-radius: 8px;
+    padding: 6px 8px;
+  }
+
+  .plugin-row__btns {
+    display: flex;
+    gap: 4px;
+  }
+}
 </style>
