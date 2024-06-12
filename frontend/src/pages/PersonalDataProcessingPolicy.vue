@@ -118,11 +118,11 @@ import SimpleFooter from '@/components/SimpleFooter.vue';
 
 <style scoped>
 main {
-  margin-bottom: 60px;
+  margin-bottom: 56px;
 }
 
 .content__title {
-  margin: 48px 0;
+  margin: 18px 0px 36px 0px;
 }
 
 ol {
@@ -156,5 +156,38 @@ ol ol > li {
 ol ol > li::before {
 	content: counter(num) '.' counter(num2);
   font-weight: 400;
+}
+
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  main {
+    margin-bottom: 48px;
+  }
+
+  .content__title {
+    margin: 16px 0px 32px 0px;
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 767px) { 
+  main {
+    margin-bottom: 36px;
+  }
+  
+  .content__title {
+    margin: 12px 0px 24px 0px;
+    font-size: 20px;
+  }
+
+  ol > li {
+    font-size: 16px;
+    margin-top: 20px;
+  }
+
+  ol ol > li {
+    font-size: 12px;
+    margin-top: 8px;
+  }
 }
 </style>

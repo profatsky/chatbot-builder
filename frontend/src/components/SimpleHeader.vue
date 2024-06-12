@@ -5,7 +5,7 @@
   <header>
     <div class="container">
       <div class="header">
-        <div class="header__logo">
+        <div class="header__logo" @click="$router.push('/')">
           <img src="@/assets/icons/logo.svg" class="logo__img">
           <p class="logo__text">
             <span style="color: var(--primary-dark)">Free</span>Bots
@@ -25,6 +25,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
 }
 
 .logo__img {
@@ -36,5 +37,19 @@
   font-weight: 600;
   color: var(--primary);
   font-family: 'Roboto', 'sans-serif';
+}
+
+@media (max-width: 767px) {
+  .header__logo {
+    gap: 8px;
+  }
+
+  .logo__img {
+    height: 28px;
+  }
+
+  .logo__text {
+    font-size: 18px;
+  }
 }
 </style>

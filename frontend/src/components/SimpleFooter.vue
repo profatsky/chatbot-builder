@@ -5,7 +5,7 @@
   <footer>
     <div class="container">
       <div class="footer">
-        <div class="footer__logo">
+        <div class="footer__logo" @click="$router.push('/')">
           <img src="@/assets/icons/logo.svg" class="logo__img">
           <p class="logo__text">
             <span style="color: var(--primary-dark)">Free</span>Bots
@@ -31,6 +31,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  cursor: pointer;
 }
 
 .logo__img {
