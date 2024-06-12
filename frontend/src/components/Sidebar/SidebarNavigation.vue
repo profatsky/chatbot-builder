@@ -21,7 +21,7 @@ onUnmounted(() => {
 <template>
   <div class="sidebar" :style="{ width: sidebarWidth }">
 
-    <div class="logo">
+    <div class="logo" @click="$router.push('/')">
       <img src="@/assets/icons/logo.svg" class="logo__img">
       <Transition name="logo-text">
         <p v-if="!collapsed" class="logo__text">
@@ -32,7 +32,7 @@ onUnmounted(() => {
     <SidebarLink to="/projects" :iconPath="botGrayIcon">Боты</SidebarLink>
     <SidebarLink to="/templates" :iconPath="layoutGrayIcon">Шаблоны</SidebarLink>
     <SidebarLink to="/plugins" :iconPath="blockGrayIcon">Плагины</SidebarLink>
-    <SidebarLink to="/" :iconPath="scrollGrayIcon">Руководство</SidebarLink>
+    <SidebarLink to="/manual" :iconPath="scrollGrayIcon">Руководство</SidebarLink>
     <SidebarLink to="/profile" :iconPath="profileGrayIcon">Профиль</SidebarLink>
     <span
       class="collapse-icon"
@@ -78,6 +78,7 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   margin: 36px 0px 28px 28px;
+  cursor: pointer;
 }
 
 .logo__img {

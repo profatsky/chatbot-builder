@@ -8,6 +8,7 @@ import DialogueTemplates from '@/pages/DialogueTemplates.vue';
 import DialogueTemplateDetail from '@/pages/DialogueTemplateDetail.vue';
 import Plugins from '@/pages/Plugins.vue';
 import PluginDetail from '@/pages/PluginDetail.vue';
+import UserManual from '@/pages/UserManual.vue';
 import Statistics from '@/pages/Statistics.vue';
 import NotFound from '@/pages/NotFound.vue';
 
@@ -35,6 +36,10 @@ const routes = [
   {
     path: '/plugins/:pluginId',
     component: PluginDetail
+  },
+  {
+    path: '/manual',
+    component: UserManual
   },
   {
     path: '/profile',

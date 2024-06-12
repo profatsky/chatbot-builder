@@ -168,6 +168,7 @@ const closeLoginFormHandler = () => {
         <AppButton 
           size="medium" 
           importance="secondary"
+          @click="$router.push('/manual')"
         >
           Перейти к руководству
         </AppButton>
