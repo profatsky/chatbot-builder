@@ -122,11 +122,24 @@ td {
   padding: 10px;
 }
 
-/* td:last-child {
-  background-color: var(--light-gray);
-} */
-
 .btn {
   width: 100%;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  th:not(:last-child), td:not(:last-child) {
+    border: 1px solid var(--gray-lines);
+    width: 226px;
+  }
+
+  th {
+    font-size: 14px;
+    line-height: 32px;
+  }
+
+  td {
+    font-size: 14px;
+    line-height: 28px;
+  }
 }
 </style>

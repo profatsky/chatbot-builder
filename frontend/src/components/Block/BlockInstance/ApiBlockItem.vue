@@ -216,4 +216,21 @@ input[type="radio"]:checked + label {
   background-color: var(--primary);
   color: var(--main-white);
 }
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .input {
+    margin-bottom: 16px;
+  }
+
+  .block__headers {
+    margin-bottom: 16px;
+  }
+
+  input[type="radio"] + label {
+    padding: 5px 16px;
+    margin-right: 6px ;
+    margin-bottom: 8px;
+    font-size: 10px;
+  }
+}
 </style>

@@ -48,10 +48,4 @@ const deleteBlockEvent = () => {
 </template>
 
 <style scoped>
-.textarea {
-  box-sizing: border-box;
-  width: 100%;
-  height: 112px;
-  resize: none;
-}
 </style>

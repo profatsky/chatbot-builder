@@ -35,6 +35,7 @@ const addBlockEvent = (blockType) => {
 
 <style scoped>
 .block-types {
+  width: 198px;
   display: flex;
   flex-direction: column;
   gap: 24px;

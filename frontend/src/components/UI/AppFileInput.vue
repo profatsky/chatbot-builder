@@ -113,4 +113,12 @@ input[type="file"] {
 
   padding: 8px;
 }
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .input-small {
+    font-size: 12px;
+    line-height: 20px;
+    padding: 6px 12px;
+  }
+}
 </style>

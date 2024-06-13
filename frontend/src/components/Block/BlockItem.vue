@@ -110,6 +110,11 @@ switch (props.block.type) {
   float: right;
 }
 
+.block__close-button ing {
+  width: 18px;
+  height: 18px;
+}
+
 .block__header {
   display: flex;
   gap: 12px;
@@ -135,5 +140,55 @@ switch (props.block.type) {
 .block__hint--last {
   margin-top: 20px;
   margin-bottom: 0;
+}
+
+.textarea {
+  box-sizing: border-box;
+  width: 100%;
+  height: 112px;
+  resize: none;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .block {
+    border-radius: 12px;
+    padding: 20px 24px;
+    width: 548px;
+    margin-bottom: 24px;
+  }
+
+  .user-answer {
+    width: 448px;
+    margin-left: 0;
+  }
+
+  .block__close-button img {
+    width: 14px;
+    height: 14px;
+  }
+
+  .block__header {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .block__type {
+    font-size: 14px;
+  }
+
+  .block__hint {
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 8px;
+  }
+
+  .block__hint--last {
+    margin-top: 16px;
+    margin-bottom: 0;
+  }
+
+  .textarea {
+    height: 84px;
+  }
 }
 </style>

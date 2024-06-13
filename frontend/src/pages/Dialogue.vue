@@ -127,16 +127,41 @@ const getBlocksFromApi = async () => {
   }
 };
 
-onMounted(async () => { await getBlocksFromApi() });
+const showBlockTypesModal = ref(false);
+
+const openBlockTypesModal = async () => {
+  showBlockTypesModal.value = true;
+};
+
+const closeBlockTypesModal = async () => {
+  showBlockTypesModal.value = false;
+};
+
+onMounted(async () => await getBlocksFromApi());
 </script>
 
 <template>
   <SidebarNavigation/>
   <main>
+    <AppModal 
+      v-if="showBlockTypesModal" @closeModal="closeBlockTypesModal"
+    >
+        <p class="hint">Чтобы добавить блок, нажмите на него</p>
+        <BlockTypeList
+          :blockTypes="blockTypes"
+          @add-block="handleAddBlockEvent"
+        />
+    </AppModal>
     <div class="container">
       <div class="page__content">
         <div class="page__header">
           <h1 class="header__title">Диалог</h1>
+          <AppButton
+            class="add-block-btn"
+            @click="openBlockTypesModal"
+          >
+            Добавить новый блок
+          </AppButton>
         </div>
         <p class="page__hint">
           Диалоги - это сценарии общения чат-бота с пользователями. Каждый диалог состоит из различных блоков: отправить текст, отправить изображение, спросить у пользователя имя и т.д.
@@ -150,7 +175,7 @@ onMounted(async () => { await getBlocksFromApi() });
             @delete-block="handleDeleteBlockEvent"
             class="block-list"
           />
-          <div class="block-types">
+          <div class="block-types-column">
             <p class="hint">Чтобы добавить блок, нажмите на него</p>
             <BlockTypeList
               :blockTypes="blockTypes"
@@ -166,11 +191,18 @@ onMounted(async () => { await getBlocksFromApi() });
 <style scoped>
 .page__header {
   margin: 40px 0px 28px 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .header__title {
   font-size: 32px;
   line-height: 40px;
+}
+
+.add-block-btn {
+  display: none
 }
 
 .page__hint {
@@ -194,10 +226,8 @@ onMounted(async () => { await getBlocksFromApi() });
   width: 972px;
 }
 
-.block-types {
-  width: 198px;
-  display: flex;
-  flex-direction: column;
+.block-types-column {
+  width: 196px;
 }
 
 .hint {
@@ -206,5 +236,38 @@ onMounted(async () => { await getBlocksFromApi() });
   color: var(--body-text);
   letter-spacing: 0.75px;
   margin-bottom: 12px;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .page__header {
+    margin: 28px 0px 20px 0px;
+  }
+
+  .header__title {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  .page__hint {
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 20px;
+  }
+
+  .add-block-btn {
+    display: block;
+  }
+  .block-types-column {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  .add-block-btn {
+    display: block;
+  }
+  .block-types-column {
+    display: none;
+  }
 }
 </style>

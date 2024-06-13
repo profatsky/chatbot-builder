@@ -61,16 +61,18 @@ const deleteBlockEvent = () => {
 
 <style scoped>
 .textarea {
-  box-sizing: border-box;
-  width: 100%;
-  height: 112px;
-  resize: none;
-  margin: 20px 0;
+  margin: 20px 0px 16px 0px;
 }
 
 .input {
   box-sizing: border-box;
   width: 100%;
   resize: none;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .textarea {
+    margin: 16px 0px 12px 0px;
+  }
 }
 </style>

@@ -101,10 +101,6 @@ const deleteBlockEvent = () => {
 
 <style scoped>
 .textarea {
-  box-sizing: border-box;
-  width: 100%;
-  height: 112px;
-  resize: none;
   margin-bottom: 20px;
 }
 
@@ -127,5 +123,13 @@ input[type="radio"] + label {
 input[type="radio"]:checked + label {
   background-color: var(--primary);
   color: var(--main-white);
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  input[type="radio"] + label {
+    font-size: 10px;
+    padding: 5px 16px;
+    margin-right: 6px;
+  }
 }
 </style>
