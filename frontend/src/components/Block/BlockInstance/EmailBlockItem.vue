@@ -32,7 +32,7 @@ const deleteBlockEvent = () => {
       <img src="@/assets/icons/close.svg">
     </button>
     <div class="block__header">
-      <img src="@/assets/icons/blocks/email-purple.svg">
+      <img src="@/assets/icons/blocks/email-purple.svg" class="block__img">
       <p class="block__type">Email письмо</p>
     </div>
     <AppInput
@@ -73,6 +73,12 @@ const deleteBlockEvent = () => {
 @media (min-width: 768px) and (max-width: 1169px) {
   .textarea {
     margin: 16px 0px 12px 0px;
+  }
+}
+
+@media (max-width: 767px) {
+  .textarea {
+    margin: 8px 0px 4px 0px;
   }
 }
 </style>

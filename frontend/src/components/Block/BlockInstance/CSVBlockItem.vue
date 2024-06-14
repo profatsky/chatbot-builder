@@ -34,7 +34,7 @@ const deleteBlockEvent = () => {
       <img src="@/assets/icons/close.svg">
     </button>
     <div class="block__header">
-      <img src="@/assets/icons/blocks/csv-purple.svg">
+      <img src="@/assets/icons/blocks/csv-purple.svg" class="block__img">
       <p class="block__type">Сохранить в CSV</p>
     </div>
     <AppInput

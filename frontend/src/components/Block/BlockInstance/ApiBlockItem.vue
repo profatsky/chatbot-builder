@@ -54,7 +54,7 @@ const deleteBlockEvent = () => {
       <img src="@/assets/icons/close.svg">
     </button>
     <div class="block__header">
-      <img src="@/assets/icons/blocks/request-purple.svg">
+      <img src="@/assets/icons/blocks/request-purple.svg" class="block__img">
       <p class="block__type">API запрос</p>
     </div>
 
@@ -201,15 +201,19 @@ input[type="radio"] {
 
 input[type="radio"] + label {
   display: inline-block;
-  padding: 7px 16px;
+  padding: 5px 16px;
   margin-right: 8px ;
   margin-bottom: 12px;
+
   border: 2px solid var(--primary);
   border-radius: 20px;
-  cursor: pointer;
-  font-size: 12px;
-  color: var(--primary);
+  
+  font-size: 12px;  
   font-weight: 500;
+  line-height: 18px;
+  color: var(--primary);
+
+  cursor: pointer;
 }
 
 input[type="radio"]:checked + label {
@@ -227,10 +231,28 @@ input[type="radio"]:checked + label {
   }
 
   input[type="radio"] + label {
-    padding: 5px 16px;
+    font-size: 10px;
+    padding: 3px 16px;
     margin-right: 6px ;
     margin-bottom: 8px;
-    font-size: 10px;
+  }
+}
+
+@media (max-width: 767px) {
+  .input {
+    margin-bottom: 8px;
+  }
+
+  .block__headers {
+    margin-bottom: 8px;
+  }
+
+  input[type="radio"] + label {
+    font-size: 8px;
+    line-height: 12px;
+    padding: 2px 14px;
+    margin-right: 4px;
+    margin-bottom: 6px;
   }
 }
 </style>

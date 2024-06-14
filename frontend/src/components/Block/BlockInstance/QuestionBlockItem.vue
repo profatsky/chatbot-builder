@@ -34,7 +34,7 @@ const deleteBlockEvent = () => {
       <img src="@/assets/icons/close.svg">
     </button>
     <div class="block__header">
-      <img src="@/assets/icons/blocks/question-purple.svg">
+      <img src="@/assets/icons/blocks/question-purple.svg" class="block__img">
       <p class="block__type">Вопрос</p>
     </div>
     <AppTextarea
@@ -110,14 +110,18 @@ input[type="radio"] {
 
 input[type="radio"] + label {
   display: inline-block;
-  padding: 7px 16px;
+  padding: 5px 16px;
   margin-right: 8px ;
+
   border: 2px solid var(--primary);
   border-radius: 20px;
-  cursor: pointer;
+
   font-size: 12px;
-  color: var(--primary);
   font-weight: 500;
+  line-height: 18px;
+  color: var(--primary);
+
+  cursor: pointer;
 }
 
 input[type="radio"]:checked + label {
@@ -126,10 +130,32 @@ input[type="radio"]:checked + label {
 }
 
 @media (min-width: 768px) and (max-width: 1169px) {
+  .textarea {
+    margin-bottom: 16px;
+  }
+
   input[type="radio"] + label {
     font-size: 10px;
-    padding: 5px 16px;
+    padding: 3px 14px;
     margin-right: 6px;
+  }
+}
+
+@media (max-width: 767px) {
+  .textarea {
+    margin-bottom: 8px;
+  }
+  
+  input[type="radio"] + label {
+    font-size: 8px;
+    line-height: 12px;
+    padding: 2px 14px;
+    margin-right: 4px;
+    margin-bottom: 6px;
+  }
+
+  input[type="radio"] + label:last-child {
+    margin-bottom: 0px;
   }
 }
 </style>

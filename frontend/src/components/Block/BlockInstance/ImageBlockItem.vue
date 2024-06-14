@@ -48,7 +48,7 @@ const uploadFileEvent = (file) => {
       <img src="@/assets/icons/close.svg">
     </button>
     <div class="block__header">
-      <img src="@/assets/icons/blocks/img-purple.svg">
+      <img src="@/assets/icons/blocks/img-purple.svg" class="block__img">
       <p class="block__type">Изображение</p>
     </div>
     <p class="block__hint">

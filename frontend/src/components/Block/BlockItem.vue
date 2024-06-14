@@ -78,7 +78,7 @@ switch (props.block.type) {
   <div v-if="currentComponent === QuestionBlockItem">
     <div class="user-answer block">
       <div class="block__header">
-        <img src="@/assets/icons/blocks/msg-purple.svg">
+        <img src="@/assets/icons/blocks/msg-purple.svg" class="block__img">
         <p class="block__type">Ответ от пользователя на вопрос №{{ questionCounter }}</p>
       </div>
       <p class="block__hint block__hint--last">
@@ -110,7 +110,7 @@ switch (props.block.type) {
   float: right;
 }
 
-.block__close-button ing {
+.block__close-button img {
   width: 18px;
   height: 18px;
 }
@@ -120,6 +120,11 @@ switch (props.block.type) {
   gap: 12px;
   margin-bottom: 20px;
   align-items: center;
+}
+
+.block__img {
+  width: 32px;
+  height: 32px;
 }
 
 .block__type {
@@ -172,6 +177,11 @@ switch (props.block.type) {
     margin-bottom: 16px;
   }
 
+  .block__img {
+    width: 28px;
+    height: 28px;
+  }
+
   .block__type {
     font-size: 14px;
   }
@@ -189,6 +199,54 @@ switch (props.block.type) {
 
   .textarea {
     height: 84px;
+  }
+}
+
+@media (max-width: 767px) {
+  .block {
+    border-radius: 8px;
+    padding: 10px 12px;
+    width: 196px;
+    margin-bottom: 20px;
+  }
+
+  .user-answer {
+    width: 216px;
+    margin-left: 0;
+  }
+
+  .block__close-button img {
+    width: 10px;
+    height: 10px;
+  }
+
+  .block__header {
+    gap: 4px;
+    margin-bottom: 8px;
+  }
+
+  .block__img {
+    width: 18px;
+    height: 18px;
+  }
+
+  .block__type {
+    font-size: 8px;
+  }
+
+  .block__hint {
+    font-size: 8px;
+    line-height: 12px;
+    margin-bottom: 4px;
+  }
+
+  .block__hint--last {
+    margin-top: 8px;
+    margin-bottom: 0;
+  }
+
+  .textarea {
+    height: 64px;
   }
 }
 </style>

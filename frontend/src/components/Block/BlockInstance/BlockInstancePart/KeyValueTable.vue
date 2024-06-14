@@ -122,13 +122,17 @@ td {
   padding: 10px;
 }
 
+.remove-icon {
+  width: 24px;
+  height: 24px;
+}
+
 .btn {
   width: 100%;
 }
 
 @media (min-width: 768px) and (max-width: 1169px) {
   th:not(:last-child), td:not(:last-child) {
-    border: 1px solid var(--gray-lines);
     width: 226px;
   }
 
@@ -140,6 +144,33 @@ td {
   td {
     font-size: 14px;
     line-height: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  table {
+    margin-bottom: 6px;
+  }
+
+  th:not(:last-child), td:not(:last-child) {
+    width: 60px;
+  }
+
+  th {
+    font-size: 8px;
+    line-height: 12px;
+    padding: 6px 12px;
+  }
+
+  td {
+    font-size: 8px;
+    line-height: 12px;
+    padding: 4px 12px;
+  }
+
+  .remove-icon {
+    width: 14px;
+    height: 14px;
   }
 }
 </style>

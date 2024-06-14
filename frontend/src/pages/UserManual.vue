@@ -24,7 +24,7 @@ import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
             Чат-боты для Telegram – это автоматизированные собеседники, которые выполняют различные задачи: отвечают на вопросы, продают товары, предоставляют информацию и т.д.
           </p>
           <p>
-            На странице <a href="/projects">Чат-боты</a> вы можете работать с вашими создаваемыми чат-ботами. Каждый чат-бот включает в себя диалоги и плагины.
+            На странице <a href="/projects" target="_blank">Чат-боты</a> вы можете работать с вашими создаваемыми чат-ботами. Каждый чат-бот включает в себя диалоги и плагины.
           </p>
           <p>
             Диалоги – это сценарии общения с чат-ботом. Чтобы чат-бот понимал, когда запускать тот или иной диалог, необходимо явно указать тип и текст сообщения, на которое будет реагировать чат-бот. На выбор доступно 3 типа сообщений:
@@ -45,7 +45,7 @@ import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
         <section id="downloading-chatbot-code">
           <h2>Как скачать программный код чат-бота</h2>
           <p>
-            На странице <a href="/projects">Чат-боты</a> выбрать одного из чат-ботов и нажать кнопку "Получить код". Начнется скачивание ZIP-архива со всеми необходимыми для запуска файлами.
+            На странице <a href="/projects" target="_blank">Чат-боты</a> выбрать одного из чат-ботов и нажать кнопку "Получить код". Начнется скачивание ZIP-архива со всеми необходимыми для запуска файлами.
           </p>
         </section>
 
@@ -56,8 +56,8 @@ import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
           </p>
           <ul>
             <li>создайте отдельную папку для чат-бота и перенесите в нее все файлы из ZIP-архива</li>
-            <li>в файле .env укажите токен чат-бота (получите его в чат-боте <a href="https://t.me/BotFather">@BotFather</a>) и ваш идентификатор в Telegram (получите его в чат-боте <a href="https://t.me/getmyid_bot">@getmyid_bot</a>)</li>
-            <li>если вы используете отправку писем на электронную почту, необходимо указать вашу Gmail почту и пароль в файле .env, а также пароль приложения Google (как получить пароль приложения Google читайте по <a href="https://support.google.com/mail/answer/185833?hl=ru">ссылке</a></li>
+            <li>в файле .env укажите токен чат-бота (получите его в чат-боте <a href="https://t.me/BotFather" target="_blank">@BotFather</a>) и ваш идентификатор в Telegram (получите его в чат-боте <a href="https://t.me/getmyid_bot" target="_blank">@getmyid_bot</a>)</li>
+            <li>если вы используете отправку писем на электронную почту, необходимо указать вашу Gmail почту и пароль в файле .env, а также пароль приложения Google (как получить пароль приложения Google читайте по <a href="https://support.google.com/mail/answer/185833?hl=ru" target="_blank">ссылке</a></li>
           </ul>
         </section>
         
@@ -67,7 +67,7 @@ import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
             Выполните следующие действия для успешной настройки виртуального окружения, установки пакетов и запуска:
           </p>
           <p>
-            Установите Python версии 3.10 или выше с <a href="https://www.python.org/downloads/release/python-3124/">официального сайта</a> (при установке ставьте галочки на все пункты).
+            Установите Python версии 3.10 или выше с <a href="https://www.python.org/downloads/release/python-3124/" target="_blank">официального сайта</a> (при установке ставьте галочки на все пункты).
           </p>
           <p>
             В папке с чат-ботом откройте командную строку и в зависимости от ОС выполните необходимые команды.
@@ -127,11 +127,13 @@ h3 {
 p {
   margin-bottom: 12px;
   line-height: 24px;
+  color: var(--body-text);
 }
 
 ul {
 	margin-bottom: 12px;
   line-height: 24px;
+  color: var(--body-text);
 }
 
 li {

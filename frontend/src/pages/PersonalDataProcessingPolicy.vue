@@ -144,6 +144,7 @@ ol > li::before {
 
 ol ol {
 	counter-reset: num2;
+  color: var(--body-text);
 }
 
 ol ol > li {

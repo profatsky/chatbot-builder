@@ -30,7 +30,7 @@ const deleteBlockEvent = () => {
       <img src="@/assets/icons/close.svg">
     </button>
     <div class="block__header">
-      <img src="@/assets/icons/blocks/msg-purple.svg">
+      <img src="@/assets/icons/blocks/msg-purple.svg" class="block__img">
       <p class="block__type">Текст</p>
     </div>
     <p class="block__hint">
