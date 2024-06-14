@@ -9,23 +9,23 @@ export default {
 </script>
 
 <template>
-  <div class="modal">
-    <div class="modal__content">
+  <div class="modal__wrapper">
+    <div class="modal">
       <button 
         @click="closeModal" 
-        class="close-button"
+        class="modal__close-btn"
       >
         <img src="@/assets/icons/close.svg">
       </button>
-      <div class="slot">
+      <div class="modal__content">
         <slot></slot>
       </div>
     </div>
   </div>
 </template>
 
-<style>
-.modal {
+<style scoped>
+.modal__wrapper {
   top: 0;
   bottom: 0;
   right: 0;
@@ -35,22 +35,59 @@ export default {
   display: flex;
 }
 
-.modal__content {
+.modal {
   margin: auto;
   background-color: var(--main-white);
-  border-radius: 24px;
-  min-height: 58px;
-  min-width: 300px;
-  padding: 20px;
+  border-radius: 16px;
+  padding: 28px;
 }
 
-.close-button {
+.modal__close-btn {
   background-color: var(--main-white);
   float: right;
-  padding: 8px;
 }
 
-.slot {
-  margin-bottom: 20px;
+.modal__close-btn img {
+  width: 18px;
+  height: 18px;
+}
+
+.modal__content {
+  margin: 18px 0px;
+  padding: 24px;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .modal {
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .modal__close-btn img {
+    width: 14px;
+    height: 14px;
+  }
+
+  .modal__content {
+    margin: 14px 0px;
+    padding: 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .modal {
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .modal__close-btn img {
+    width: 10px;
+    height: 10px;
+  }
+
+  .modal__content {
+    margin: 10px 0px;
+    padding: 12px;
+  }
 }
 </style>

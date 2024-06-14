@@ -21,59 +21,84 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <div class="change-name">
+  <form @submit.prevent="submitForm" class="change-name">
     <h2 class="change-name__title">Изменение названия</h2>
-    <form @submit.prevent="submitForm" class="change-name__form">
-      <AppInput
-        v-model="name"
-        required 
-        placeholder="Введите новое название"
-        minlength="1"
-        maxlength="256"
-      />
-      <AppButton 
-        type="submit" 
-        size="medium" 
-        importance="primary"
-        class="change-name-form__btn"
-      >
-        Изменить
-      </AppButton>
-    </form>
-  </div>
+    <AppInput
+      v-model="name"
+      required 
+      placeholder="Введите новое название"
+      minlength="1"
+      maxlength="256"
+      class="change-name__input"
+    />
+    <AppButton 
+      type="submit" 
+      size="medium" 
+      importance="primary"
+      class="change-name__btn"
+    >
+      Сохранить
+    </AppButton>
+  </form>
 </template>
 
 <style scoped>
 .change-name {
+  width: 360px;
   display: flex;
-  justify-content: center;
   flex-direction: column;
-  align-items: center;
-  width: 500px;
-}
-
-.change-name__title {
-  font-size: 36px;
-  font-weight: 600px;
-  margin-top: 0;
-  margin-bottom: 28px;
-}
-
-.input {
-  width: 325px;
-  background-color: var(--light-gray);
-}
-
-.change-name__form {
-  display: flex;
   justify-content: center;
-  flex-direction: column;
   align-items: center;
-  width: 370px;
   gap: 16px;
 }
 
-.change-name-form__btn {
-  margin-top: 20px;
+.change-name__title {
+  font-size: 28px;
+  font-weight: 600px;
+  line-height: 32px;
+  margin-bottom: 8px;
+}
+
+.change-name__input{
+  width: 312px;
+  background-color: var(--light-gray);
+}
+
+.change-name__btn {
+  width: 100%;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .change-name {
+    width: 280px;
+    gap: 12px;
+  }
+
+  .change-name__title {
+    font-size: 24px;
+    line-height: 28px;
+    margin-bottom: 6px;
+  }
+
+  .change-name__input{
+    width: 240px;
+  }
+}
+
+@media (max-width: 767px) { 
+  .change-name {
+    width: 200px;
+    gap: 8px
+  }
+
+  .change-name__title {
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 4px;
+  }
+
+  .change-name__input{
+    width: 184px;
+  }
 }
 </style>
