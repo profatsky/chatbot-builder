@@ -24,7 +24,7 @@ const emits = defineEmits(['update-block', 'delete-block', 'upload-image']);
 
 const updateTextInBlockEvent = debounce((block) => {
   emits('update-block', block)
-}, 3000);
+}, 500);
 
 const updateBlockEvent = (block) => {
   emits('update-block', block)

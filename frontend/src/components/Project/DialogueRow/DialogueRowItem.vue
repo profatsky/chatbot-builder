@@ -23,7 +23,7 @@ const updateDialogueTriggerTypeEvent = () => {
 
 const updateDialogueTriggerValueEvent = debounce(() => {
   emits('update-dialogue', editedDialogue)
-}, 3000);
+}, 500);
 
 const deleteDialogueEvent = () => {
   emits('delete-dialogue', props.dialogue)

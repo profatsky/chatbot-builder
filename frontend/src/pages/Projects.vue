@@ -24,7 +24,6 @@ const handleUpdateProjectEvent = async (editedProject) => {
     );
     if (index !== -1) {
       projects.value[index] = editedProject;
-      toast.success('Данные о чат-боте обновлены');
     }
   }
 };

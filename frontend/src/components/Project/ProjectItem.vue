@@ -40,7 +40,7 @@ const emits = defineEmits(['update-project', 'delete-project', 'create-dialogue'
 
 const updateProjectStartMessageEvent = debounce(() => {
   emits('update-project', editedProject)
-}, 3000);
+}, 500);
 
 const updateProjectKeyboardTypeEvent = () => {
   emits('update-project', editedProject)
@@ -54,6 +54,7 @@ const updateProjectNameEvent = (name) => {
   editedProject.name = name;
   emits('update-project', editedProject);
   closeChangeNameForm();
+  toast.success('Название чат-бота изменено')
 };
 
 const deleteProjectEvent = () => {
@@ -97,7 +98,6 @@ const handleUpdateDialogueEvent = async (dialogue) => {
     )
     const responseData = response.value.data;
     editedProject.dialogues[index] = responseData;
-    toast.success('Данные о диалоге обновлены');
   }
 };
 
@@ -172,7 +172,7 @@ const handleCreateDialogueEvent = async () => {
 
     <div class="menu-message">
       <p class="hint">
-        Введите текст, который чат-бот будет отправлять пользователям в главном меню. Советуем описать возможности чат-бота и текстовые команды, доступные пользователям.
+        Введите текст, который чат-бот будет отправлять пользователям в главном меню. Советуем описать возможности чат-бота и доступные пользователям текстовые команды.
       </p>
       <AppTextarea 
         v-model="editedProject.start_message"
