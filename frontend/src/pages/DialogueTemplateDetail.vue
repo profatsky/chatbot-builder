@@ -80,21 +80,14 @@ const handleChooseProjectEvent = async (project) => {
         <div class="page__header">
           <h1 class="header__title">Шаблон «{{ dialogueTemplate.name }}»</h1>
           <AppButton
-            size="large"
+            size="medium"
             importance="secondary"
             @click="handleCreateDialogueFromTemplateEvent"
           >
             Создать диалог
           </AppButton>
         </div>
-        <div class="dialogue-template">
-          <p class="dialogue-template__description">
-            {{ dialogueTemplate.description }}
-          </p>
-          <div class="dialogue-template__img">
-            <img :src="`${apiClient.defaults.baseURL}/media/${dialogueTemplate.image_path}`">
-          </div>
-        </div>
+        <p class="dialogue-template__description" v-html="dialogueTemplate.description"></p>
       </div>
     </div>
   </main>
@@ -102,32 +95,31 @@ const handleChooseProjectEvent = async (project) => {
 
 <style scoped>
 .page__header {
-  margin: 48px 0;
+  margin: 32px 0px 20px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.dialogue-template {
-  display: flex;
-  justify-content: space-between;
-  gap: 64px;
+.header__title {
+  font-size: 32px;
+  line-height: 40px;
 }
 
-.dialogue-template__description {
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: 0.75px;
+:deep() p {
+  margin-bottom: 12px;
+  line-height: 24px;
   color: var(--body-text);
 }
 
-.dialogue-template__img img {
-  height: 200px;
+:deep() ul {
+	margin-bottom: 12px;
+  line-height: 24px;
+  color: var(--body-text);
 }
 
-.dialogue-template__img {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
+:deep() li {
+  margin: 0px 0px 8px 20px;
+  line-height: 24px;
 }
 </style>

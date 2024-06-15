@@ -5,7 +5,6 @@ import { useToast } from 'vue-toast-notification';
 
 import { getPlugin, addPluginToProject } from '@/api/plugins';
 import { getUserProjects } from '@/api/projects';
-import apiClient from '@/api/apiClient';
 
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import ProjectRowForm from '@/components/Project/ProjectRow/ProjectRowForm.vue';
@@ -85,21 +84,14 @@ const handleChooseProjectEvent = async (project) => {
         <div class="page__header">
           <h1 class="header__title">Плагин «{{ plugin.name }}»</h1>
           <AppButton
-            size="large"
+            size="medium"
             importance="secondary"
             @click="openProjectsListForm"
           >
             Добавить в проект
           </AppButton>
         </div>
-        <div class="plugin">
-          <p class="plugin__description">
-            {{ plugin.description }}
-          </p>
-          <div class="plugin__img">
-            <img :src="`${apiClient.defaults.baseURL}/media/${plugin.image_path}`">
-          </div>
-        </div>
+        <p class="plugin__description" v-html="plugin.description"></p>
       </div>
     </div>
   </main>
@@ -107,32 +99,35 @@ const handleChooseProjectEvent = async (project) => {
 
 <style scoped>
 .page__header {
-  margin: 48px 0;
+  margin: 32px 0px 20px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.plugin {
-  display: flex;
-  justify-content: space-between;
-  gap: 64px;
+.header__title {
+  font-size: 32px;
+  line-height: 40px;
 }
 
-.plugin__description {
-  font-size: 16px;
-  font-weight: 500;
-  letter-spacing: 0.75px;
+:deep() p {
+  margin-bottom: 12px;
+  line-height: 24px;
   color: var(--body-text);
 }
 
-.plugin__img img {
-  height: 200px;
+:deep() ul {
+	margin-bottom: 12px;
+  line-height: 24px;
+  color: var(--body-text);
 }
 
-.plugin__img {
-  margin-bottom: 20px;
-  display: flex;
-  justify-content: center;
+:deep() li {
+  margin: 0px 0px 8px 20px;
+  line-height: 24px;
+}
+
+:deep() code {
+  background-color: var(--light-gray);
 }
 </style>
