@@ -23,6 +23,7 @@ class HandlerSchema(BaseModel):
 
     def add_to_body(self, code: str):
         code = code.replace('\'', '"')
+        code = code.replace('\n', '\\n')
         code = self._process_access_to_user_answers_in_code(code)
         code = self._process_access_to_api_response_in_code(code)
         code = self._process_access_to_username_in_code(code)
