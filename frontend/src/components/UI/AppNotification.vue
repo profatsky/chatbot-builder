@@ -81,7 +81,7 @@ const computedClasses = computed(() => ({
   line-height: 24px;
 }
 
-@media (min-width: 768px) and (max-width: 1160px) {
+@media (min-width: 768px) and (max-width: 1169px) {
   .notification {
     padding: 16px 20px;
     width: 590px;

@@ -35,7 +35,7 @@ const summary = computed(() => {
         importance="primary"
         @click="createDialogueEvent"
       >
-        Создать диалог
+        Добавить
       </AppButton>
       <AppButton 
         size="small" 

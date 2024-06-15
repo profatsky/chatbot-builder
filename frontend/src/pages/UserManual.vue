@@ -117,28 +117,29 @@ section {
 }
 
 h2 {
+  font-size: 24px;
+  line-height: 28px;
   margin-bottom: 16px;
 }
 
 h3 {
+  font-size: 18px;
+  line-height: 24px;
   margin-bottom: 12px;
 }
 
 p {
+  font-size: 16px;
+  line-height: 24px;
+  color: var(--body-text);
   margin-bottom: 12px;
-  line-height: 24px;
-  color: var(--body-text);
-}
-
-ul {
-	margin-bottom: 12px;
-  line-height: 24px;
-  color: var(--body-text);
 }
 
 li {
-  margin: 0px 0px 8px 20px;
+  font-size: 16px;
   line-height: 24px;
+  color: var(--body-text);
+  margin: 0px 0px 8px 20px;
 }
 
 a {
@@ -147,5 +148,92 @@ a {
 
 code {
   background-color: var(--light-gray);
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .page__header {
+    margin: 28px 0px 20px 0px;
+  }
+
+  .header__title {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  .toc {
+    margin-bottom: 20px;
+  }
+
+  section {
+    margin-bottom: 20px;
+  }
+
+  h2 {
+    font-size: 20px;
+    line-height: 24px;
+    margin-bottom: 12px;
+  }
+
+  h3 {
+    font-size: 14px;
+    line-height: 20px;
+    margin-bottom: 8px;
+  }
+
+  p {
+    font-size: 12px;
+    line-height: 20px;
+    margin-bottom: 8px;
+  }
+
+  li {
+    font-size: 12px;
+    line-height: 20px;
+    margin: 0px 0px 6px 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .page__header {
+    margin: 18px 0px 12px 0px;
+  }
+
+  .header__title {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  .toc {
+    margin-bottom: 16px;
+  }
+
+  section {
+    margin-bottom: 16px;
+  }
+
+  h2 {
+    font-size: 16px;
+    line-height: 18px;
+    margin-bottom: 8px;
+  }
+
+  h3 {
+    font-size: 12px;
+    line-height: 16px;
+    margin-bottom: 4px;
+  }
+
+  p {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--body-text);
+    margin-bottom: 8px;
+  }
+
+  li {
+    font-size: 12px;
+    line-height: 16px;
+    margin: 0px 0px 6px 16px;
+  }
 }
 </style>

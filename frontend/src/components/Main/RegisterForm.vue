@@ -183,6 +183,11 @@ const openLoginFormEvent = () => {
     font-size: 12px;
     line-height: 18px;
   }
+
+  .register__login-hint {
+    font-size: 12px;
+    line-height: 18px;
+  }
 }
 
 @media (max-width: 767px) { 
@@ -204,6 +209,11 @@ const openLoginFormEvent = () => {
   .register__show-password-checkbox,
   .register__personal-data-checkbox {
     gap: 4px;
+    font-size: 8px;
+    line-height: 12px;
+  }
+
+  .register__login-hint {
     font-size: 8px;
     line-height: 12px;
   }

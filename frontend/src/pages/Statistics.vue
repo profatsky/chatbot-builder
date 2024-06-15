@@ -126,7 +126,7 @@ onMounted(async () => {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .statistics__title {
     font-size: 16px;
     line-height: 20px;

@@ -84,7 +84,7 @@ const handleChooseProjectEvent = async (project) => {
             importance="secondary"
             @click="handleCreateDialogueFromTemplateEvent"
           >
-            Создать диалог
+            Добавить
           </AppButton>
         </div>
         <p class="dialogue-template__description" v-html="dialogueTemplate.description"></p>
@@ -112,14 +112,56 @@ const handleChooseProjectEvent = async (project) => {
   color: var(--body-text);
 }
 
-:deep() ul {
-	margin-bottom: 12px;
+:deep() li {
   line-height: 24px;
   color: var(--body-text);
+  margin: 0px 0px 8px 20px;
 }
 
-:deep() li {
-  margin: 0px 0px 8px 20px;
-  line-height: 24px;
+@media (min-width: 768px) and (max-width: 1169px) {
+  .page__header {
+    margin: 28px 0px 20px 0px;
+  }
+
+  .header__title {
+    font-size: 24px;
+    line-height: 28px;
+  }
+
+  :deep() p {
+    font-size: 12px;
+    line-height: 20px;
+    margin-bottom: 8px;
+  }
+
+  :deep() li {
+    font-size: 12px;
+    line-height: 20px;
+    margin: 0px 0px 6px 16px;
+  }
+}
+
+@media (max-width: 767px) {
+  .page__header {
+    margin: 18px 0px 12px 0px;
+  }
+
+  .header__title {
+    font-size: 16px;
+    line-height: 20px;
+  }
+
+  :deep() p {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--body-text);
+    margin-bottom: 8px;
+  }
+
+  :deep() li {
+    font-size: 12px;
+    line-height: 16px;
+    margin: 0px 0px 6px 16px;
+  }
 }
 </style>
