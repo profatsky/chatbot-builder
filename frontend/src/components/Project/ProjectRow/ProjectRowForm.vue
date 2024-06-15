@@ -15,8 +15,8 @@ const chooseProjectEvent = (project) => {
 </script>
 
 <template>
-  <div class="content">
-    <h2 class="content__title"><slot></slot></h2>
+  <div class="choose-project">
+    <h2 class="choose-project__title"><slot></slot></h2>
     <ProjectRowList 
       :projects="projects"
       @choose-project="chooseProjectEvent"
@@ -25,19 +25,46 @@ const chooseProjectEvent = (project) => {
 </template>
 
 <style scoped>
-.content {
+.choose-project {
+  width: 360px;
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  width: 500px;
-  padding: 0 24px;
+  gap: 16px;
 }
 
-.content__title {
-  font-size: 24px;
+.choose-project__title {
+  font-size: 28px;
   font-weight: 600px;
-  margin-top: 0;
-  margin-bottom: 28px;
+  line-height: 32px;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .choose-project {
+    width: 280px;
+    gap: 12px;
+  }
+
+  .choose-project__title {
+    font-size: 24px;
+    line-height: 28px;
+    margin-bottom: 6px;
+  }
+}
+
+@media (max-width: 767px) { 
+  .choose-project {
+    width: 200px;
+    gap: 8px
+  }
+
+  .choose-project__title {
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 4px;
+  }
 }
 </style>

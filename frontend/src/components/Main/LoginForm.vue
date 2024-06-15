@@ -38,86 +38,125 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <div class="login">
-    <h2 class="login-title">Вход</h2>
-    <form @submit.prevent="submitForm" class="login-form">
-      <AppInput
-        type="email"
-        id="email" 
-        v-model="email" 
-        required 
-        autocomplete="username"
-        placeholder="Введите Email"
-      />
-      <AppInput
-        :type="showPassword ? 'text' : 'password'" id="password" 
-        v-model="password" 
-        required 
-        autocomplete="new-password"
-        placeholder="Введите пароль"
-      />
-      <div class="login-form__show-password-checkbox">
-        <input 
-          type="checkbox" 
-          v-model="showPassword"
-        >
-        <label>Показать пароль</label>
-      </div>
-
-      <AppButton 
-        type="submit" 
-        size="medium" 
-        importance="primary"
-        class="login-form__btn"
+  <form @submit.prevent="submitForm" class="login">
+    <h2 class="login__title">Вход</h2>
+    <AppInput
+      type="email"
+      id="email" 
+      v-model="email" 
+      required 
+      autocomplete="username"
+      placeholder="Введите Email"
+      class="login__input"
+    />
+    <AppInput
+      :type="showPassword ? 'text' : 'password'" id="password" 
+      v-model="password" 
+      required 
+      autocomplete="new-password"
+      placeholder="Введите пароль"
+      class="login__input"
+    />
+    <div class="login__show-password-checkbox">
+      <input 
+        type="checkbox" 
+        v-model="showPassword"
       >
-        Войти
-      </AppButton>
-    </form>
-  </div>
+      <label>Показать пароль</label>
+    </div>
+    <AppButton 
+      type="submit" 
+      size="medium" 
+      importance="primary"
+      class="login__btn"
+    >
+      Войти
+    </AppButton>
+  </form>
 </template>
 
 <style scoped>
 .login {
+  width: 360px;
   display: flex;
   justify-content: center;
   flex-direction: column;
   align-items: center;
-  width: 500px;
-}
-
-.login-title {
-  font-size: 36px;
-  font-weight: 600px;
-  margin-top: 0;
-  margin-bottom: 28px;
-}
-
-.input {
-  width: 325px;
-  background-color: var(--light-gray);
-}
-
-.login-form {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  width: 370px;
   gap: 16px;
 }
 
-.login-form__show-password-checkbox {
+.login__title {
+  font-size: 28px;
+  font-weight: 600px;
+  line-height: 32px;
+  margin-bottom: 8px;
+}
+
+.login__input {
+  width: 312px;
+  background-color: var(--light-gray);
+}
+
+.login__show-password-checkbox {
   display: flex;
   gap: 8px;
 
   font-family: 'Montserrat', 'sans-serif';
   font-size: 16px;
+  line-height: 20px;
   letter-spacing: 0.75px;
   color: var(--body-text);
+  
   margin-right: auto;
 }
 
-.login-form__btn {
-  margin-top: 20px;
+.login__btn {
+  width: 100%;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .login {
+    width: 280px;
+    gap: 12px;
+  }
+
+  .login__title {
+    font-size: 24px;
+    line-height: 28px;
+    margin-bottom: 6px;
+  }
+
+  .login__input{
+    width: 240px;
+  }
+
+  .login__show-password-checkbox {
+    gap: 6px;
+    font-size: 12px;
+    line-height: 18px;
+  }
+}
+
+@media (max-width: 767px) { 
+  .login {
+    width: 200px;
+    gap: 8px
+  }
+
+  .login__title {
+    font-size: 16px;
+    line-height: 20px;
+    margin-bottom: 4px;
+  }
+
+  .login__input{
+    width: 184px;
+  }
+
+  .login__show-password-checkbox {
+    gap: 4px;
+    font-size: 8px;
+    line-height: 12px;
+  }
 }
 </style>
