@@ -1,5 +1,7 @@
 import asyncio
 
+from sqlalchemy import select
+
 from src.core.db import async_session_maker
 from src.enums import TriggerEventType, AnswerMessageType
 from src.models.dialogues import DialogueModel, TriggerModel
@@ -7,8 +9,21 @@ from src.models.blocks import TextBlockModel, QuestionBlockModel, CSVBlockModel
 from src.models.dialogue_templates import DialogueTemplateModel
 
 
+async def create():
+    await create_survey_dialogue_template()
+
+
 async def create_survey_dialogue_template():
     async with async_session_maker() as session:
+        existing_template = await session.execute(
+            select(DialogueTemplateModel)
+            .where(DialogueTemplateModel.name == 'Опрос')
+        )
+        existing_template = existing_template.scalar()
+
+        if existing_template:
+            return
+
         trigger = TriggerModel(
             event_type=TriggerEventType.TEXT,
             value='Опрос'
@@ -73,12 +88,26 @@ async def create_survey_dialogue_template():
             ),
         ]
 
+        description = '''
+            <p>
+                Шаблон опроса пользователей чат-бота для сбора следующей информации:
+            </p>
+            <ul>
+                <li>имя</li>
+                <li>возраст</li>
+                <li>род деятельности</li>
+                <li>номер телефона</li>
+                <li>электронная почта</li>
+            </ul>
+            <p>
+                Введенные пользователем данные будут сохранены в CSV файл под названием survey.csv
+            </p>
+        '''
+
         template = DialogueTemplateModel(
             name='Опрос',
             summary='Сбор и сохранение данных от пользователей чат-бота',
-            description='Шаблон опроса пользователей чат-бота для сбора следующей информации: имя, возраст, '
-                        'род деятельности, номер телефона и электронная почта. Введенные пользователем данные будут '
-                        'сохранены в csv-файл.',
+            description=description,
             dialogue=dialogue,
             image_path='dialogue_templates/survey.png',
         )
@@ -93,4 +122,4 @@ async def create_survey_dialogue_template():
 
 
 if __name__ == '__main__':
-    asyncio.run(create_survey_dialogue_template())
+    asyncio.run(create())

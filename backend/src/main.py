@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 
 from src.api import routers
 from src.core import settings
+from src.db_seeds.orm import seed_database
 
 app = FastAPI()
 app.mount('/api/media', StaticFiles(directory='src/media'), name='media')
@@ -31,6 +32,11 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
         status_code=exc.status_code,
         content={"detail": exc.message}
     )
+
+
+@app.on_event('startup')
+async def startup():
+    await seed_database()
 
 
 for router in routers:
