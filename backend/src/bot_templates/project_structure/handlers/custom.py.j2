@@ -57,25 +57,3 @@ async def handler_command_start(message: types.Message):
         "{{ start_message }}",
         reply_markup=start_keyboard
     )
-
-
-{% if commands_values %}
-@router.message(F.text, filters.Command('help'), filters.StateFilter(None))
-async def handler_get_commands(message: types.Message):
-    message_text = 'Список доступных команд:\n\n'
-    commands = {{ commands_values }}
-    for command in commands:
-        message_text += f'- {command}'
-
-{% if buttons_values %}
-    keyboard = main_menu_keyboard
-{% else %}
-    keyboard = None
-{% endif %}
-
-    await message.answer(
-        message_text,
-        reply_markup=keyboard
-    )
-{% endif %}
-
