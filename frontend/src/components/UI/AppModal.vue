@@ -1,11 +1,8 @@
-<script>
-export default {
-  methods: {
-    closeModal() {
-      this.$emit('closeModal');
-    }
-  }
-}
+<script setup>
+const emits = defineEmits(['close-modal']);
+const closeModal = () => {
+  emits('close-modal');
+};
 </script>
 
 <template>

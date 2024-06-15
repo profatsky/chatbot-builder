@@ -35,6 +35,10 @@ const submitForm = async () => {
   }
 }
 
+const emits = defineEmits(['open-register-form']);
+const openRegisterFormEvent = () => {
+  emits('open-register-form');
+};
 </script>
 
 <template>
@@ -72,6 +76,9 @@ const submitForm = async () => {
     >
       Войти
     </AppButton>
+    <p class="login__register-hint">
+      Нет учетной записи? <span @click="openRegisterFormEvent">Зарегистрируйтесь</span>
+    </p>
   </form>
 </template>
 
@@ -112,6 +119,16 @@ const submitForm = async () => {
 
 .login__btn {
   width: 100%;
+}
+
+.login__register-hint {
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.login__register-hint span {
+  color: var(--primary-dark);
+  cursor: pointer;
 }
 
 @media (min-width: 768px) and (max-width: 1169px) {

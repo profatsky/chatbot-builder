@@ -6,7 +6,7 @@ import RegisterForm from '@/components/Main/RegisterForm.vue';
 import LoginForm from '@/components/Main/LoginForm.vue';
 import SimpleFooter from '@/components/SimpleFooter.vue';
 import { refreshTokens } from '@/api/auth';
-import '@/style.css'
+import '@/style.css';
 
 const router = useRouter();
 
@@ -40,6 +40,16 @@ const openLoginFormHandler = async () => {
 const closeLoginFormHandler = () => {
   showLoginForm.value = false;
 };
+
+const openRegisterFormFromLoginFormHandler = () => {
+  closeLoginFormHandler();
+  openRegisterFormHandler();
+};
+
+const openLoginFormFromRegisterFormHandler = () => {
+  closeRegisterFormHandler();
+  openLoginFormHandler();
+}
 </script>
 
 <template>
@@ -48,17 +58,22 @@ const closeLoginFormHandler = () => {
     @openLoginForm="openLoginFormHandler"
   />
   <main>
-    <Suspense>
-      <AppModal 
-        v-if="showRegisterForm" @closeModal="closeRegisterFormHandler"
-      >
-        <RegisterForm/>
-      </AppModal>
-    </Suspense>
     <AppModal 
-      v-if="showLoginForm" @closeModal="closeLoginFormHandler"
+      v-if="showRegisterForm" 
+      @close-modal="closeRegisterFormHandler"
     >
-      <LoginForm/>
+      <RegisterForm
+        @open-login-form="openLoginFormFromRegisterFormHandler"
+      />
+    </AppModal>
+
+    <AppModal 
+      v-if="showLoginForm" 
+      @close-modal="closeLoginFormHandler"
+    >
+      <LoginForm
+        @open-register-form="openRegisterFormFromLoginFormHandler"
+      />
     </AppModal>
 
     <div class="container">

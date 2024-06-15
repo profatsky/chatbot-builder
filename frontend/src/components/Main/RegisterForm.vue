@@ -11,14 +11,14 @@ const confirmPassword = ref('');
 const showPassword = ref(false);
 
 const checkPasswordsMatch = () => {
-  return password.value === confirmPassword.value
-}
+  return password.value === confirmPassword.value;
+};
 
 const checkPasswordLength = () => {
   return (password.value.length >= 8 && password.value.length <= 32);
-}
+};
 
-const router = useRouter()
+const router = useRouter();
 const toast = useToast();
 
 
@@ -44,7 +44,12 @@ const submitForm = async () => {
     toast.success(response.value.data.detail)
     router.push({ path: '/profile' })
   }
-}
+};
+
+const emits = defineEmits(['open-login-form']);
+const openLoginFormEvent = () => {
+  emits('open-login-form');
+};
 </script>
 
 <template>
@@ -95,6 +100,9 @@ const submitForm = async () => {
     >
       Зарегистрироваться
     </AppButton>
+    <p class="register__login-hint">
+      Уже зарегистрированы? <span @click="openLoginFormEvent">Войдите</span>
+    </p>
   </form>
 </template>
 
@@ -141,6 +149,16 @@ const submitForm = async () => {
 
 .register__btn {
   width: 100%;
+}
+
+.register__login-hint {
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.register__login-hint span {
+  color: var(--primary-dark);
+  cursor: pointer;
 }
 
 @media (min-width: 768px) and (max-width: 1169px) {
