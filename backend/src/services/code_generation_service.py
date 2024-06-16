@@ -296,7 +296,8 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
 
         if states_group:
             handler.add_to_body(code.clear_state)
-            handler.add_to_body(code.call_start_func)
+
+        handler.add_to_body(code.call_start_func)
         handlers.append(handler)
 
     if not start_keyboard.buttons:
@@ -364,7 +365,7 @@ def _get_template(file_path: str) -> Template:
         template_str = f.read()
 
     env = Environment(
-        loader=FileSystemLoader('src/bot_templates/'),
+        loader=FileSystemLoader(os.path.join('src', 'bot_templates')),
         trim_blocks=True,
         lstrip_blocks=True,
     )

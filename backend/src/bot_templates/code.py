@@ -134,7 +134,7 @@ def is_email(string: str) -> bool:
 
 is_phone_number = '''
 def is_phone_number(string: str) -> bool:
-    pattern = r"^+[0-9][0-9]{10}$"
+    pattern = r"^\+[0-9][0-9]{10}$"
     return bool(re.fullmatch(pattern, string))
 '''
 

@@ -16,7 +16,7 @@ async def send_start_msg_to_admin():
         raise ValueError('Вы не указали ADMIN_ID в файле .env!')
 
     try:
-        await bot.send_message(chat_id=int(config.ADMIN_ID), text='Бот запущен!')
+        await bot.send_message(chat_id=int(config.ADMIN_ID), text='Бот запущен! Напишите команду /start')
     except aiogram.exceptions.TelegramForbiddenError:
         logging.error(
             'Не удалось отправить сообщение о запуске чат-бота администратору! Администратор заблокировал чат-бота'
