@@ -23,7 +23,6 @@ class HandlerSchema(BaseModel):
 
     def add_to_body(self, code: str):
         code = code.replace('\'', '"')
-        code = code.replace('\n', '\\n')
         code = self._process_access_to_user_answers_in_code(code)
         code = self._process_access_to_api_response_in_code(code)
         code = self._process_access_to_username_in_code(code)
@@ -72,10 +71,15 @@ class HandlerSchema(BaseModel):
     def _format_string_if_pattern_found(pattern: str, code: str) -> str:
         search_from = 0
         while match := re.search(pattern, code[search_from:]):
+
             quote_index = code.rfind('"', 0, match.start() + search_from)
-            if quote_index != -1 and code[quote_index - 1] != 'f':
-                code = code[:quote_index] + 'f' + code[quote_index:]
-                search_from += 1
+            while quote_index != -1 and code[quote_index - 1] != 'f':
+                if code[quote_index - 1] == '\\':
+                    quote_index = code.rfind('"', 0, quote_index - 1)
+                else:
+                    code = code[:quote_index] + 'f' + code[quote_index:]
+                    search_from += 1
+                    break
 
             search_from += match.end()
 

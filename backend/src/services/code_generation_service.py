@@ -20,6 +20,7 @@ from src.schemas.projects_schemas import ProjectToGenerateCodeReadSchema
 from src.services import projects_service
 from src.services.exceptions.dialogues_exceptions import NoDialoguesInProject
 from src.bot_templates import code
+from src.utils.blocks_utils import escape_inner_text
 
 BOT_FILE_TEMPLATES_DIR = os.path.join('src', 'bot_templates', 'project_structure')
 
@@ -187,7 +188,9 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
                 continue
 
             if block.type == BlockType.TEXT_BLOCK.value:
-                handler.add_to_body(code.message_answer.format(message_text=block.message_text))
+                handler.add_to_body(
+                    code.message_answer.format(message_text=escape_inner_text(block.message_text))
+                )
 
             elif block.type == BlockType.IMAGE_BLOCK.value:
                 image_path_in_bot_project = os.path.join('img/', os.path.basename(block.image_path))
@@ -203,7 +206,9 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
                     states_groups.append(states_group)
 
                     handler.add_to_body(
-                        code.message_answer_with_reply_kb_remove.format(message_text=block.message_text)
+                        code.message_answer_with_reply_kb_remove.format(
+                            message_text=escape_inner_text(block.message_text)
+                        )
                     )
 
                     handler.add_to_body(
@@ -227,7 +232,9 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
                     states_groups[-1].states.append(state)
 
                     handler.add_to_body(
-                        code.message_answer_with_reply_kb_remove.format(message_text=block.message_text)
+                        code.message_answer_with_reply_kb_remove.format(
+                            message_text=escape_inner_text(block.message_text)
+                        )
                     )
                     handler.add_to_body(
                         code.set_state.format(states_group_name=states_group.name, state_name=state.name)
@@ -258,9 +265,9 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
             elif block.type == BlockType.EMAIL_BLOCK.value:
                 handler.add_to_body(
                     code.email_block.format(
-                        recipient_email=block.recipient_email,
-                        subject=block.subject,
-                        text=block.text,
+                        recipient_email=escape_inner_text(block.recipient_email),
+                        subject=escape_inner_text(block.subject),
+                        text=escape_inner_text(block.text),
                     )
                 )
 

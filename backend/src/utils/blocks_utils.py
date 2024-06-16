@@ -57,3 +57,7 @@ def get_block_schema_by_type(block_type: BlockType) -> Type[UnionBlockReadSchema
     }
 
     return types_to_blocks[block_type]
+
+
+def escape_inner_text(text: str) -> str:
+    return text.replace('"', '\\"').replace('\n', '\\n')
