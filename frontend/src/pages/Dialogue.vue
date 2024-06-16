@@ -73,7 +73,6 @@ const handleUpdateBlockEvent = async (editedBlock) => {
     );
     if (index !== -1) {
       blocks.value[index] = responseData;
-      toast.success('Данные о блоке обновлены');
     }
   }
 };
