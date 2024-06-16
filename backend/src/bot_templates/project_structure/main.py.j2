@@ -19,8 +19,12 @@ async def send_start_msg_to_admin():
         await bot.send_message(chat_id=int(config.ADMIN_ID), text='Бот запущен!')
     except aiogram.exceptions.TelegramForbiddenError:
         logging.error(
-            'Не удалось отправить сообщение администратору чат-бота! '
-            'Администратор заблокировал чат-бота или пока не разрешил чат-боту отправлять сообщения!'
+            'Не удалось отправить сообщение о запуске чат-бота администратору! Администратор заблокировал чат-бота'
+        )
+    except aiogram.exceptions.TelegramBadRequest:
+        logging.error(
+            'Не удалось отправить сообщение о запуске чат-бота администратору! Администратор пока не разрешил '
+            'отправлять сообщения чат-боту или указан некорректный ADMIN_ID в файле .env!'
         )
 
 
