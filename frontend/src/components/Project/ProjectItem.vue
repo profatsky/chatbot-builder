@@ -62,11 +62,11 @@ const deleteProjectEvent = () => {
 };
 
 const handleRemovePluginEvent = async (plugin) => {
+  editedProject.plugins = editedProject.plugins.filter(p => p.plugin_id !== plugin.plugin_id);
   const { response, error } = await removePluginFromProject(editedProject.project_id, plugin.plugin_id);
   if (error.value) {
     toast.error('Что-то пошло не так...');
   } else {
-    editedProject.plugins = editedProject.plugins.filter(p => p.plugin_id !== plugin.plugin_id);
     toast.success('Плагин успешно удален');
   }
 };
@@ -82,7 +82,7 @@ const handleUpdateDialogueEvent = async (dialogue) => {
       toast.warning('Команда не должна содержать пробелов');
       dialogue.trigger.value = dialogue.trigger.value.replace(/\s/g, '');
     };
-  }
+  };
 
   const { response, error } = await updateDialogueTrigger(
     editedProject.project_id,
@@ -102,11 +102,11 @@ const handleUpdateDialogueEvent = async (dialogue) => {
 };
 
 const handleDeleteDialogueEvent = async (dialogue) => {
+  editedProject.dialogues = editedProject.dialogues.filter(d => d.dialogue_id !== dialogue.dialogue_id);
   const { response, error } = await deleteDialogue(editedProject.project_id, dialogue.dialogue_id);
   if (error.value) {
     toast.error('Что-то пошло не так...');
   } else {
-    editedProject.dialogues = editedProject.dialogues.filter(d => d.dialogue_id !== dialogue.dialogue_id);
     toast.success('Диалог успешно удален');
   }
 };
@@ -115,7 +115,7 @@ const handleCreateDialogueEvent = async () => {
   if (editedProject.dialogues.length >= 10) {
     toast.error('В этом чат-боте максимальное количество диалогов!');
     return;
-  }
+  };
 
   const dialogue = {
     triggerEventType: 'text',

@@ -29,11 +29,11 @@ const handleUpdateProjectEvent = async (editedProject) => {
 };
 
 const handleDeleteProjectEvent = async (projectId) => {
+  projects.value = projects.value.filter(p => p.project_id !== projectId);
   const { response, error } = await deleteProject(projectId);
   if (error.value) {
     toast.error('Что-то пошло не так...');
   } else {
-    projects.value = projects.value.filter(p => p.project_id !== projectId);
     toast.success('Чат-бот успешно удален');
   }
 };
@@ -84,7 +84,7 @@ const handleDownloadCodeEvent = async (projectId) => {
 onMounted(async () => {
   const { response, error } = await getUserProjects();
   if (error.value) {
-    toast.error('Что-то пошло не так...')
+    toast.error('Что-то пошло не так...');
   } else {
     isProjectsLoading.value = false;
     const responseData = response.value.data;

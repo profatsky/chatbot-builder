@@ -79,19 +79,18 @@ const handleUpdateBlockEvent = async (editedBlock) => {
 };
 
 const handleDeleteBlockEvent = async (block) => {
+  blocks.value = blocks.value.filter(b => b.block_id !== block.block_id);
   const { response, error } = await deleteBlock(
     route.params.projectId,
     route.params.dialogueId,
     block.block_id
   );
-
   if (error.value) {
-    toast.error('Что-то пошло не так...')
+    toast.error('Что-то пошло не так...');
   } else {
-    await getBlocksFromApi();
-    toast.success('Блок успешно удален')
+    toast.success('Блок успешно удален');
   }
-}
+};
 
 const handleUploadImageEvent = async (editedBlock, formData) => {
   const { response, error } = await uploadImage(
