@@ -37,22 +37,29 @@ const handleCreateDialogueFromTemplateEvent = async (dialogueTemplate) => {
   const { response, error } = await getUserProjects();
   if (error.value) {
     toast.error('Что-то пошло не так...');
-  } else {
-    const responseData = response.value.data;
-    if (responseData.length === 0) {
-      toast.error('Вы еще не создали ни одного чат-бота!')
-    } else {
-      projects.value = responseData;
-      chosenDialogueTemplate.value = dialogueTemplate;
-      openProjectsListForm();
-    }
-  }
+    return;
+  };
+  
+  projects.value = response.value.data;
+  if (projects.value.length === 0) {
+    toast.error('Вы еще не создали ни одного чат-бота!');
+    return;
+  };
+  
+  projects.value = projects.value.filter(p => p.dialogues.length < 10);
+  if (projects.value.length === 0) {
+    toast.error('Все ваши чат-боты имеют максимальное количество диалогов!');
+    return;
+  };
+
+  chosenDialogueTemplate.value = dialogueTemplate;
+  openProjectsListForm();
 };
 
 const handleChooseProjectEvent = async (project) => {
   const { response, error } = await createDialogueFromTemplate(project.project_id, chosenDialogueTemplate.value.template_id);
   if (error.value) {
-    toast.error('Что-то пошло не так...')
+    toast.error('Что-то пошло не так...');
   } else {
     toast.success('Диалог создан с помощью шаблона');
   }

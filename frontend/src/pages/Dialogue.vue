@@ -50,11 +50,11 @@ const handleAddBlockEvent = async (blockType) => {
     newBlock
   );
   if (error.value) {
-    toast.error('Что-то пошло не так...')
+    toast.error('Что-то пошло не так...');
   } else {
     const responseData = response.value.data;
     blocks.value.push(responseData);
-    toast.success('Новый блок успешно добавлен')
+    toast.success('Новый блок успешно добавлен');
   }
 };
 
@@ -119,7 +119,7 @@ const getBlocksFromApi = async () => {
   );
 
   if (error.value) {
-    toast.error('Что-то пошло не так...')
+    toast.error('Что-то пошло не так...');
   } else {
     isBlocksLoading.value = false;
     const responseData = response.value.data;

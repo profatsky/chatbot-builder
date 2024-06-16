@@ -5,7 +5,6 @@ import { useToast } from 'vue-toast-notification';
 
 import { getDialogueTemplate, createDialogueFromTemplate } from '@/api/dialogueTemplates';
 import { getUserProjects } from '@/api/projects';
-import apiClient from '@/api/apiClient';
 
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import ProjectRowForm from '@/components/Project/ProjectRow/ProjectRowForm.vue'
@@ -38,21 +37,28 @@ const handleCreateDialogueFromTemplateEvent = async () => {
   const { response, error } = await getUserProjects();
   if (error.value) {
     toast.error('Что-то пошло не так...');
-  } else {
-    const responseData = response.value.data;
-    if (responseData.length === 0) {
-      toast.error('Вы еще не создали ни одного чат-бота!')
-    } else {
-      projects.value = responseData;
-      openProjectsListForm();
-    }
-  }
+    return;
+  };
+  
+  projects.value = response.value.data;
+  if (projects.value.length === 0) {
+    toast.error('Вы еще не создали ни одного чат-бота!');
+    return;
+  };
+
+  projects.value = projects.value.filter(p => p.dialogues.length < 10);
+  if (projects.value.length === 0) {
+    toast.error('Все ваши чат-боты имеют максимальное количество диалогов!');
+    return;
+  };
+
+  openProjectsListForm();
 };
 
 const handleChooseProjectEvent = async (project) => {
   const { response, error } = await createDialogueFromTemplate(project.project_id, dialogueTemplate.value.template_id);
   if (error.value) {
-    toast.error('Что-то пошло не так...')
+    toast.error('Что-то пошло не так...');
   } else {
     toast.success('Диалог создан с помощью шаблона');
   }
