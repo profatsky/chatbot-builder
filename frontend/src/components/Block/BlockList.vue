@@ -62,6 +62,21 @@ onBeforeMount(() => { numberQuestionBlocks() });
 <style scoped>
 .block-list__hint {
   font-size: 24px;
+  line-height: 28px;
   align-items: center;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .block-list__hint {
+    font-size: 16px;
+    line-height: 20px;
+  }
+}
+
+@media (max-width: 767px) { 
+  .block-list__hint {
+    font-size: 12px;
+    line-height: 16px;
+  }
 }
 </style>

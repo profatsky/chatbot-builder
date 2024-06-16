@@ -6,6 +6,7 @@ import { useToast } from 'vue-toast-notification';
 import SidebarNavigation from '@/components/Sidebar/SidebarNavigation.vue';
 import BlockList from '@/components/Block/BlockList.vue';
 import BlockTypeList from '@/components/Block/BlockType/BlockTypeList.vue';
+import BlockTypeListForm from '@/components/Block/BlockType/BlockTypeListForm.vue';
 import blockObjects from '@/components/Block/blocks'
 
 import msgPurpleIcon from '@/assets/icons/blocks/msg-purple.svg';
@@ -144,13 +145,13 @@ onMounted(async () => await getBlocksFromApi());
   <SidebarNavigation/>
   <main>
     <AppModal 
-      v-if="showBlockTypesModal" @closeModal="closeBlockTypesModal"
+      v-if="showBlockTypesModal" 
+      @close-modal="closeBlockTypesModal"
     >
-        <p class="hint">Чтобы добавить блок, нажмите на него</p>
-        <BlockTypeList
-          :blockTypes="blockTypes"
-          @add-block="handleAddBlockEvent"
-        />
+      <BlockTypeListForm
+        :blockTypes="blockTypes"
+        @add-block="handleAddBlockEvent"
+      />
     </AppModal>
     <div class="container">
       <div class="page__content">
@@ -202,7 +203,7 @@ onMounted(async () => await getBlocksFromApi());
 }
 
 .add-block-btn {
-  display: none
+  display: none;
 }
 
 .page__hint {

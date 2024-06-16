@@ -107,12 +107,14 @@ const handleChooseProjectEvent = async (project) => {
 }
 
 :deep() p {
-  margin-bottom: 12px;
+  font-size: 16px;
   line-height: 24px;
   color: var(--body-text);
+  margin-bottom: 12px;
 }
 
 :deep() li {
+  font-size: 16px;
   line-height: 24px;
   color: var(--body-text);
   margin: 0px 0px 8px 20px;

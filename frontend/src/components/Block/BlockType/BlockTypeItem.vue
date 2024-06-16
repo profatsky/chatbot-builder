@@ -11,7 +11,6 @@ const emits = defineEmits(['add-block']);
 const addBlockEvent = () => {
   emits('add-block', props.blockType);
 };
-
 </script>
 
 <template>
@@ -45,5 +44,35 @@ const addBlockEvent = () => {
 .block-type img {
   width: 32px;
   height: 32px;
+}
+
+@media (min-width: 768px) and (max-width: 1169px) {
+  .block-type {
+    font-size: 16px;
+    line-height: 20px;
+    gap: 6px;
+    padding: 12px 16px 16px 16px;
+    border-radius: 12px;
+  }
+
+  .block-type img {
+    width: 28px;
+    height: 28px;
+  }
+}
+
+@media (max-width: 767px) {
+  .block-type {
+    font-size: 12px;
+    line-height: 16px;
+    gap: 4px;
+    padding: 10px 14px 14px 14px;
+    border-radius: 8px;
+  }
+
+  .block-type img {
+    width: 24px;
+    height: 24px;
+  }
 }
 </style>
