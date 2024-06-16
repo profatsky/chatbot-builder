@@ -9,21 +9,21 @@ const props = defineProps({
   }
 });
 
-const editedBlock = reactive({ ...props.block })
+const editedBlock = reactive({ ...props.block });
 
 const emits = defineEmits(['update-text-in-block', 'update-block', 'delete-block']);
 
 const updateBlockTextEvent = () => {
-  emits('update-text-in-block', editedBlock)
+  emits('update-text-in-block', editedBlock);
 };
 
 const updateBlockHttpMethodEvent = () => {
-  emits('update-block', editedBlock)
+  emits('update-block', editedBlock);
 };
 
 const updateBlockHeadersEvent = (headers) => {
   editedBlock.headers = headers;
-  emits('update-block', editedBlock)
+  emits('update-block', editedBlock);
 };
 
 const updateBlockBodyEvent = (body) => {
@@ -35,11 +35,11 @@ const updateBlockBodyEvent = (body) => {
     }
   }
   editedBlock.body = body;
-  emits('update-block', editedBlock)
+  emits('update-block', editedBlock);
 }
 
 const deleteBlockEvent = () => {
-  emits('delete-block', editedBlock)
+  emits('delete-block', editedBlock);
 };
 
 

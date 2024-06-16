@@ -180,6 +180,7 @@ const openRegisterFormEvent = () => {
     font-size: 8px;
     line-height: 12px;
   }
+  
   .login__register-hint {
     font-size: 8px;
     line-height: 12px;
