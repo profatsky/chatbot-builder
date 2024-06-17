@@ -71,7 +71,7 @@ async def create_survey_dialogue_template():
             ),
             CSVBlockModel(
                 sequence_number=7,
-                file_path='survey.csv',
+                file_path='survey',
                 data={
                     'name': '<answers[1]>',
                     'age': '<answers[2]>',

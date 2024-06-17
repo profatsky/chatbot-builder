@@ -62,7 +62,7 @@ email_block = '''
 
 csv_block = '''
     # Сохранение данных в csv
-    with open("{file_path}", "a", encoding="utf-8", newline="") as csv_file:
+    with open("{file_path}.csv", "a", encoding="utf-8", newline="") as csv_file:
         writer = csv.DictWriter(csv_file, fieldnames={data}.keys())
         if csv_file.tell() == 0:
             writer.writeheader()

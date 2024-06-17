@@ -161,7 +161,7 @@ class AddProductState(StatesGroup):
 
 @router.message(filters.StateFilter(None), filters.Command("add_product"))
 async def add_product_command(message: types.Message):
-    if message.message_id == int(config.ADMIN_ID):
+    if message.from_user.id == int(config.ADMIN_ID):
         await message.answer(
             "❗ Для добавления товара необходимо предоставить следующие данные о нем:\n\n"
             "- ✏ Название\n\n"
