@@ -99,7 +99,7 @@ const handleChooseProjectEvent = async (project) => {
 
 <style scoped>
 .page__header {
-  margin: 32px 0px 20px 0px;
+  margin: 32px 0px 28px 0px;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -130,7 +130,7 @@ const handleChooseProjectEvent = async (project) => {
 
 @media (min-width: 768px) and (max-width: 1169px) {
   .page__header {
-    margin: 28px 0px 20px 0px;
+    margin: 28px 0px 24px 0px;
   }
 
   .header__title {
@@ -139,21 +139,21 @@ const handleChooseProjectEvent = async (project) => {
   }
 
   :deep() p {
-    font-size: 12px;
-    line-height: 20px;
-    margin-bottom: 8px;
+    font-size: 14px;
+    line-height: 18px;
+    margin-bottom: 12px;
   }
 
   :deep() li {
-    font-size: 12px;
-    line-height: 20px;
-    margin: 0px 0px 6px 16px;
+    font-size: 14px;
+    line-height: 18px;
+    margin: 0px 0px 8px 16px;
   }
 }
 
 @media (max-width: 767px) {
   .page__header {
-    margin: 18px 0px 12px 0px;
+    margin: 18px 0px 14px 0px;
   }
 
   .header__title {
