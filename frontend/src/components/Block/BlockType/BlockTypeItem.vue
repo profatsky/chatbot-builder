@@ -20,7 +20,7 @@ const addBlockEvent = () => {
   </div>
 </template>
 
-<style scoped>
+<style>
 .block-type {
   font-size: 16px;
   font-weight: 500;

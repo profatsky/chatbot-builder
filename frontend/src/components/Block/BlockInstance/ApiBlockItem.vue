@@ -36,13 +36,11 @@ const updateBlockBodyEvent = (body) => {
   }
   editedBlock.body = body;
   emits('update-block', editedBlock);
-}
+};
 
 const deleteBlockEvent = () => {
   emits('delete-block', editedBlock);
 };
-
-
 </script>
 
 <template>
@@ -161,7 +159,7 @@ const deleteBlockEvent = () => {
 
     <div class="block__request-body">
       <p class="block__hint">
-        Укажите содержимое тела запроса. Строковые значения необходимо указывать в двойных кавычках
+        Укажите содержимое тела запроса
       </p>
 
       <KeyValueTable
