@@ -41,16 +41,17 @@ class HandlerSchema(BaseModel):
         return result
 
     def _process_access_to_api_response_in_code(self, code: str) -> str:
-        pattern = r'<response\[\\"([a-zA-Z0-9_-]+)\\"\]>'
+        pattern = r'<response(.*?)>'
 
         code = self._format_string_if_pattern_found(pattern, code)
 
-        def replace_match(match):
-            return "{response_data.get('" + match.group(1) + "')}"
+        matches = re.finditer(pattern, code)
+        for match in matches:
+            response_content = match.group(1).replace('\\"', '\'')
+            replaced_content = re.sub(r'\[([^\[\]]+)\]', r'.get(\1)', response_content)
+            code = code.replace(match.group(0), f'{{response_data{replaced_content}}}')
 
-        result = re.sub(pattern, replace_match, code)
-
-        return result
+        return code
 
     def _process_access_to_username_in_code(self, code: str) -> str:
         pattern = r'<username>'
