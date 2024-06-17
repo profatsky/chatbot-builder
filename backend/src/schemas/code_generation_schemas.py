@@ -48,7 +48,7 @@ class HandlerSchema(BaseModel):
         matches = re.finditer(pattern, code)
         for match in matches:
             response_content = match.group(1).replace('\\"', '\'')
-            replaced_content = re.sub(r'\[([^\[\]]+)\]', r'.get(\1)', response_content)
+            replaced_content = re.sub(r'\[([^\[\]]+)\]', r'.get(\1, {})', response_content)
             code = code.replace(match.group(0), f'{{response_data{replaced_content}}}')
 
         return code
