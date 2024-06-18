@@ -531,7 +531,6 @@ section {
     font-size: 12px;
     line-height: 20px;
     margin-bottom: 20px;
-    text-align: justify;
   }
 
   .advantages {

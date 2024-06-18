@@ -106,6 +106,7 @@ const openRegisterFormEvent = () => {
 
 .login__show-password-checkbox {
   display: flex;
+  align-items: center;
   gap: 8px;
 
   font-family: 'Montserrat', 'sans-serif';
@@ -117,6 +118,11 @@ const openRegisterFormEvent = () => {
   margin-right: auto;
 }
 
+.login__show-password-checkbox input {
+  width: 13px;
+  height: 13px;
+}
+
 .login__btn {
   width: 100%;
 }
@@ -124,11 +130,17 @@ const openRegisterFormEvent = () => {
 .login__register-hint {
   font-size: 16px;
   line-height: 20px;
+  color: var(--body-text);
 }
 
 .login__register-hint span {
-  color: var(--primary-dark);
+  font-weight: 500;
+  color: var(--primary);
   cursor: pointer;
+}
+
+.login__register-hint span:hover {
+  text-decoration: underline;
 }
 
 @media (min-width: 768px) and (max-width: 1169px) {
@@ -151,6 +163,11 @@ const openRegisterFormEvent = () => {
     gap: 6px;
     font-size: 12px;
     line-height: 18px;
+  }
+
+  .login__show-password-checkbox input {
+    width: 13px;
+    height: 13px;
   }
 
   .login__register-hint {
@@ -179,6 +196,11 @@ const openRegisterFormEvent = () => {
     gap: 4px;
     font-size: 8px;
     line-height: 12px;
+  }
+
+  .login__show-password-checkbox input {
+    width: 10px;
+    height: 10px;
   }
   
   .login__register-hint {

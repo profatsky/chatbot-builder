@@ -86,7 +86,7 @@ const openLoginFormEvent = () => {
     </div>
 
     <div class="register__personal-data-checkbox">
-      <input type="checkbox" required>
+      <input type="checkbox" required class="test">
       <label>
         Я даю свое согласие на <a href="/personal-data-processing-policy" target="_blank">обработку моих персональных данных</a>
       </label>
@@ -131,6 +131,7 @@ const openLoginFormEvent = () => {
 .register__show-password-checkbox,
 .register__personal-data-checkbox {
   display: flex;
+  align-items: center;
   gap: 8px;
 
   font-family: 'Montserrat', 'sans-serif';
@@ -142,9 +143,18 @@ const openLoginFormEvent = () => {
   margin-right: auto;
 }
 
+.register__show-password-checkbox input,
+.register__personal-data-checkbox input {
+  width: 13px;
+  height: 13px;
+}
 .register__personal-data-checkbox a {
   font-weight: 500;
-  color: var(--primary-dark);
+  color: var(--primary);
+}
+
+.register__personal-data-checkbox a:hover {
+  text-decoration: underline;
 }
 
 .register__btn {
@@ -154,11 +164,17 @@ const openLoginFormEvent = () => {
 .register__login-hint {
   font-size: 16px;
   line-height: 20px;
+  color: var(--body-text);
 }
 
 .register__login-hint span {
-  color: var(--primary-dark);
+  font-weight: 500;
+  color: var(--primary);
   cursor: pointer;
+}
+
+.register__login-hint span:hover {
+  text-decoration: underline;
 }
 
 @media (min-width: 768px) and (max-width: 1169px) {
@@ -182,6 +198,12 @@ const openLoginFormEvent = () => {
     gap: 6px;
     font-size: 12px;
     line-height: 18px;
+  }
+
+  .register__show-password-checkbox input,
+  .register__personal-data-checkbox input {
+    width: 13px;
+    height: 13px;
   }
 
   .register__login-hint {
@@ -211,6 +233,12 @@ const openLoginFormEvent = () => {
     gap: 4px;
     font-size: 8px;
     line-height: 12px;
+  }
+
+  .register__show-password-checkbox input,
+  .register__personal-data-checkbox input {
+    width: 10px;
+    height: 10px;
   }
 
   .register__login-hint {
