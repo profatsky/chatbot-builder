@@ -310,7 +310,7 @@ def _generate_custom_handlers_code(project: ProjectToGenerateCodeReadSchema) -> 
         'handlers': handlers,
         'commands_values': commands_values,
         'start_keyboard': start_keyboard,
-        'start_message': project.start_message if project.start_message else 'Главное меню',
+        'start_message': escape_inner_text(project.start_message) if project.start_message else 'Главное меню',
     })
     return bot_code
 
