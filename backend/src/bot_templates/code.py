@@ -79,7 +79,7 @@ api_block = '''
             async with session.{aiohttp_session_method}(
                     url=url,
                     headers={headers},
-                    data={body}
+                    json={body}
             ) as response:
                 response_data = await response.json()
         except aiohttp.ClientError as e:
