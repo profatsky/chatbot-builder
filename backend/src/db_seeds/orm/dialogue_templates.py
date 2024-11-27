@@ -4,9 +4,9 @@ from sqlalchemy import select
 
 from src.core.db import async_session_maker
 from src.enums import TriggerEventType, AnswerMessageType
-from src.models.dialogues import DialogueModel, TriggerModel
-from src.models.blocks import TextBlockModel, QuestionBlockModel, CSVBlockModel
-from src.models.dialogue_templates import DialogueTemplateModel
+from src.dialogues.models import DialogueModel, TriggerModel
+from src.blocks.models import TextBlockModel, QuestionBlockModel, CSVBlockModel
+from src.dialogue_templates.models import DialogueTemplateModel
 
 
 async def create():

@@ -9,7 +9,12 @@ from alembic import context
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
-from src.models import *
+from src.users.models import *
+from src.projects.models import *
+from src.dialogues.models import *
+from src.dialogue_templates.models import *
+from src.blocks.models import *
+from src.plugins.models import *
 from src.core.db import get_postgres_dsn, Base
 
 config = context.config

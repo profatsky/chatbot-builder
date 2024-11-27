@@ -3,8 +3,8 @@ import asyncio
 from sqlalchemy import select
 
 from src.core.db import async_session_maker
-from src.models import PluginModel
-from src.schemas.plugins_schemas import PluginCreateSchema
+from src.plugins.models import PluginModel
+from src.plugins.schemas import PluginCreateSchema
 
 
 async def create():

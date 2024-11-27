@@ -6,12 +6,13 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
-from src.api import routers
 from src.core import settings
+from src.core.router import get_app_router
 from src.db_seeds.orm import seed_database
 
 app = FastAPI()
 app.mount('/api/media', StaticFiles(directory='src/media'), name='media')
+app.include_router(get_app_router())
 
 origins = [
     settings.CLIENT_APP_URL,
@@ -38,9 +39,6 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
 async def startup():
     await seed_database()
 
-
-for router in routers:
-    app.include_router(router, prefix='/api')
 
 if __name__ == '__main__':
     uvicorn.run(
