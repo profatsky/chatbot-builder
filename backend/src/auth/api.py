@@ -8,9 +8,8 @@ from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.auth.dependencies.services_dependencies import AuthServiceDI
 from src.core import settings
 from src.auth.schemas import AuthCredentialsSchema, Password
-from src.core.dependencies.db_dependencies import AsyncSessionDI
-from src.users import services as users_service
 from src.users import exceptions as users_exceptions
+from src.users.dependencies.services_dependencies import UserServiceDI
 
 router = APIRouter(tags=['auth'])
 
@@ -18,11 +17,11 @@ router = APIRouter(tags=['auth'])
 @router.post('/register', status_code=status.HTTP_201_CREATED)
 async def register(
         credentials: AuthCredentialsSchema,
-        session: AsyncSessionDI,
         auth_service: AuthServiceDI,
+        user_service: UserServiceDI,
 ):
     try:
-        user = await users_service.create_user(credentials, session)
+        user = await user_service.create_user(credentials)
     except users_exceptions.UserAlreadyExists:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -36,15 +35,15 @@ async def register(
 # Нужно отправлять csrf_access_token в заголовке X-CSRF-Token
 @router.post('/request-email-verification')
 async def request_email_verification(
-        session: AsyncSessionDI,
         auth_jwt: AuthJWTDI,
         auth_service: AuthServiceDI,
+        user_service: UserServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        user = await users_service.get_user_by_id(user_id, session)
+        user = await user_service.get_user_by_id(user_id)
     except users_exceptions.UserNotFound:
         await auth_service.unset_auth_tokens()
         raise HTTPException(
@@ -76,8 +75,8 @@ async def request_email_verification(
 async def verify_email(
         user_id: int,
         code: int,
-        session: AsyncSessionDI,
         auth_service: AuthServiceDI,
+        user_service: UserServiceDI,
 ):
     saved_code = auth_service.get_email_verification_code(user_id)
     if saved_code is None or saved_code != code:
@@ -89,7 +88,7 @@ async def verify_email(
     auth_service.remove_email_verification_code(user_id)
 
     try:
-        user = await users_service.set_verified_status_for_user(user_id, session)
+        user = await user_service.set_verified_status_for_user(user_id)
     except users_exceptions.UserNotFound:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -105,26 +104,25 @@ async def verify_email(
 @router.post('/request-email-change')
 async def request_email_change(
         new_email: Annotated[EmailStr, Body(embed=True)],
-        session: AsyncSessionDI,
         auth_jwt: AuthJWTDI,
         auth_service: AuthServiceDI,
+        user_service: UserServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
-    user_with_same_email = await users_service.get_user_by_email(new_email, session)
+    user_with_same_email = await user_service.get_user_by_email(new_email)
     if user_with_same_email:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='User with this email already exists'
         )
 
-    user = await users_service.get_user_by_id(user_id, session)
+    user = await user_service.get_user_by_id(user_id)
     if not user.is_verified:
-        user = await users_service.change_user_email_and_set_unverified_status(
+        user = await user_service.change_user_email_and_set_unverified_status(
             user_id=user_id,
             new_email=new_email,
-            session=session,
         )
         await auth_service.set_auth_tokens(user.user_id)
         return {'detail': 'Your last email was not verified. Email change was successful'}
@@ -148,9 +146,9 @@ async def request_email_change(
 async def verify_email_change(
         user_id: int,
         code: int,
-        session: AsyncSessionDI,
         auth_jwt: AuthJWTDI,
         auth_service: AuthServiceDI,
+        user_service: UserServiceDI,
 ):
     try:
         saved_code, new_email = auth_service.get_email_and_change_verification_code(user_id)
@@ -164,10 +162,9 @@ async def verify_email_change(
 
     auth_service.remove_email_change_verification_code(user_id)
 
-    user = await users_service.change_user_email_and_set_unverified_status(
+    user = await user_service.change_user_email_and_set_unverified_status(
         user_id=user_id,
         new_email=new_email,
-        session=session,
     )
     await auth_service.set_auth_tokens(user.user_id, auth_jwt)
 
@@ -178,15 +175,15 @@ async def verify_email_change(
 @router.post('/request-change-password')
 async def request_change_password(
         new_password: Annotated[Password, Body(embed=True)],
-        session: AsyncSessionDI,
         auth_jwt: AuthJWTDI,
         auth_service: AuthServiceDI,
+        user_service: UserServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        user = await users_service.get_user_by_id(user_id, session)
+        user = await user_service.get_user_by_id(user_id)
     except users_exceptions.UserNotFound:
         await auth_service.unset_auth_tokens()
         raise HTTPException(
@@ -218,8 +215,8 @@ async def request_change_password(
 async def verify_password_change(
         user_id: int,
         code: int,
-        session: AsyncSessionDI,
         auth_service: AuthServiceDI,
+        user_service: UserServiceDI,
 ):
     try:
         saved_code, new_password = auth_service.get_password_and_change_verification_code(user_id)
@@ -234,10 +231,9 @@ async def verify_password_change(
     auth_service.remove_password_change_verification_code(user_id)
 
     try:
-        user = await users_service.change_user_password(
+        user = await user_service.change_user_password(
             user_id=user_id,
             new_password=new_password,
-            session=session,
         )
     except users_exceptions.UserNotFound:
         raise HTTPException(
@@ -253,11 +249,11 @@ async def verify_password_change(
 @router.post('/login')
 async def login(
         credentials: AuthCredentialsSchema,
-        session: AsyncSessionDI,
         auth_service: AuthServiceDI,
+        user_service: UserServiceDI,
 ):
     try:
-        user = await users_service.get_user_by_credentials(credentials, session)
+        user = await user_service.get_user_by_credentials(credentials)
     except users_exceptions.InvalidCredentials:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
