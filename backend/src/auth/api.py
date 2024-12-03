@@ -1,15 +1,16 @@
-from async_fastapi_jwt_auth import AuthJWT
-from fastapi import APIRouter, HTTPException, status, Depends
+from typing import Annotated
+
+from fastapi import APIRouter, HTTPException, status
 from fastapi.params import Body
 from pydantic import EmailStr
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.auth.dependencies.jwt_dependencies import AuthJWTDI
+from src.auth.dependencies.services_dependencies import AuthServiceDI
 from src.core import settings
-from src.core.auth import auth_dep
-from src.core.db import get_async_session
 from src.auth.schemas import AuthCredentialsSchema, Password
-from src.users import services as users_service, exceptions as users_exceptions
-from src.auth import services as auth_service
+from src.core.dependencies.db_dependencies import AsyncSessionDI
+from src.users import services as users_service
+from src.users import exceptions as users_exceptions
 
 router = APIRouter(tags=['auth'])
 
@@ -17,8 +18,8 @@ router = APIRouter(tags=['auth'])
 @router.post('/register', status_code=status.HTTP_201_CREATED)
 async def register(
         credentials: AuthCredentialsSchema,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        session: AsyncSessionDI,
+        auth_service: AuthServiceDI,
 ):
     try:
         user = await users_service.create_user(credentials, session)
@@ -28,15 +29,16 @@ async def register(
             detail='Пользователь с таким email уже зарегистрирован!'
         )
 
-    await auth_service.set_auth_tokens(user.user_id, auth_jwt)
+    await auth_service.set_auth_tokens(user.user_id)
     return {'detail': 'Регистрация прошла успешно!'}
 
 
 # Нужно отправлять csrf_access_token в заголовке X-CSRF-Token
 @router.post('/request-email-verification')
 async def request_email_verification(
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        session: AsyncSessionDI,
+        auth_jwt: AuthJWTDI,
+        auth_service: AuthServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
@@ -44,7 +46,7 @@ async def request_email_verification(
     try:
         user = await users_service.get_user_by_id(user_id, session)
     except users_exceptions.UserNotFound:
-        await auth_service.unset_auth_tokens(auth_jwt)
+        await auth_service.unset_auth_tokens()
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Unauthorized user'
@@ -74,8 +76,8 @@ async def request_email_verification(
 async def verify_email(
         user_id: int,
         code: int,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        session: AsyncSessionDI,
+        auth_service: AuthServiceDI,
 ):
     saved_code = auth_service.get_email_verification_code(user_id)
     if saved_code is None or saved_code != code:
@@ -94,7 +96,7 @@ async def verify_email(
             detail='User with specified id does not exists'
         )
 
-    await auth_service.set_auth_tokens(user.user_id, auth_jwt)
+    await auth_service.set_auth_tokens(user.user_id)
 
     return {'detail': 'Email verification was successful'}
 
@@ -102,9 +104,10 @@ async def verify_email(
 # Нужно отправлять csrf_access_token в заголовке X-CSRF-Token
 @router.post('/request-email-change')
 async def request_email_change(
-        new_email: EmailStr = Body(embed=True),
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        new_email: Annotated[EmailStr, Body(embed=True)],
+        session: AsyncSessionDI,
+        auth_jwt: AuthJWTDI,
+        auth_service: AuthServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
@@ -123,7 +126,7 @@ async def request_email_change(
             new_email=new_email,
             session=session,
         )
-        await auth_service.set_auth_tokens(user.user_id, auth_jwt)
+        await auth_service.set_auth_tokens(user.user_id)
         return {'detail': 'Your last email was not verified. Email change was successful'}
 
     auth_service.create_and_save_email_change_verification_code(user_id, new_email)
@@ -145,8 +148,9 @@ async def request_email_change(
 async def verify_email_change(
         user_id: int,
         code: int,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        session: AsyncSessionDI,
+        auth_jwt: AuthJWTDI,
+        auth_service: AuthServiceDI,
 ):
     try:
         saved_code, new_email = auth_service.get_email_and_change_verification_code(user_id)
@@ -173,9 +177,10 @@ async def verify_email_change(
 # Нужно отправлять csrf_access_token в заголовке X-CSRF-Token
 @router.post('/request-change-password')
 async def request_change_password(
-        new_password: Password = Body(embed=True),
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        new_password: Annotated[Password, Body(embed=True)],
+        session: AsyncSessionDI,
+        auth_jwt: AuthJWTDI,
+        auth_service: AuthServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
@@ -183,7 +188,7 @@ async def request_change_password(
     try:
         user = await users_service.get_user_by_id(user_id, session)
     except users_exceptions.UserNotFound:
-        await auth_service.unset_auth_tokens(auth_jwt)
+        await auth_service.unset_auth_tokens()
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Unauthorized user'
@@ -213,8 +218,8 @@ async def request_change_password(
 async def verify_password_change(
         user_id: int,
         code: int,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        session: AsyncSessionDI,
+        auth_service: AuthServiceDI,
 ):
     try:
         saved_code, new_password = auth_service.get_password_and_change_verification_code(user_id)
@@ -240,7 +245,7 @@ async def verify_password_change(
             detail='User with specified id does not exists'
         )
 
-    await auth_service.set_auth_tokens(user.user_id, auth_jwt)
+    await auth_service.set_auth_tokens(user.user_id)
 
     return {'detail': 'Password change was successful'}
 
@@ -248,8 +253,8 @@ async def verify_password_change(
 @router.post('/login')
 async def login(
         credentials: AuthCredentialsSchema,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        session: AsyncSessionDI,
+        auth_service: AuthServiceDI,
 ):
     try:
         user = await users_service.get_user_by_credentials(credentials, session)
@@ -259,23 +264,23 @@ async def login(
             detail='Неверные данные для входа!'
         )
 
-    await auth_service.set_auth_tokens(user.user_id, auth_jwt)
+    await auth_service.set_auth_tokens(user.user_id)
     return {'detail': 'Авторизация прошла успешно!'}
 
 
 # Нужно отправлять csrf_refresh_token в заголовке X-CSRF-Token
 @router.post('/refresh')
 async def refresh(
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        auth_service: AuthServiceDI,
 ):
-    await auth_service.refresh_access_token(auth_jwt)
+    await auth_service.refresh_access_token()
     return {'detail': 'Refresh access token was successful'}
 
 
 # Нужно отправлять csrf_access_token в заголовке X-CSRF-Token
 @router.post('/logout')
 async def logout(
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        auth_service: AuthServiceDI,
 ):
-    await auth_service.unset_auth_tokens(auth_jwt)
+    await auth_service.unset_auth_tokens()
     return {'detail': 'Logout was successful'}
