@@ -1,54 +1,54 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from src.dialogue_templates.dependencies.repositories_dependencies import DialogueTemplateRepositoryDI
 from src.dialogue_templates.schemas import DialogueTemplateReadSchema
 from src.dialogue_templates import exceptions as dialogue_templates_exceptions
-from src.dialogue_templates import repositories as dialogue_templates_persistence
-from src.projects import services as projects_service
+from src.projects.dependencies.services_dependencies import ProjectServiceDI
 
 DIALOGUE_TEMPLATES_PER_PAGE = 9
 
 
-async def get_templates(
-        page: int,
-        session: AsyncSession,
-) -> list[DialogueTemplateReadSchema]:
-    templates = await dialogue_templates_persistence.get_templates(
-        offset=(page - 1) * DIALOGUE_TEMPLATES_PER_PAGE,
-        limit=DIALOGUE_TEMPLATES_PER_PAGE,
-        session=session,
-    )
-    return templates
+class DialogueTemplateService:
+    def __init__(
+            self,
+            dialogue_template_repository: DialogueTemplateRepositoryDI,
+            project_service: ProjectServiceDI,
+    ):
+        self._dialogue_template_repository = dialogue_template_repository
+        self._project_service = project_service
 
+    async def get_templates(
+            self,
+            page: int,
+    ) -> list[DialogueTemplateReadSchema]:
+        templates = await self._dialogue_template_repository.get_templates(
+            offset=(page - 1) * DIALOGUE_TEMPLATES_PER_PAGE,
+            limit=DIALOGUE_TEMPLATES_PER_PAGE,
+        )
+        return templates
 
-async def get_template(
-        template_id: int,
-        session: AsyncSession,
-) -> DialogueTemplateReadSchema:
-    template = await dialogue_templates_persistence.get_template(
-        template_id, session
-    )
-    if template is None:
-        raise dialogue_templates_exceptions.DialogueTemplateNotFound
+    async def get_template(
+            self,
+            template_id: int,
+    ) -> DialogueTemplateReadSchema:
+        template = await self._dialogue_template_repository.get_template(template_id)
+        if template is None:
+            raise dialogue_templates_exceptions.DialogueTemplateNotFound
 
-    return template
+        return template
 
+    async def check_access_and_create_dialogue_from_template(
+            self,
+            user_id: int,
+            project_id: int,
+            template_id: int,
+    ):
+        _ = await self._project_service.check_access_and_get_project(
+            user_id=user_id,
+            project_id=project_id,
+        )
 
-async def check_access_and_create_dialogue_from_template(
-        user_id: int,
-        project_id: int,
-        template_id: int,
-        session: AsyncSession,
-):
-    _ = await projects_service.check_access_and_get_project(
-        user_id=user_id,
-        project_id=project_id,
-        session=session,
-    )
+        _ = await self.get_template(template_id)
 
-    _ = await get_template(template_id, session)
-
-    await dialogue_templates_persistence.create_dialogue_from_template(
-        project_id=project_id,
-        template_id=template_id,
-        session=session,
-    )
+        await self._dialogue_template_repository.create_dialogue_from_template(
+            project_id=project_id,
+            template_id=template_id,
+        )
