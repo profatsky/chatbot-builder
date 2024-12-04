@@ -1,80 +1,103 @@
 import os
 import shutil
 
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from src.dialogues.dependencies.repositories_dependencies import DialogueRepositoryDI
 from src.dialogues.schemas import (
     DialogueCreateSchema,
     DialogueReadSchema,
     TriggerUpdateSchema,
 )
 from src.dialogues.exceptions import DialogueNotFound, DialoguesLimitExceeded
-from src.projects import services as projects_service
-from src.dialogues import repositories as dialogues_persistence
+from src.projects.dependencies.services_dependencies import ProjectServiceDI
 
 
-async def check_access_and_create_dialogue(
-        user_id: int,
-        project_id: int,
-        dialogue_data: DialogueCreateSchema,
-        session: AsyncSession,
-) -> DialogueReadSchema:
-    project = await projects_service.check_access_and_get_project(user_id, project_id, session)
-    if len(project.dialogues) >= 10:
-        raise DialoguesLimitExceeded
+class DialogueService:
+    def __init__(
+            self,
+            dialogue_repository: DialogueRepositoryDI,
+            project_service: ProjectServiceDI,
+    ):
+        self._dialogue_repository = dialogue_repository
+        self._project_service = project_service
 
-    dialogue = await dialogues_persistence.create_dialogue(project_id, dialogue_data, session)
-    return dialogue
+    async def check_access_and_create_dialogue(
+            self,
+            user_id: int,
+            project_id: int,
+            dialogue_data: DialogueCreateSchema,
+    ) -> DialogueReadSchema:
+        project = await self._project_service.check_access_and_get_project(
+            user_id=user_id,
+            project_id=project_id,
+        )
+        if len(project.dialogues) >= 10:
+            raise DialoguesLimitExceeded
 
+        dialogue = await self._dialogue_repository.create_dialogue(
+            project_id=project_id,
+            dialogue_data=dialogue_data,
+        )
+        return dialogue
 
-async def check_access_and_update_dialogue_trigger(
-        user_id: int,
-        project_id: int,
-        dialogue_id: int,
-        trigger: TriggerUpdateSchema,
-        session: AsyncSession,
-) -> DialogueReadSchema:
-    _ = await projects_service.check_access_and_get_project(user_id, project_id, session)
+    async def check_access_and_update_dialogue_trigger(
+            self,
+            user_id: int,
+            project_id: int,
+            dialogue_id: int,
+            trigger: TriggerUpdateSchema,
+    ) -> DialogueReadSchema:
+        _ = await self._project_service.check_access_and_get_project(
+            user_id=user_id,
+            project_id=project_id,
+        )
 
-    dialogue = await dialogues_persistence.update_dialogue_trigger(dialogue_id, trigger, session)
-    if dialogue is None:
-        raise DialogueNotFound
+        dialogue = await self._dialogue_repository.update_dialogue_trigger(
+            dialogue_id=dialogue_id,
+            trigger=trigger,
+        )
+        if dialogue is None:
+            raise DialogueNotFound
 
-    return dialogue
+        return dialogue
 
+    async def check_access_and_get_dialogue(
+            self,
+            user_id: int,
+            project_id: int,
+            dialogue_id: int,
+    ) -> DialogueReadSchema:
+        project = await self._project_service.check_access_and_get_project(
+            user_id=user_id,
+            project_id=project_id,
+        )
 
-async def check_access_and_get_dialogue(
-        user_id: int,
-        project_id: int,
-        dialogue_id: int,
-        session: AsyncSession,
-) -> DialogueReadSchema:
-    project = await projects_service.check_access_and_get_project(user_id, project_id, session)
+        dialogue_with_specified_id = None
+        for dialogue in project.dialogues:
+            if dialogue.dialogue_id == dialogue_id:
+                dialogue_with_specified_id = dialogue
+                break
 
-    dialogue_with_specified_id = None
-    for dialogue in project.dialogues:
-        if dialogue.dialogue_id == dialogue_id:
-            dialogue_with_specified_id = dialogue
-            break
+        if dialogue_with_specified_id is None:
+            raise DialogueNotFound
 
-    if dialogue_with_specified_id is None:
-        raise DialogueNotFound
+        return dialogue_with_specified_id
 
-    return dialogue_with_specified_id
+    async def check_access_and_delete_dialogue(
+            self,
+            user_id: int,
+            project_id: int,
+            dialogue_id: int,
+    ):
+        _ = await self.check_access_and_get_dialogue(
+            user_id=user_id,
+            project_id=project_id,
+            dialogue_id=dialogue_id,
+        )
 
+        media_dir_path = os.path.join(
+            'src', 'media', 'users', str(user_id), 'projects', str(project_id), 'dialogues', str(dialogue_id)
+        )
+        if os.path.exists(media_dir_path):
+            shutil.rmtree(media_dir_path)
 
-async def check_access_and_delete_dialogue(
-        user_id: int,
-        project_id: int,
-        dialogue_id: int,
-        session: AsyncSession
-):
-    _ = await check_access_and_get_dialogue(user_id, project_id, dialogue_id, session)
-
-    media_dir_path = os.path.join(
-        'src', 'media', 'users', str(user_id), 'projects', str(project_id), 'dialogues', str(dialogue_id)
-    )
-    if os.path.exists(media_dir_path):
-        shutil.rmtree(media_dir_path)
-
-    await dialogues_persistence.delete_dialogue(dialogue_id, session)
+        await self._dialogue_repository.delete_dialogue(dialogue_id)

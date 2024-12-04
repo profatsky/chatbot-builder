@@ -1,13 +1,9 @@
-from async_fastapi_jwt_auth import AuthJWT
 from fastapi import APIRouter, status, HTTPException
-from fastapi.params import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.core.auth import auth_dep
-from src.core.db import get_async_session
+from src.auth.dependencies.jwt_dependencies import AuthJWTDI
+from src.dialogues.dependencies.services_dependencies import DialogueServiceDI
 from src.dialogues.schemas import DialogueCreateSchema, DialogueReadSchema, TriggerUpdateSchema
 from src.dialogues import exceptions as dialogues_exceptions
-from src.dialogues import services as dialogues_service
 from src.projects import exceptions as projects_exceptions
 
 router = APIRouter(
@@ -20,18 +16,17 @@ router = APIRouter(
 async def create_dialogue(
         project_id: int,
         dialogue_data: DialogueCreateSchema,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        auth_jwt: AuthJWTDI,
+        dialogue_service: DialogueServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        dialogue = await dialogues_service.check_access_and_create_dialogue(
+        dialogue = await dialogue_service.check_access_and_create_dialogue(
             user_id=user_id,
             project_id=project_id,
             dialogue_data=dialogue_data,
-            session=session
         )
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
@@ -56,19 +51,18 @@ async def update_dialogue_trigger(
         project_id: int,
         dialogue_id: int,
         trigger: TriggerUpdateSchema,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        auth_jwt: AuthJWTDI,
+        dialogue_service: DialogueServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        dialogue = await dialogues_service.check_access_and_update_dialogue_trigger(
+        dialogue = await dialogue_service.check_access_and_update_dialogue_trigger(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
             trigger=trigger,
-            session=session,
         )
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
@@ -92,18 +86,17 @@ async def update_dialogue_trigger(
 async def delete_dialogue(
         project_id: int,
         dialogue_id: int,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        auth_jwt: AuthJWTDI,
+        dialogue_service: DialogueServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        await dialogues_service.check_access_and_delete_dialogue(
+        await dialogue_service.check_access_and_delete_dialogue(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
-            session=session,
         )
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
