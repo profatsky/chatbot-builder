@@ -1,104 +1,112 @@
-from sqlalchemy.ext.asyncio import AsyncSession
-
+from src.plugins.dependencies.repositories_dependencies import PluginRepositoryDI
 from src.plugins.schemas import PluginReadSchema, PluginCreateSchema
+from src.projects.dependencies.services_dependencies import ProjectServiceDI
 from src.projects.schemas import ProjectReadSchema
 from src.users import exceptions as users_exceptions
 from src.plugins import exceptions as plugins_exceptions
-from src.plugins import repositories as plugins_persistence
-from src.projects import services as projects_service
-from src.users import services as users_service
+from src.users.dependencies.services_dependencies import UserServiceDI
 
 PLUGINS_PER_PAGE = 9
 
 
-async def get_plugins(
-        page: int,
-        session: AsyncSession,
-) -> list[PluginReadSchema]:
-    plugins = await plugins_persistence.get_plugins(
-        offset=(page - 1) * PLUGINS_PER_PAGE,
-        limit=PLUGINS_PER_PAGE,
-        session=session,
-    )
-    return plugins
+class PluginService:
+    def __init__(
+            self,
+            plugin_repository: PluginRepositoryDI,
+            user_service: UserServiceDI,
+            project_service: ProjectServiceDI,
+    ):
+        self._plugin_repository = plugin_repository
+        self._user_service = user_service
+        self._project_service = project_service
 
+    async def get_plugins(
+            self,
+            page: int,
+    ) -> list[PluginReadSchema]:
+        plugins = await self._plugin_repository.get_plugins(
+            offset=(page - 1) * PLUGINS_PER_PAGE,
+            limit=PLUGINS_PER_PAGE,
+        )
+        return plugins
 
-async def get_plugin(
-        plugin_id: int,
-        session: AsyncSession,
-) -> PluginReadSchema:
-    plugin = await plugins_persistence.get_plugin(plugin_id, session)
-    if plugin is None:
-        raise plugins_exceptions.PluginNotFound
+    async def get_plugin(
+            self,
+            plugin_id: int,
+    ) -> PluginReadSchema:
+        plugin = await self._plugin_repository.get_plugin(plugin_id)
+        if plugin is None:
+            raise plugins_exceptions.PluginNotFound
+        return plugin
 
-    return plugin
+    async def check_access_and_create_plugin(
+            self,
+            user_id: int,
+            plugin_data: PluginCreateSchema,
+    ) -> PluginReadSchema:
+        user = await self._user_service.get_user_by_id(user_id)
+        if user is None or not user.is_superuser:
+            raise users_exceptions.UserDoesNotHavePermission
 
+        plugin = await self._plugin_repository.create_plugin(plugin_data)
+        return plugin
 
-async def check_access_and_create_plugin(
-        user_id: int,
-        plugin_data: PluginCreateSchema,
-        session: AsyncSession,
-) -> PluginReadSchema:
-    user = await users_service.get_user_by_id(user_id, session)
-    if user is None or not user.is_superuser:
-        raise users_exceptions.UserDoesNotHavePermission
+    async def check_access_and_delete_plugin(
+            self,
+            user_id: int,
+            plugin_id: int,
+    ):
+        user = await self._user_service.get_user_by_id(user_id)
+        if user is None or not user.is_superuser:
+            raise users_exceptions.UserDoesNotHavePermission
+        await self._plugin_repository.delete_plugin(plugin_id)
 
-    plugin = await plugins_persistence.create_plugin(plugin_data, session)
-    return plugin
+    async def check_access_and_add_plugin_to_project(
+            self,
+            user_id: int,
+            project_id: int,
+            plugin_id: int,
+    ) -> PluginReadSchema:
+        project = await self._project_service.check_access_and_get_project(
+            user_id=user_id,
+            project_id=project_id,
+        )
 
+        if self._project_contain_plugin_with_specified_id(project, plugin_id):
+            raise plugins_exceptions.PluginAlreadyInProject
 
-async def check_access_and_delete_plugin(
-        user_id: int,
-        plugin_id: int,
-        session: AsyncSession,
-):
-    user = await users_service.get_user_by_id(user_id, session)
-    if user is None or not user.is_superuser:
-        raise users_exceptions.UserDoesNotHavePermission
+        _ = await self.get_plugin(plugin_id)
 
-    await plugins_persistence.delete_plugin(plugin_id, session)
+        # TODO add a limit on the number of plugins in a project
+        plugin = await self._plugin_repository.add_plugin_to_project(
+            project_id=project_id,
+            plugin_id=plugin_id,
+        )
+        return plugin
 
+    async def check_access_and_remove_plugin_from_project(
+            self,
+            user_id: int,
+            project_id: int,
+            plugin_id: int,
+    ):
+        project = await self._project_service.check_access_and_get_project(
+            user_id=user_id,
+            project_id=project_id,
+        )
 
-async def check_access_and_add_plugin_to_project(
-        user_id: int,
-        project_id: int,
-        plugin_id: int,
-        session: AsyncSession,
-) -> PluginReadSchema:
-    project = await projects_service.check_access_and_get_project(
-        user_id=user_id,
-        project_id=project_id,
-        session=session
-    )
+        if not self._project_contain_plugin_with_specified_id(project, plugin_id):
+            raise plugins_exceptions.PluginIsNotInProject
 
-    if _project_contain_plugin_with_specified_id(project, plugin_id):
-        raise plugins_exceptions.PluginAlreadyInProject
+        await self._plugin_repository.remove_plugin_from_project(
+            project_id=project_id,
+            plugin_id=plugin_id,
+        )
 
-    _ = await get_plugin(plugin_id, session)
-
-    # TODO add a limit on the number of plugins in a project
-    plugin = await plugins_persistence.add_plugin_to_project(project_id, plugin_id, session)
-    return plugin
-
-
-async def check_access_and_remove_plugin_from_project(
-        user_id: int,
-        project_id: int,
-        plugin_id: int,
-        session: AsyncSession,
-):
-    project = await projects_service.check_access_and_get_project(
-        user_id=user_id,
-        project_id=project_id,
-        session=session
-    )
-
-    if not _project_contain_plugin_with_specified_id(project, plugin_id):
-        raise plugins_exceptions.PluginIsNotInProject
-
-    await plugins_persistence.remove_plugin_from_project(project_id, plugin_id, session)
-
-
-def _project_contain_plugin_with_specified_id(project: ProjectReadSchema, plugin_id: int) -> bool:
-    project_plugins_ids = [plugin.plugin_id for plugin in project.plugins]
-    return plugin_id in project_plugins_ids
+    def _project_contain_plugin_with_specified_id(
+            self,
+            project: ProjectReadSchema,
+            plugin_id: int
+    ) -> bool:
+        project_plugins_ids = [plugin.plugin_id for plugin in project.plugins]
+        return plugin_id in project_plugins_ids
