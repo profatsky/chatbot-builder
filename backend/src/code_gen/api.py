@@ -1,15 +1,15 @@
+from typing import Annotated
+
 from async_fastapi_jwt_auth import AuthJWT
 from fastapi import APIRouter, status, HTTPException
 from fastapi.params import Depends
 from fastapi.responses import StreamingResponse
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.code_gen.dependencies.services_dependencies import CodeGenServiceDI
 from src.core.auth import auth_dep
-from src.core.db import get_async_session
 from src.dialogues.schemas import DialogueWithBlocksReadSchema
 from src.projects import exceptions as projects_exceptions
 from src.dialogues import exceptions as dialogues_exceptions
-from src.code_gen import services as code_generation_service
 
 router = APIRouter(
     prefix='/projects',
@@ -20,14 +20,17 @@ router = APIRouter(
 @router.get('/{project_id}/code', response_model=list[DialogueWithBlocksReadSchema])
 async def get_bot_code(
         project_id: int,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        auth_jwt: Annotated[AuthJWT, Depends(auth_dep)],
+        code_gen_service: CodeGenServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        zipped_bot = await code_generation_service.get_bot_code_in_zip(user_id, project_id, session)
+        zipped_bot = await code_gen_service.get_bot_code_in_zip(
+            user_id=user_id,
+            project_id=project_id,
+        )
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
