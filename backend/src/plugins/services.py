@@ -1,10 +1,10 @@
 from src.plugins.dependencies.repositories_dependencies import PluginRepositoryDI
+from src.plugins.exceptions import PluginNotFoundError, PluginAlreadyInProjectError, PluginIsNotInProjectError
 from src.plugins.schemas import PluginReadSchema, PluginCreateSchema
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
 from src.projects.schemas import ProjectReadSchema
-from src.users import exceptions as users_exceptions
-from src.plugins import exceptions as plugins_exceptions
 from src.users.dependencies.services_dependencies import UserServiceDI
+from src.users.exceptions import UserDoesNotHavePermissionError
 
 PLUGINS_PER_PAGE = 9
 
@@ -36,7 +36,7 @@ class PluginService:
     ) -> PluginReadSchema:
         plugin = await self._plugin_repository.get_plugin(plugin_id)
         if plugin is None:
-            raise plugins_exceptions.PluginNotFound
+            raise PluginNotFoundError
         return plugin
 
     async def check_access_and_create_plugin(
@@ -46,7 +46,7 @@ class PluginService:
     ) -> PluginReadSchema:
         user = await self._user_service.get_user_by_id(user_id)
         if user is None or not user.is_superuser:
-            raise users_exceptions.UserDoesNotHavePermission
+            raise UserDoesNotHavePermissionError
 
         plugin = await self._plugin_repository.create_plugin(plugin_data)
         return plugin
@@ -58,7 +58,7 @@ class PluginService:
     ):
         user = await self._user_service.get_user_by_id(user_id)
         if user is None or not user.is_superuser:
-            raise users_exceptions.UserDoesNotHavePermission
+            raise UserDoesNotHavePermissionError
         await self._plugin_repository.delete_plugin(plugin_id)
 
     async def check_access_and_add_plugin_to_project(
@@ -73,7 +73,7 @@ class PluginService:
         )
 
         if self._project_contain_plugin_with_specified_id(project, plugin_id):
-            raise plugins_exceptions.PluginAlreadyInProject
+            raise PluginAlreadyInProjectError
 
         _ = await self.get_plugin(plugin_id)
 
@@ -96,7 +96,7 @@ class PluginService:
         )
 
         if not self._project_contain_plugin_with_specified_id(project, plugin_id):
-            raise plugins_exceptions.PluginIsNotInProject
+            raise PluginIsNotInProjectError
 
         await self._plugin_repository.remove_plugin_from_project(
             project_id=project_id,

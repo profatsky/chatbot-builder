@@ -1,6 +1,6 @@
 from src.dialogue_templates.dependencies.repositories_dependencies import DialogueTemplateRepositoryDI
+from src.dialogue_templates.exceptions import DialogueTemplateNotFoundError
 from src.dialogue_templates.schemas import DialogueTemplateReadSchema
-from src.dialogue_templates import exceptions as dialogue_templates_exceptions
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
 
 DIALOGUE_TEMPLATES_PER_PAGE = 9
@@ -31,7 +31,7 @@ class DialogueTemplateService:
     ) -> DialogueTemplateReadSchema:
         template = await self._dialogue_template_repository.get_template(template_id)
         if template is None:
-            raise dialogue_templates_exceptions.DialogueTemplateNotFound
+            raise DialogueTemplateNotFoundError
 
         return template
 

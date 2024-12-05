@@ -3,8 +3,8 @@ from fastapi import APIRouter, HTTPException, status
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.auth.dependencies.services_dependencies import AuthServiceDI
 from src.users.dependencies.services_dependencies import UserServiceDI
+from src.users.exceptions import UserNotFoundError
 from src.users.schemas import UserWithStatsReadSchema
-from src.users import exceptions as users_exceptions
 
 router = APIRouter(
     prefix='/users',
@@ -23,7 +23,7 @@ async def get_user(
 
     try:
         user = await user_service.get_user_with_stats(user_id)
-    except users_exceptions.UserNotFound:
+    except UserNotFoundError:
         await auth_service.unset_auth_tokens()
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

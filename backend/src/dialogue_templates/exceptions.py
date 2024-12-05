@@ -1,2 +1,2 @@
-class DialogueTemplateNotFound(Exception):
+class DialogueTemplateNotFoundError(Exception):
     pass

@@ -11,7 +11,7 @@ from src.blocks.schemas import (
     UnionBlockUpdateSchema,
     ImageBlockReadSchema,
 )
-from src.blocks.exceptions import BlockNotFound, InvalidBlockType
+from src.blocks.exceptions import BlockNotFoundError, InvalidBlockTypeError
 
 
 class BlockService:
@@ -72,7 +72,7 @@ class BlockService:
             block_id=block_id,
         )
         if block_read.type != BlockType.IMAGE_BLOCK.value:
-            raise InvalidBlockType
+            raise InvalidBlockTypeError
 
         if block_read.image_path:
             full_image_path = os.path.join('src', 'media', block_read.image_path)
@@ -162,6 +162,6 @@ class BlockService:
 
         block_with_specified_id = [block for block in blocks if block.block_id == block_id]
         if not block_with_specified_id:
-            raise BlockNotFound
+            raise BlockNotFoundError
 
         return block_with_specified_id[0]

@@ -7,7 +7,7 @@ from src.dialogues.schemas import (
     DialogueReadSchema,
     TriggerUpdateSchema,
 )
-from src.dialogues.exceptions import DialogueNotFound, DialoguesLimitExceeded
+from src.dialogues.exceptions import DialogueNotFoundError, DialoguesLimitExceededError
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
 
 
@@ -31,7 +31,7 @@ class DialogueService:
             project_id=project_id,
         )
         if len(project.dialogues) >= 10:
-            raise DialoguesLimitExceeded
+            raise DialoguesLimitExceededError
 
         dialogue = await self._dialogue_repository.create_dialogue(
             project_id=project_id,
@@ -56,7 +56,7 @@ class DialogueService:
             trigger=trigger,
         )
         if dialogue is None:
-            raise DialogueNotFound
+            raise DialogueNotFoundError
 
         return dialogue
 
@@ -78,7 +78,7 @@ class DialogueService:
                 break
 
         if dialogue_with_specified_id is None:
-            raise DialogueNotFound
+            raise DialogueNotFoundError
 
         return dialogue_with_specified_id
 

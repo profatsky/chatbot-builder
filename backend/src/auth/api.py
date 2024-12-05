@@ -6,10 +6,14 @@ from pydantic import EmailStr
 
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.auth.dependencies.services_dependencies import AuthServiceDI
-from src.core import settings
 from src.auth.schemas import AuthCredentialsSchema, Password
-from src.users import exceptions as users_exceptions
+from src.core import settings
 from src.users.dependencies.services_dependencies import UserServiceDI
+from src.users.exceptions import (
+    UserAlreadyExistsError,
+    UserNotFoundError,
+    InvalidCredentialsError,
+)
 
 router = APIRouter(tags=['auth'])
 
@@ -22,7 +26,7 @@ async def register(
 ):
     try:
         user = await user_service.create_user(credentials)
-    except users_exceptions.UserAlreadyExists:
+    except UserAlreadyExistsError:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
             detail='Пользователь с таким email уже зарегистрирован!'
@@ -44,7 +48,7 @@ async def request_email_verification(
 
     try:
         user = await user_service.get_user_by_id(user_id)
-    except users_exceptions.UserNotFound:
+    except UserNotFoundError:
         await auth_service.unset_auth_tokens()
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -89,7 +93,7 @@ async def verify_email(
 
     try:
         user = await user_service.set_verified_status_for_user(user_id)
-    except users_exceptions.UserNotFound:
+    except UserNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='User with specified id does not exists'
@@ -184,7 +188,7 @@ async def request_change_password(
 
     try:
         user = await user_service.get_user_by_id(user_id)
-    except users_exceptions.UserNotFound:
+    except UserNotFoundError:
         await auth_service.unset_auth_tokens()
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -235,7 +239,7 @@ async def verify_password_change(
             user_id=user_id,
             new_password=new_password,
         )
-    except users_exceptions.UserNotFound:
+    except UserNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='User with specified id does not exists'
@@ -254,7 +258,7 @@ async def login(
 ):
     try:
         user = await user_service.get_user_by_credentials(credentials)
-    except users_exceptions.InvalidCredentials:
+    except InvalidCredentialsError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail='Неверные данные для входа!'

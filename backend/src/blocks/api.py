@@ -5,11 +5,11 @@ from fastapi import APIRouter, status, HTTPException, UploadFile
 from fastapi.params import Depends
 
 from src.blocks.dependencies.services_dependencies import BlockServiceDI
+from src.blocks.exceptions import RepeatingBlockSequenceNumberError, BlockNotFoundError, InvalidBlockTypeError
 from src.core.auth import auth_dep
 from src.blocks.schemas import UnionBlockCreateSchema, UnionBlockReadSchema, UnionBlockUpdateSchema
-from src.projects import exceptions as projects_exceptions
-from src.dialogues import exceptions as dialogues_exceptions
-from src.blocks import exceptions as blocks_exceptions
+from src.dialogues.exceptions import DialogueNotFoundError
+from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProjectError
 
 router = APIRouter(
     prefix='/projects/{project_id}/dialogues/{dialogue_id}/blocks',
@@ -35,22 +35,22 @@ async def create_block(
             dialogue_id=dialogue_id,
             block_data=block,
         )
-    except projects_exceptions.ProjectNotFound:
+    except ProjectNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Project does not exist',
         )
-    except projects_exceptions.NoPermissionForProject:
+    except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Don\t have permission',
         )
-    except dialogues_exceptions.DialogueNotFound:
+    except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Dialogue does not exist',
         )
-    except blocks_exceptions.RepeatingBlockSequenceNumber:
+    except RepeatingBlockSequenceNumberError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Repeating sequence numbers for blocks in the dialogue',
@@ -74,17 +74,17 @@ async def get_blocks(
             project_id=project_id,
             dialogue_id=dialogue_id,
         )
-    except projects_exceptions.ProjectNotFound:
+    except ProjectNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Project does not exist',
         )
-    except projects_exceptions.NoPermissionForProject:
+    except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Don\t have permission',
         )
-    except dialogues_exceptions.DialogueNotFound:
+    except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Dialogue does not exist',
@@ -112,27 +112,27 @@ async def update_block(
             block_id=block_id,
             block_data=block,
         )
-    except projects_exceptions.ProjectNotFound:
+    except ProjectNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Project does not exist',
         )
-    except projects_exceptions.NoPermissionForProject:
+    except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Don\t have permission',
         )
-    except dialogues_exceptions.DialogueNotFound:
+    except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Dialogue does not exist',
         )
-    except blocks_exceptions.BlockNotFound:
+    except BlockNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Block does not exits',
         )
-    except blocks_exceptions.RepeatingBlockSequenceNumber:
+    except RepeatingBlockSequenceNumberError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Repeating sequence numbers for blocks in the dialogue',
@@ -160,27 +160,27 @@ async def upload_image_for_image_block(
             block_id=block_id,
             image=image,
         )
-    except projects_exceptions.ProjectNotFound:
+    except ProjectNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Project does not exist',
         )
-    except projects_exceptions.NoPermissionForProject:
+    except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Don\t have permission',
         )
-    except dialogues_exceptions.DialogueNotFound:
+    except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Dialogue does not exist',
         )
-    except blocks_exceptions.BlockNotFound:
+    except BlockNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Block does not exits',
         )
-    except blocks_exceptions.InvalidBlockType:
+    except InvalidBlockTypeError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Invalid block type'
@@ -206,22 +206,22 @@ async def delete_block(
             dialogue_id=dialogue_id,
             block_id=block_id,
         )
-    except projects_exceptions.ProjectNotFound:
+    except ProjectNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Project does not exist',
         )
-    except projects_exceptions.NoPermissionForProject:
+    except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Don\t have permission',
         )
-    except dialogues_exceptions.DialogueNotFound:
+    except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Dialogue does not exist',
         )
-    except blocks_exceptions.BlockNotFound:
+    except BlockNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Block does not exits',

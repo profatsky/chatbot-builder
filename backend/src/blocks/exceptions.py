@@ -1,10 +1,10 @@
-class BlockNotFound(Exception):
+class BlockNotFoundError(Exception):
     pass
 
 
-class RepeatingBlockSequenceNumber(Exception):
+class RepeatingBlockSequenceNumberError(Exception):
     pass
 
 
-class InvalidBlockType(Exception):
+class InvalidBlockTypeError(Exception):
     pass

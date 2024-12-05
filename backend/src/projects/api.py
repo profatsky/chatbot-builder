@@ -2,8 +2,8 @@ from fastapi import APIRouter, status, HTTPException
 
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
+from src.projects.exceptions import ProjectsLimitExceededError, ProjectNotFoundError, NoPermissionForProjectError
 from src.projects.schemas import ProjectCreateSchema, ProjectUpdateSchema, ProjectReadSchema
-from src.projects import exceptions as projects_exceptions
 
 router = APIRouter(
     prefix='/projects',
@@ -25,7 +25,7 @@ async def create_project(
             user_id=user_id,
             project_data=project_data,
         )
-    except projects_exceptions.ProjectsLimitExceeded:
+    except ProjectsLimitExceededError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='You have the maximum number of projects',
@@ -61,12 +61,12 @@ async def update_project(
             project_id=project_id,
             project_data=project_data,
         )
-    except projects_exceptions.ProjectNotFound:
+    except ProjectNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Project does not exist',
         )
-    except projects_exceptions.NoPermissionForProject:
+    except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Don\t have permission',
@@ -89,12 +89,12 @@ async def delete_project(
             user_id=user_id,
             project_id=project_id,
         )
-    except projects_exceptions.ProjectNotFound:
+    except ProjectNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Project does not exist',
         )
-    except projects_exceptions.NoPermissionForProject:
+    except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Don\t have permission',

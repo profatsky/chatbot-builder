@@ -1,8 +1,8 @@
 from pydantic import EmailStr
 
-from src.users import exceptions as users_exceptions
 from src.auth.schemas import AuthCredentialsSchema, Password
 from src.users.dependencies.repositories_dependencies import UserRepositoryDI
+from src.users.exceptions import UserAlreadyExistsError, UserNotFoundError, InvalidCredentialsError
 from src.users.schemas import UserReadSchema, UserWithStatsReadSchema
 
 
@@ -16,7 +16,7 @@ class UserService:
     ) -> UserReadSchema:
         user = await self._user_repository.create_user(credentials)
         if user is None:
-            raise users_exceptions.UserAlreadyExists
+            raise UserAlreadyExistsError
         return user
 
     async def get_user_by_email(
@@ -25,7 +25,7 @@ class UserService:
     ) -> UserReadSchema:
         user = await self._user_repository.get_user_by_email(email)
         if user is None:
-            raise users_exceptions.UserNotFound
+            raise UserNotFoundError
         return user
 
     async def get_user_by_credentials(
@@ -34,7 +34,7 @@ class UserService:
     ) -> UserReadSchema:
         user = await self._user_repository.get_user_by_credentials(credentials)
         if user is None:
-            raise users_exceptions.InvalidCredentials
+            raise InvalidCredentialsError
         return user
 
     async def set_verified_status_for_user(
@@ -43,7 +43,7 @@ class UserService:
     ) -> UserReadSchema:
         user = await self._user_repository.set_verified_status_for_user(user_id)
         if user is None:
-            raise users_exceptions.UserNotFound
+            raise UserNotFoundError
         return user
 
     async def change_user_email_and_set_unverified_status(
@@ -56,7 +56,7 @@ class UserService:
             new_email=new_email,
         )
         if not user:
-            raise users_exceptions.UserNotFound
+            raise UserNotFoundError
         return user
 
     async def get_user_by_id(
@@ -65,7 +65,7 @@ class UserService:
     ) -> UserReadSchema:
         user = await self._user_repository.get_user_by_id(user_id)
         if user is None:
-            raise users_exceptions.UserNotFound
+            raise UserNotFoundError
         return user
 
     async def change_user_password(
@@ -78,7 +78,7 @@ class UserService:
             new_password=new_password
         )
         if user is None:
-            raise users_exceptions.UserNotFound
+            raise UserNotFoundError
         return user
 
     async def get_user_with_stats(
@@ -87,5 +87,5 @@ class UserService:
     ) -> UserWithStatsReadSchema:
         user = await self._user_repository.get_user_with_stats(user_id)
         if user is None:
-            raise users_exceptions.UserNotFound
+            raise UserNotFoundError
         return user

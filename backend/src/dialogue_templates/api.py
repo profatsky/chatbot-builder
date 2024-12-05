@@ -4,9 +4,9 @@ from fastapi import APIRouter, Query, status, HTTPException, Body
 
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.dialogue_templates.dependencies.services_dependencies import DialogueTemplateServiceDI
+from src.dialogue_templates.exceptions import DialogueTemplateNotFoundError
 from src.dialogue_templates.schemas import DialogueTemplateReadSchema
-from src.dialogue_templates import exceptions as dialogue_templates_exceptions
-from src.projects import exceptions as projects_exceptions
+from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProjectError
 
 router = APIRouter(
     tags=['templates'],
@@ -35,7 +35,7 @@ async def get_dialogue_template(
 
     try:
         dialogue_template = await dialogue_template_service.get_template(template_id)
-    except dialogue_templates_exceptions.DialogueTemplateNotFound:
+    except DialogueTemplateNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='The specified dialogue template does not exist'
@@ -59,17 +59,17 @@ async def add_dialogue_template_to_project(
             project_id=project_id,
             template_id=template_id,
         )
-    except projects_exceptions.ProjectNotFound:
+    except ProjectNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='The specified project does not exist',
         )
-    except projects_exceptions.NoPermissionForProject:
+    except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Don\t have permission',
         )
-    except dialogue_templates_exceptions.DialogueTemplateNotFound:
+    except DialogueTemplateNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='The specified dialogue template does not exists',

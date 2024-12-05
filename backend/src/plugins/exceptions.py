@@ -1,10 +1,10 @@
-class PluginNotFound(Exception):
+class PluginNotFoundError(Exception):
     pass
 
 
-class PluginAlreadyInProject(Exception):
+class PluginAlreadyInProjectError(Exception):
     pass
 
 
-class PluginIsNotInProject(Exception):
+class PluginIsNotInProjectError(Exception):
     pass

@@ -7,9 +7,9 @@ from fastapi.responses import StreamingResponse
 
 from src.code_gen.dependencies.services_dependencies import CodeGenServiceDI
 from src.core.auth import auth_dep
+from src.dialogues.exceptions import NoDialoguesInProjectError
 from src.dialogues.schemas import DialogueWithBlocksReadSchema
-from src.projects import exceptions as projects_exceptions
-from src.dialogues import exceptions as dialogues_exceptions
+from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProjectError
 
 router = APIRouter(
     prefix='/projects',
@@ -31,17 +31,17 @@ async def get_bot_code(
             user_id=user_id,
             project_id=project_id,
         )
-    except projects_exceptions.ProjectNotFound:
+    except ProjectNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail='Project does not exist',
         )
-    except projects_exceptions.NoPermissionForProject:
+    except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Don\t have permission',
         )
-    except dialogues_exceptions.NoDialoguesInProject:
+    except NoDialoguesInProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='No dialogues in the project'

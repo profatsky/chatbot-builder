@@ -9,7 +9,7 @@ from src.projects.schemas import (
     ProjectUpdateSchema,
     ProjectToGenerateCodeReadSchema,
 )
-from src.projects.exceptions import ProjectNotFound, NoPermissionForProject, ProjectsLimitExceeded
+from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProjectError, ProjectsLimitExceededError
 
 
 class ProjectService:
@@ -23,7 +23,7 @@ class ProjectService:
     ) -> ProjectReadSchema:
         project_count = await self._project_repository.count_projects(user_id)
         if project_count >= 5:
-            raise ProjectsLimitExceeded
+            raise ProjectsLimitExceededError
 
         project = await self._project_repository.create_project(
             user_id=user_id,
@@ -42,10 +42,10 @@ class ProjectService:
     ) -> Optional[ProjectToGenerateCodeReadSchema]:
         project = await self._project_repository.get_project_to_generate_code(project_id)
         if project is None:
-            raise ProjectNotFound
+            raise ProjectNotFoundError
 
         if project.user_id != user_id:
-            raise NoPermissionForProject
+            raise NoPermissionForProjectError
 
         return project
 
@@ -56,10 +56,10 @@ class ProjectService:
     ) -> ProjectReadSchema:
         project = await self._project_repository.get_project(project_id)
         if project is None:
-            raise ProjectNotFound
+            raise ProjectNotFoundError
 
         if project.user_id != user_id:
-            raise NoPermissionForProject
+            raise NoPermissionForProjectError
 
         return project
 

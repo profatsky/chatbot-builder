@@ -22,7 +22,7 @@ async def get_statistic(
 
     try:
         statistics = await statistic_service.check_access_and_get_statistic(user_id)
-    except users_exceptions.UserDoesNotHavePermission:
+    except users_exceptions.UserDoesNotHavePermissionError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail='Don\t have permission',

@@ -1,10 +1,10 @@
-class DialogueNotFound(Exception):
+class DialogueNotFoundError(Exception):
     pass
 
 
-class NoDialoguesInProject(Exception):
+class NoDialoguesInProjectError(Exception):
     pass
 
 
-class DialoguesLimitExceeded(Exception):
+class DialoguesLimitExceededError(Exception):
     pass

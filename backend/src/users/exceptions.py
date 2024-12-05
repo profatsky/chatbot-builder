@@ -1,14 +1,14 @@
-class UserAlreadyExists(Exception):
+class UserAlreadyExistsError(Exception):
     pass
 
 
-class UserNotFound(Exception):
+class UserNotFoundError(Exception):
     pass
 
 
-class InvalidCredentials(Exception):
+class InvalidCredentialsError(Exception):
     pass
 
 
-class UserDoesNotHavePermission(Exception):
+class UserDoesNotHavePermissionError(Exception):
     pass

@@ -1,10 +1,10 @@
-class ProjectNotFound(Exception):
+class ProjectNotFoundError(Exception):
     pass
 
 
-class NoPermissionForProject(Exception):
+class NoPermissionForProjectError(Exception):
     pass
 
 
-class ProjectsLimitExceeded(Exception):
+class ProjectsLimitExceededError(Exception):
     pass

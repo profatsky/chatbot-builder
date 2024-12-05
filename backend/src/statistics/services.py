@@ -19,7 +19,7 @@ class StatisticService:
     ) -> StatisticSchema:
         user = await self._user_service.get_user_by_id(user_id)
         if user is None or not user.is_superuser:
-            raise users_exceptions.UserDoesNotHavePermission
+            raise users_exceptions.UserDoesNotHavePermissionError
 
         user_count = await self._count_users()
         project_count = await self._count_projects()
