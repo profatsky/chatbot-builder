@@ -1,95 +1,102 @@
 from typing import Optional
 
 from sqlalchemy import select, delete
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectin_polymorphic
 
 from src.blocks.models import BlockModel
 from src.blocks.schemas import UnionBlockCreateSchema, UnionBlockReadSchema, UnionBlockUpdateSchema
 from src.blocks import utils
+from src.core.dependencies.db_dependencies import AsyncSessionDI
 
 
-async def create_block(
-        dialogue_id: int,
-        block_data: UnionBlockCreateSchema,
-        session: AsyncSession,
-) -> UnionBlockReadSchema:
-    blocks = await get_blocks(dialogue_id, session)
-    blocks_number = len(blocks)
+class BlockRepository:
+    def __init__(self, session: AsyncSessionDI):
+        self._session = session
 
-    block_model = utils.get_block_model_by_type(block_data.type)
-    block = block_model(**block_data.model_dump(), dialogue_id=dialogue_id, sequence_number=blocks_number + 1)
-    session.add(block)
-    await session.commit()
+    async def create_block(
+            self,
+            dialogue_id: int,
+            block_data: UnionBlockCreateSchema,
+    ) -> UnionBlockReadSchema:
+        blocks = await self.get_blocks(dialogue_id)
+        blocks_number = len(blocks)
 
-    return utils.validate_block_from_db(block)
+        block_model = utils.get_block_model_by_type(block_data.type)
+        block = block_model(**block_data.model_dump(), dialogue_id=dialogue_id, sequence_number=blocks_number + 1)
+        self._session.add(block)
+        await self._session.commit()
 
+        return utils.validate_block_from_db(block)
 
-async def get_blocks(dialogue_id: int, session: AsyncSession) -> list[UnionBlockReadSchema]:
-    blocks = await _get_blocks(dialogue_id, session)
-    return [utils.validate_block_from_db(block) for block in blocks]
+    async def get_blocks(
+            self,
+            dialogue_id: int,
+    ) -> list[UnionBlockReadSchema]:
+        blocks = await self._get_blocks(dialogue_id)
+        return [utils.validate_block_from_db(block) for block in blocks]
 
-
-async def _get_blocks(dialogue_id: int, session: AsyncSession) -> list[utils.UnionBlockModel]:
-    blocks = await session.execute(
-        select(BlockModel)
-        .options(
-            selectin_polymorphic(BlockModel, BlockModel.__subclasses__()),
+    async def _get_blocks(
+            self,
+            dialogue_id: int,
+    ) -> list[utils.UnionBlockModel]:
+        blocks = await self._session.execute(
+            select(BlockModel)
+            .options(
+                selectin_polymorphic(BlockModel, BlockModel.__subclasses__()),
+            )
+            .where(BlockModel.dialogue_id == dialogue_id)
+            .order_by(BlockModel.sequence_number)
         )
-        .where(BlockModel.dialogue_id == dialogue_id)
-        .order_by(BlockModel.sequence_number)
-    )
-    blocks = blocks.unique().scalars().all()
-    return blocks
+        blocks = blocks.unique().scalars().all()
+        return blocks
 
+    async def _get_block(
+            self,
+            block_id: int,
+    ) -> Optional[utils.UnionBlockModel]:
+        block = await self._session.execute(
+            select(BlockModel)
+            .where(BlockModel.block_id == block_id)
+        )
+        block = block.scalar()
+        return block
 
-async def _get_block(block_id: int, session: AsyncSession) -> Optional[utils.UnionBlockModel]:
-    block = await session.execute(
-        select(BlockModel)
-        .where(BlockModel.block_id == block_id)
-    )
-    block = block.scalar()
-    return block
+    async def update_block(
+            self,
+            dialogue_id: int,
+            block_id: int,
+            block_data: UnionBlockUpdateSchema,
+    ) -> Optional[UnionBlockReadSchema]:
+        block = await self._get_block(block_id)
 
+        for key, value in block_data.model_dump().items():
+            setattr(block, key, value)
 
-async def update_block(
-        dialogue_id: int,
-        block_id: int,
-        block_data: UnionBlockUpdateSchema,
-        session: AsyncSession,
-) -> Optional[UnionBlockReadSchema]:
-    block = await _get_block(block_id, session)
+        await self._update_blocks_sequence_numbers_without_commit(dialogue_id)
+        await self._session.commit()
 
-    for key, value in block_data.model_dump().items():
-        setattr(block, key, value)
+        return utils.validate_block_from_db(block)
 
-    await _update_blocks_sequence_numbers_without_commit(dialogue_id, session)
-    await session.commit()
+    async def _update_blocks_sequence_numbers_without_commit(
+            self,
+            dialogue_id: int,
+    ) -> Optional[UnionBlockReadSchema]:
+        blocks = await self._get_blocks(dialogue_id)
+        counter = 1
+        for block in sorted(blocks, key=lambda x: x.sequence_number):
+            block.sequence_number = counter
+            counter += 1
 
-    return utils.validate_block_from_db(block)
+        return [utils.validate_block_from_db(block) for block in blocks]
 
-
-async def _update_blocks_sequence_numbers_without_commit(
-        dialogue_id: int,
-        session: AsyncSession,
-) -> Optional[UnionBlockReadSchema]:
-    blocks = await _get_blocks(dialogue_id, session)
-    counter = 1
-    for block in sorted(blocks, key=lambda x: x.sequence_number):
-        block.sequence_number = counter
-        counter += 1
-
-    return [utils.validate_block_from_db(block) for block in blocks]
-
-
-async def delete_block(
-        dialogue_id: int,
-        block_id: int,
-        session: AsyncSession,
-) -> Optional[UnionBlockReadSchema]:
-    await session.execute(
-        delete(BlockModel)
-        .where(BlockModel.block_id == block_id)
-    )
-    await _update_blocks_sequence_numbers_without_commit(dialogue_id, session)
-    await session.commit()
+    async def delete_block(
+            self,
+            dialogue_id: int,
+            block_id: int,
+    ) -> Optional[UnionBlockReadSchema]:
+        await self._session.execute(
+            delete(BlockModel)
+            .where(BlockModel.block_id == block_id)
+        )
+        await self._update_blocks_sequence_numbers_without_commit(dialogue_id)
+        await self._session.commit()

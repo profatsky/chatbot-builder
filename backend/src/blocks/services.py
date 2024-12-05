@@ -1,8 +1,9 @@
-import os.path
+import os
 
 from fastapi import UploadFile
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.blocks.dependencies.repositories_dependencies import BlockRepositoryDI
+from src.dialogues.dependencies.services_dependencies import DialogueServiceDI
 from src.enums import BlockType
 from src.blocks.schemas import (
     UnionBlockCreateSchema,
@@ -11,109 +12,156 @@ from src.blocks.schemas import (
     ImageBlockReadSchema,
 )
 from src.blocks.exceptions import BlockNotFound, InvalidBlockType
-from src.dialogues import services as dialogues_service
-from src.blocks import repositories as blocks_persistence
 
 
-async def check_access_and_create_block(
-        user_id: int,
-        project_id: int,
-        dialogue_id: int,
-        block_data: UnionBlockCreateSchema,
-        session: AsyncSession,
-) -> UnionBlockReadSchema:
-    _ = await dialogues_service.check_access_and_get_dialogue(user_id, project_id, dialogue_id, session)
-    block = await blocks_persistence.create_block(dialogue_id, block_data, session)
-    return block
+class BlockService:
+    def __init__(
+            self,
+            block_repository: BlockRepositoryDI,
+            dialogue_service: DialogueServiceDI,
+    ):
+        self._block_repository = block_repository
+        self._dialogue_service = dialogue_service
 
+    async def check_access_and_create_block(
+            self,
+            user_id: int,
+            project_id: int,
+            dialogue_id: int,
+            block_data: UnionBlockCreateSchema,
+    ) -> UnionBlockReadSchema:
+        _ = await self._dialogue_service.check_access_and_get_dialogue(
+            user_id=user_id,
+            project_id=project_id,
+            dialogue_id=dialogue_id,
+        )
+        block = await self._block_repository.create_block(
+            dialogue_id=dialogue_id,
+            block_data=block_data,
+        )
+        return block
 
-async def check_access_and_get_blocks(
-        user_id: int,
-        project_id: int,
-        dialogue_id: int,
-        session: AsyncSession,
-) -> list[UnionBlockReadSchema]:
-    _ = await dialogues_service.check_access_and_get_dialogue(user_id, project_id, dialogue_id, session)
+    async def check_access_and_get_blocks(
+            self,
+            user_id: int,
+            project_id: int,
+            dialogue_id: int,
+    ) -> list[UnionBlockReadSchema]:
+        _ = await self._dialogue_service.check_access_and_get_dialogue(
+            user_id=user_id,
+            project_id=project_id,
+            dialogue_id=dialogue_id,
+        )
 
-    blocks = await blocks_persistence.get_blocks(dialogue_id, session)
-    blocks.sort(key=lambda x: x.sequence_number)
-    return blocks
+        blocks = await self._block_repository.get_blocks(dialogue_id)
+        blocks.sort(key=lambda x: x.sequence_number)
+        return blocks
 
+    async def check_access_and_upload_image_for_image_block(
+            self,
+            user_id: int,
+            project_id: int,
+            dialogue_id: int,
+            block_id: int,
+            image: UploadFile,
+    ) -> ImageBlockReadSchema:
+        block_read = await self._check_access_and_get_block(
+            user_id=user_id,
+            project_id=project_id,
+            dialogue_id=dialogue_id,
+            block_id=block_id,
+        )
+        if block_read.type != BlockType.IMAGE_BLOCK.value:
+            raise InvalidBlockType
 
-async def check_access_and_upload_image_for_image_block(
-        user_id: int,
-        project_id: int,
-        dialogue_id: int,
-        block_id: int,
-        image: UploadFile,
-        session: AsyncSession,
-) -> ImageBlockReadSchema:
-    block_read = await _check_access_and_get_block(user_id, project_id, dialogue_id, block_id, session)
-    if block_read.type != BlockType.IMAGE_BLOCK.value:
-        raise InvalidBlockType
+        if block_read.image_path:
+            full_image_path = os.path.join('src', 'media', block_read.image_path)
+            if os.path.exists(full_image_path):
+                os.remove(full_image_path)
 
-    if block_read.image_path:
-        full_image_path = os.path.join('src', 'media', block_read.image_path)
-        if os.path.exists(full_image_path):
-            os.remove(full_image_path)
+        # TODO: use os.path.join
+        image_path = f'src/media/users/{user_id}/projects/{project_id}/dialogues/{dialogue_id}/{image.filename}'
+        if not os.path.exists(os.path.dirname(image_path)):
+            os.makedirs(os.path.dirname(image_path))
 
-    image_path = f'src/media/users/{user_id}/projects/{project_id}/dialogues/{dialogue_id}/{image.filename}'
-    if not os.path.exists(os.path.dirname(image_path)):
-        os.makedirs(os.path.dirname(image_path))
+        with open(image_path, 'wb+') as buffer:
+            buffer.write(image.file.read())
 
-    with open(image_path, 'wb+') as buffer:
-        buffer.write(image.file.read())
+        block_update = ImageBlockReadSchema(**{
+            field_name: getattr(block_read, field_name)
+            for field_name in ImageBlockReadSchema.__fields__
+        })
+        # TODO: use os.path.join
+        block_update.image_path = image_path.replace('src/media/', '')
 
-    block_update = ImageBlockReadSchema(**{
-        field_name: getattr(block_read, field_name)
-        for field_name in ImageBlockReadSchema.__fields__
-    })
-    block_update.image_path = image_path.replace('src/media/', '')
+        block = await self.check_access_and_update_block(
+            user_id=user_id,
+            project_id=project_id,
+            dialogue_id=dialogue_id,
+            block_id=block_id,
+            block_data=block_update,
+        )
+        return block
 
-    block = await check_access_and_update_block(user_id, project_id, dialogue_id, block_id, block_update, session)
-    return block
+    async def check_access_and_update_block(
+            self,
+            user_id: int,
+            project_id: int,
+            dialogue_id: int,
+            block_id: int,
+            block_data: UnionBlockUpdateSchema,
+    ) -> UnionBlockReadSchema:
+        _ = await self._check_access_and_get_block(
+            user_id=user_id,
+            project_id=project_id,
+            dialogue_id=dialogue_id,
+            block_id=block_id,
+        )
+        block = await self._block_repository.update_block(
+            dialogue_id=dialogue_id,
+            block_id=block_id,
+            block_data=block_data,
+        )
+        return block
 
+    async def check_access_and_delete_block(
+            self,
+            user_id: int,
+            project_id: int,
+            dialogue_id: int,
+            block_id: int,
+    ) -> UnionBlockReadSchema:
+        block = await self._check_access_and_get_block(
+            user_id=user_id,
+            project_id=project_id,
+            dialogue_id=dialogue_id,
+            block_id=block_id,
+        )
+        if block.type == BlockType.IMAGE_BLOCK.value and block.image_path:
+            full_image_path = os.path.join('src', 'media', block.image_path)
+            if os.path.exists(full_image_path):
+                os.remove(full_image_path)
 
-async def check_access_and_update_block(
-        user_id: int,
-        project_id: int,
-        dialogue_id: int,
-        block_id: int,
-        block_data: UnionBlockUpdateSchema,
-        session: AsyncSession,
-) -> UnionBlockReadSchema:
-    _ = await _check_access_and_get_block(user_id, project_id, dialogue_id, block_id, session)
-    block = await blocks_persistence.update_block(dialogue_id, block_id, block_data, session)
-    return block
+        await self._block_repository.delete_block(
+            dialogue_id=dialogue_id,
+            block_id=block_id,
+        )
 
+    async def _check_access_and_get_block(
+            self,
+            user_id: int,
+            project_id: int,
+            dialogue_id: int,
+            block_id: int,
+    ) -> UnionBlockReadSchema:
+        blocks = await self.check_access_and_get_blocks(
+            user_id=user_id,
+            project_id=project_id,
+            dialogue_id=dialogue_id,
+        )
 
-async def check_access_and_delete_block(
-        user_id: int,
-        project_id: int,
-        dialogue_id: int,
-        block_id: int,
-        session: AsyncSession,
-) -> UnionBlockReadSchema:
-    block = await _check_access_and_get_block(user_id, project_id, dialogue_id, block_id, session)
-    if block.type == BlockType.IMAGE_BLOCK.value and block.image_path:
-        full_image_path = os.path.join('src', 'media', block.image_path)
-        if os.path.exists(full_image_path):
-            os.remove(full_image_path)
+        block_with_specified_id = [block for block in blocks if block.block_id == block_id]
+        if not block_with_specified_id:
+            raise BlockNotFound
 
-    await blocks_persistence.delete_block(dialogue_id, block_id, session)
-
-
-async def _check_access_and_get_block(
-        user_id: int,
-        project_id: int,
-        dialogue_id: int,
-        block_id: int,
-        session: AsyncSession,
-) -> UnionBlockReadSchema:
-    blocks = await check_access_and_get_blocks(user_id, project_id, dialogue_id, session)
-
-    block_with_specified_id = [block for block in blocks if block.block_id == block_id]
-    if not block_with_specified_id:
-        raise BlockNotFound
-
-    return block_with_specified_id[0]
+        return block_with_specified_id[0]

@@ -1,14 +1,15 @@
+from typing import Annotated
+
 from async_fastapi_jwt_auth import AuthJWT
 from fastapi import APIRouter, status, HTTPException, UploadFile
 from fastapi.params import Depends
-from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.blocks.dependencies.services_dependencies import BlockServiceDI
 from src.core.auth import auth_dep
-from src.core.db import get_async_session
 from src.blocks.schemas import UnionBlockCreateSchema, UnionBlockReadSchema, UnionBlockUpdateSchema
 from src.projects import exceptions as projects_exceptions
 from src.dialogues import exceptions as dialogues_exceptions
-from src.blocks import services as blocks_service, exceptions as blocks_exceptions
+from src.blocks import exceptions as blocks_exceptions
 
 router = APIRouter(
     prefix='/projects/{project_id}/dialogues/{dialogue_id}/blocks',
@@ -21,19 +22,18 @@ async def create_block(
         project_id: int,
         dialogue_id: int,
         block: UnionBlockCreateSchema,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep)
+        auth_jwt: Annotated[AuthJWT, Depends(auth_dep)],
+        block_service: BlockServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        block = await blocks_service.check_access_and_create_block(
+        block = await block_service.check_access_and_create_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
             block_data=block,
-            session=session
         )
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
@@ -62,18 +62,17 @@ async def create_block(
 async def get_blocks(
         project_id: int,
         dialogue_id: int,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep)
+        auth_jwt: Annotated[AuthJWT, Depends(auth_dep)],
+        block_service: BlockServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        blocks = await blocks_service.check_access_and_get_blocks(
+        blocks = await block_service.check_access_and_get_blocks(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
-            session=session
         )
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
@@ -99,20 +98,19 @@ async def update_block(
         dialogue_id: int,
         block_id: int,
         block: UnionBlockUpdateSchema,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        auth_jwt: Annotated[AuthJWT, Depends(auth_dep)],
+        block_service: BlockServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        block = await blocks_service.check_access_and_update_block(
+        block = await block_service.check_access_and_update_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
             block_id=block_id,
             block_data=block,
-            session=session,
         )
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
@@ -148,20 +146,19 @@ async def upload_image_for_image_block(
         dialogue_id: int,
         block_id: int,
         image: UploadFile,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        auth_jwt: Annotated[AuthJWT, Depends(auth_dep)],
+        block_service: BlockServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        block = await blocks_service.check_access_and_upload_image_for_image_block(
+        block = await block_service.check_access_and_upload_image_for_image_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
             block_id=block_id,
             image=image,
-            session=session
         )
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
@@ -196,19 +193,18 @@ async def delete_block(
         project_id: int,
         dialogue_id: int,
         block_id: int,
-        session: AsyncSession = Depends(get_async_session),
-        auth_jwt: AuthJWT = Depends(auth_dep),
+        auth_jwt: Annotated[AuthJWT, Depends(auth_dep)],
+        block_service: BlockServiceDI,
 ):
     await auth_jwt.jwt_required()
     user_id = await auth_jwt.get_jwt_subject()
 
     try:
-        await blocks_service.check_access_and_delete_block(
+        await block_service.check_access_and_delete_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
             block_id=block_id,
-            session=session
         )
     except projects_exceptions.ProjectNotFound:
         raise HTTPException(
