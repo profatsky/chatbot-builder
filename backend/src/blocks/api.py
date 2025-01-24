@@ -13,7 +13,7 @@ from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProject
 
 router = APIRouter(
     prefix='/projects/{project_id}/dialogues/{dialogue_id}/blocks',
-    tags=['blocks'],
+    tags=['Blocks'],
 )
 
 

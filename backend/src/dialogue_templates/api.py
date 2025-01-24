@@ -9,7 +9,7 @@ from src.dialogue_templates.schemas import DialogueTemplateReadSchema
 from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProjectError
 
 router = APIRouter(
-    tags=['templates'],
+    tags=['Templates'],
 )
 
 

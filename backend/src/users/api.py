@@ -8,7 +8,7 @@ from src.users.schemas import UserWithStatsReadSchema
 
 router = APIRouter(
     prefix='/users',
-    tags=['auth'],
+    tags=['Auth'],
 )
 
 

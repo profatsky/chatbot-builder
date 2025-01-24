@@ -10,7 +10,7 @@ from src.core import settings
 from src.core.router import get_app_router
 from src.db_seeds.orm import seed_database
 
-app = FastAPI()
+app = FastAPI(title='Chatbot Builder')
 app.mount('/api/media', StaticFiles(directory='src/media'), name='media')
 app.include_router(get_app_router())
 
@@ -22,8 +22,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=['*'],
+    allow_headers=['*'],
 )
 
 
@@ -31,7 +31,7 @@ app.add_middleware(
 def authjwt_exception_handler(request: Request, exc: AuthJWTException):
     return JSONResponse(
         status_code=exc.status_code,
-        content={"detail": exc.message}
+        content={'detail': exc.message}
     )
 
 

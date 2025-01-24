@@ -10,7 +10,7 @@ from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProject
 from src.users.exceptions import UserDoesNotHavePermissionError
 
 router = APIRouter(
-    tags=['plugins'],
+    tags=['Plugins'],
 )
 
 

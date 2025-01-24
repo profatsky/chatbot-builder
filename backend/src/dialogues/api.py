@@ -8,7 +8,7 @@ from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProject
 
 router = APIRouter(
     prefix='/projects/{project_id}/dialogues',
-    tags=['dialogues'],
+    tags=['Dialogues'],
 )
 
 

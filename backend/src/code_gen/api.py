@@ -13,7 +13,7 @@ from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProject
 
 router = APIRouter(
     prefix='/projects',
-    tags=['projects'],
+    tags=['Projects'],
 )
 
 

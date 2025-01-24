@@ -8,7 +8,7 @@ from src.users import exceptions as users_exceptions
 
 router = APIRouter(
     prefix='/statistics',
-    tags=['statistics'],
+    tags=['Statistics'],
 )
 
 

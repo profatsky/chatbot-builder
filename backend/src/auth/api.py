@@ -15,7 +15,7 @@ from src.users.exceptions import (
     InvalidCredentialsError,
 )
 
-router = APIRouter(tags=['auth'])
+router = APIRouter(tags=['Auth'])
 
 
 @router.post('/register', status_code=status.HTTP_201_CREATED)

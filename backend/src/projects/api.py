@@ -7,7 +7,7 @@ from src.projects.schemas import ProjectCreateSchema, ProjectUpdateSchema, Proje
 
 router = APIRouter(
     prefix='/projects',
-    tags=['projects'],
+    tags=['Projects'],
 )
 
 
