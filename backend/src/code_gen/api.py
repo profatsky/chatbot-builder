@@ -1,13 +1,14 @@
 from typing import Annotated
 
 from async_fastapi_jwt_auth import AuthJWT
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter
 from fastapi.params import Depends
 from fastapi.responses import StreamingResponse
 
 from src.code_gen.dependencies.services_dependencies import CodeGenServiceDI
 from src.core.auth import auth_dep
-from src.dialogues.exceptions import NoDialoguesInProjectError
+from src.dialogues.exceptions.http_exceptions import NoDialoguesInProjectHTTPException
+from src.dialogues.exceptions.services_exceptions import NoDialoguesInProjectError
 from src.dialogues.schemas import DialogueWithBlocksReadSchema
 from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
 from src.projects.exceptions.services_exceptions import ProjectNotFoundError, NoPermissionForProjectError
@@ -39,10 +40,7 @@ async def get_bot_code(
         raise NoPermissionForProjectHTTPException
 
     except NoDialoguesInProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='No dialogues in the project'
-        )
+        raise NoDialoguesInProjectHTTPException
 
     return StreamingResponse(
         content=zipped_bot,

@@ -7,7 +7,7 @@ from src.dialogues.schemas import (
     DialogueReadSchema,
     TriggerUpdateSchema,
 )
-from src.dialogues.exceptions import DialogueNotFoundError, DialoguesLimitExceededError
+from src.dialogues.exceptions.services_exceptions import DialogueNotFoundError, DialoguesLimitExceededError
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
 
 

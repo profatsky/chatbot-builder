@@ -2,7 +2,8 @@ from fastapi import APIRouter, status, HTTPException
 
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.dialogues.dependencies.services_dependencies import DialogueServiceDI
-from src.dialogues.exceptions import DialoguesLimitExceededError, DialogueNotFoundError
+from src.dialogues.exceptions.http_exceptions import DialoguesLimitExceededHTTPException, DialogueNotFoundHTTPException
+from src.dialogues.exceptions.services_exceptions import DialoguesLimitExceededError, DialogueNotFoundError
 from src.dialogues.schemas import DialogueCreateSchema, DialogueReadSchema, TriggerUpdateSchema
 from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
 from src.projects.exceptions.services_exceptions import ProjectNotFoundError, NoPermissionForProjectError
@@ -41,10 +42,8 @@ async def create_dialogue(
         raise NoPermissionForProjectHTTPException
 
     except DialoguesLimitExceededError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='The specified project has the maximum number of dialogues',
-        )
+        raise DialoguesLimitExceededHTTPException
+
     return dialogue
 
 
@@ -73,10 +72,8 @@ async def update_dialogue_trigger(
         raise NoPermissionForProjectHTTPException
 
     except DialogueNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Dialogue does not exist',
-        )
+        raise DialogueNotFoundHTTPException
+
     return dialogue
 
 
@@ -103,8 +100,6 @@ async def delete_dialogue(
         raise NoPermissionForProjectHTTPException
 
     except DialogueNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Dialogue does not exist',
-        )
+        raise DialogueNotFoundHTTPException
+
     return {'detail': 'Диалог успешно удален'}

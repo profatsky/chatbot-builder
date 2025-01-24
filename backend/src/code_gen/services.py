@@ -18,7 +18,7 @@ from src.enums import (
 from src.code_gen.schemas import HandlerSchema, StateSchema, StatesGroupSchema, KeyboardSchema
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
 from src.projects.schemas import ProjectToGenerateCodeReadSchema
-from src.dialogues.exceptions import NoDialoguesInProjectError
+from src.dialogues.exceptions.services_exceptions import NoDialoguesInProjectError
 from src.code_gen.bot_templates import code
 from src.blocks.utils import escape_inner_text
 
