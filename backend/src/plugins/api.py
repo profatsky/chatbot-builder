@@ -6,7 +6,8 @@ from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.plugins.dependencies.services_dependencies import PluginServiceDI
 from src.plugins.exceptions import PluginNotFoundError, PluginAlreadyInProjectError, PluginIsNotInProjectError
 from src.plugins.schemas import PluginReadSchema, PluginCreateSchema
-from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProjectError
+from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
+from src.projects.exceptions.services_exceptions import ProjectNotFoundError, NoPermissionForProjectError
 from src.users.exceptions import UserDoesNotHavePermissionError
 
 router = APIRouter(
@@ -146,16 +147,13 @@ async def remove_plugin_from_project(
             project_id=project_id,
             plugin_id=plugin_id,
         )
+
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='The specified project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except PluginIsNotInProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

@@ -4,7 +4,8 @@ from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.dialogues.dependencies.services_dependencies import DialogueServiceDI
 from src.dialogues.exceptions import DialoguesLimitExceededError, DialogueNotFoundError
 from src.dialogues.schemas import DialogueCreateSchema, DialogueReadSchema, TriggerUpdateSchema
-from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProjectError
+from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
+from src.projects.exceptions.services_exceptions import ProjectNotFoundError, NoPermissionForProjectError
 
 router = APIRouter(
     prefix='/projects/{project_id}/dialogues',
@@ -32,16 +33,13 @@ async def create_dialogue(
             project_id=project_id,
             dialogue_data=dialogue_data,
         )
+
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except DialoguesLimitExceededError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
@@ -69,15 +67,11 @@ async def update_dialogue_trigger(
             trigger=trigger,
         )
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -103,15 +97,11 @@ async def delete_dialogue(
             dialogue_id=dialogue_id,
         )
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

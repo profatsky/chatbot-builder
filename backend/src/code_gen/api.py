@@ -9,7 +9,8 @@ from src.code_gen.dependencies.services_dependencies import CodeGenServiceDI
 from src.core.auth import auth_dep
 from src.dialogues.exceptions import NoDialoguesInProjectError
 from src.dialogues.schemas import DialogueWithBlocksReadSchema
-from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProjectError
+from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
+from src.projects.exceptions.services_exceptions import ProjectNotFoundError, NoPermissionForProjectError
 
 router = APIRouter(
     prefix='/projects',
@@ -32,15 +33,11 @@ async def get_bot_code(
             project_id=project_id,
         )
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except NoDialoguesInProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

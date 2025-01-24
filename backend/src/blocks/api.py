@@ -9,7 +9,8 @@ from src.blocks.exceptions import RepeatingBlockSequenceNumberError, BlockNotFou
 from src.core.auth import auth_dep
 from src.blocks.schemas import UnionBlockCreateSchema, UnionBlockReadSchema, UnionBlockUpdateSchema
 from src.dialogues.exceptions import DialogueNotFoundError
-from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProjectError
+from src.projects.exceptions.services_exceptions import ProjectNotFoundError, NoPermissionForProjectError
+from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
 
 router = APIRouter(
     prefix='/projects/{project_id}/dialogues/{dialogue_id}/blocks',
@@ -40,15 +41,11 @@ async def create_block(
             block_data=block,
         )
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -79,15 +76,11 @@ async def get_blocks(
             dialogue_id=dialogue_id,
         )
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -117,15 +110,11 @@ async def update_block(
             block_data=block,
         )
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -165,15 +154,11 @@ async def upload_image_for_image_block(
             image=image,
         )
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -211,15 +196,11 @@ async def delete_block(
             block_id=block_id,
         )
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except DialogueNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

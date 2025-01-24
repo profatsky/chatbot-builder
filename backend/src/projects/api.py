@@ -2,7 +2,12 @@ from fastapi import APIRouter, status, HTTPException
 
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
-from src.projects.exceptions import ProjectsLimitExceededError, ProjectNotFoundError, NoPermissionForProjectError
+from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
+from src.projects.exceptions.services_exceptions import (
+    ProjectsLimitExceededError,
+    ProjectNotFoundError,
+    NoPermissionForProjectError,
+)
 from src.projects.schemas import ProjectCreateSchema, ProjectUpdateSchema, ProjectReadSchema
 
 router = APIRouter(
@@ -65,16 +70,12 @@ async def update_project(
             project_id=project_id,
             project_data=project_data,
         )
+
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
 
     return project
 
@@ -93,15 +94,11 @@ async def delete_project(
             user_id=user_id,
             project_id=project_id,
         )
+
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
 
     return {'message': 'Project was successfully deleted'}

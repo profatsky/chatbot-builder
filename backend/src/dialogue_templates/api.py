@@ -6,7 +6,8 @@ from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.dialogue_templates.dependencies.services_dependencies import DialogueTemplateServiceDI
 from src.dialogue_templates.exceptions import DialogueTemplateNotFoundError
 from src.dialogue_templates.schemas import DialogueTemplateReadSchema
-from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProjectError
+from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
+from src.projects.exceptions.services_exceptions import ProjectNotFoundError, NoPermissionForProjectError
 
 router = APIRouter(
     tags=['Templates'],
@@ -60,15 +61,11 @@ async def add_dialogue_template_to_project(
             template_id=template_id,
         )
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='The specified project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except DialogueTemplateNotFoundError:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

@@ -9,7 +9,11 @@ from src.projects.schemas import (
     ProjectUpdateSchema,
     ProjectToGenerateCodeReadSchema,
 )
-from src.projects.exceptions import ProjectNotFoundError, NoPermissionForProjectError, ProjectsLimitExceededError
+from src.projects.exceptions.services_exceptions import (
+    ProjectNotFoundError,
+    NoPermissionForProjectError,
+    ProjectsLimitExceededError,
+)
 
 
 class ProjectService:
