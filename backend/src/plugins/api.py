@@ -14,7 +14,11 @@ router = APIRouter(
 )
 
 
-@router.post('/plugins', response_model=PluginReadSchema)
+@router.post(
+    '/plugins',
+    response_model=PluginReadSchema,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_plugin(
         plugin_data: PluginCreateSchema,
         auth_jwt: AuthJWTDI,
@@ -31,7 +35,7 @@ async def create_plugin(
     except UserDoesNotHavePermissionError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
 
     return plugin
@@ -84,7 +88,7 @@ async def delete_plugin(
     except UserDoesNotHavePermissionError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
 
 
@@ -112,7 +116,7 @@ async def add_plugin_to_project(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except PluginAlreadyInProjectError:
         raise HTTPException(
@@ -150,7 +154,7 @@ async def remove_plugin_from_project(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except PluginIsNotInProjectError:
         raise HTTPException(

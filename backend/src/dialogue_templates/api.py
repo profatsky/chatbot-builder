@@ -67,7 +67,7 @@ async def add_dialogue_template_to_project(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except DialogueTemplateNotFoundError:
         raise HTTPException(

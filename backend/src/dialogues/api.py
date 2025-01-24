@@ -12,7 +12,11 @@ router = APIRouter(
 )
 
 
-@router.post('', response_model=DialogueReadSchema, status_code=status.HTTP_201_CREATED)
+@router.post(
+    '',
+    response_model=DialogueReadSchema,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_dialogue(
         project_id: int,
         dialogue_data: DialogueCreateSchema,
@@ -36,7 +40,7 @@ async def create_dialogue(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except DialoguesLimitExceededError:
         raise HTTPException(
@@ -72,7 +76,7 @@ async def update_dialogue_trigger(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except DialogueNotFoundError:
         raise HTTPException(
@@ -106,7 +110,7 @@ async def delete_dialogue(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except DialogueNotFoundError:
         raise HTTPException(

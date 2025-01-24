@@ -39,7 +39,7 @@ async def get_bot_code(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except NoDialoguesInProjectError:
         raise HTTPException(
@@ -48,7 +48,9 @@ async def get_bot_code(
         )
 
     return StreamingResponse(
-        zipped_bot,
+        content=zipped_bot,
         media_type='application/zip',
-        headers={'Content-Disposition': 'attachment; filename=bot.zip'}
+        headers={
+            'Content-Disposition': 'attachment; filename=bot.zip',
+        }
     )

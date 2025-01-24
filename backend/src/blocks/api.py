@@ -17,7 +17,11 @@ router = APIRouter(
 )
 
 
-@router.post('', response_model=UnionBlockReadSchema)
+@router.post(
+    '',
+    response_model=UnionBlockReadSchema,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_block(
         project_id: int,
         dialogue_id: int,
@@ -43,7 +47,7 @@ async def create_block(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except DialogueNotFoundError:
         raise HTTPException(
@@ -82,7 +86,7 @@ async def get_blocks(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except DialogueNotFoundError:
         raise HTTPException(
@@ -120,7 +124,7 @@ async def update_block(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except DialogueNotFoundError:
         raise HTTPException(
@@ -168,7 +172,7 @@ async def upload_image_for_image_block(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except DialogueNotFoundError:
         raise HTTPException(
@@ -214,7 +218,7 @@ async def delete_block(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
     except DialogueNotFoundError:
         raise HTTPException(

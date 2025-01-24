@@ -11,7 +11,11 @@ router = APIRouter(
 )
 
 
-@router.post('', response_model=ProjectReadSchema, status_code=status.HTTP_201_CREATED)
+@router.post(
+    '',
+    response_model=ProjectReadSchema,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_project(
         project_data: ProjectCreateSchema,
         auth_jwt: AuthJWTDI,
@@ -69,7 +73,7 @@ async def update_project(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
 
     return project
@@ -97,7 +101,7 @@ async def delete_project(
     except NoPermissionForProjectError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
 
     return {'message': 'Project was successfully deleted'}

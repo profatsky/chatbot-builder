@@ -25,7 +25,7 @@ async def get_statistic(
     except users_exceptions.UserDoesNotHavePermissionError:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='Don\t have permission',
+            detail='Dont have permission',
         )
 
     return statistics
