@@ -3,7 +3,7 @@ from fastapi import APIRouter, HTTPException, status
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.auth.dependencies.services_dependencies import AuthServiceDI
 from src.users.dependencies.services_dependencies import UserServiceDI
-from src.users.exceptions import UserNotFoundError
+from src.users.exceptions.services_exceptions import UserNotFoundError
 from src.users.schemas import UserWithStatsReadSchema
 
 router = APIRouter(

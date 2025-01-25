@@ -4,7 +4,7 @@ from src.plugins.schemas import PluginReadSchema, PluginCreateSchema
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
 from src.projects.schemas import ProjectReadSchema
 from src.users.dependencies.services_dependencies import UserServiceDI
-from src.users.exceptions import UserDoesNotHavePermissionError
+from src.users.exceptions.services_exceptions import DontHavePermissionError
 
 PLUGINS_PER_PAGE = 9
 
@@ -46,7 +46,7 @@ class PluginService:
     ) -> PluginReadSchema:
         user = await self._user_service.get_user_by_id(user_id)
         if user is None or not user.is_superuser:
-            raise UserDoesNotHavePermissionError
+            raise DontHavePermissionError
 
         plugin = await self._plugin_repository.create_plugin(plugin_data)
         return plugin
@@ -58,7 +58,7 @@ class PluginService:
     ):
         user = await self._user_service.get_user_by_id(user_id)
         if user is None or not user.is_superuser:
-            raise UserDoesNotHavePermissionError
+            raise DontHavePermissionError
         await self._plugin_repository.delete_plugin(plugin_id)
 
     async def check_access_and_add_plugin_to_project(

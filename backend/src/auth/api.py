@@ -9,7 +9,7 @@ from src.auth.dependencies.services_dependencies import AuthServiceDI
 from src.auth.schemas import AuthCredentialsSchema, Password
 from src.core import settings
 from src.users.dependencies.services_dependencies import UserServiceDI
-from src.users.exceptions import (
+from src.users.exceptions.services_exceptions import (
     UserAlreadyExistsError,
     UserNotFoundError,
     InvalidCredentialsError,

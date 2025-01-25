@@ -1,6 +1,6 @@
 from src.statistics.dependencies.repositories_dependencies import StatisticRepositoryDI
 from src.statistics.schemas import StatisticSchema
-from src.users import exceptions as users_exceptions
+from src.users.exceptions import services_exceptions as users_exceptions
 from src.users.dependencies.services_dependencies import UserServiceDI
 
 
@@ -19,7 +19,7 @@ class StatisticService:
     ) -> StatisticSchema:
         user = await self._user_service.get_user_by_id(user_id)
         if user is None or not user.is_superuser:
-            raise users_exceptions.UserDoesNotHavePermissionError
+            raise users_exceptions.DontHavePermissionError
 
         user_count = await self._count_users()
         project_count = await self._count_projects()

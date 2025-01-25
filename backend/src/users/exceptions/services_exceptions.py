@@ -10,5 +10,5 @@ class InvalidCredentialsError(Exception):
     pass
 
 
-class UserDoesNotHavePermissionError(Exception):
+class DontHavePermissionError(Exception):
     pass

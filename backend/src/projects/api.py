@@ -72,7 +72,6 @@ async def update_project(
             project_id=project_id,
             project_data=project_data,
         )
-
     except ProjectNotFoundError:
         raise ProjectNotFoundHTTPException
 
@@ -96,7 +95,6 @@ async def delete_project(
             user_id=user_id,
             project_id=project_id,
         )
-
     except ProjectNotFoundError:
         raise ProjectNotFoundHTTPException
 

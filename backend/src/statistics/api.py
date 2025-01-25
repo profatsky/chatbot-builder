@@ -1,10 +1,10 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.statistics.dependencies.services_dependencies import StatisticServiceDI
 from src.statistics.schemas import StatisticSchema
-from src.users import exceptions as users_exceptions
-
+from src.users.exceptions.http_exceptions import DontHavePermissionHTTPException
+from src.users.exceptions.services_exceptions import DontHavePermissionError
 
 router = APIRouter(
     prefix='/statistics',
@@ -22,10 +22,7 @@ async def get_statistic(
 
     try:
         statistics = await statistic_service.check_access_and_get_statistic(user_id)
-    except users_exceptions.UserDoesNotHavePermissionError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+    except DontHavePermissionError:
+        raise DontHavePermissionHTTPException
 
     return statistics

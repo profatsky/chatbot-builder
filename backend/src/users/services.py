@@ -2,7 +2,7 @@ from pydantic import EmailStr
 
 from src.auth.schemas import AuthCredentialsSchema, Password
 from src.users.dependencies.repositories_dependencies import UserRepositoryDI
-from src.users.exceptions import UserAlreadyExistsError, UserNotFoundError, InvalidCredentialsError
+from src.users.exceptions.services_exceptions import UserAlreadyExistsError, UserNotFoundError, InvalidCredentialsError
 from src.users.schemas import UserReadSchema, UserWithStatsReadSchema
 
 

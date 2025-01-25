@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Query, status, HTTPException, Body
+from fastapi import APIRouter, Query, status, Body
 
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.plugins.dependencies.services_dependencies import PluginServiceDI
@@ -17,7 +17,8 @@ from src.plugins.exceptions.services_exceptions import (
 from src.plugins.schemas import PluginReadSchema, PluginCreateSchema
 from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
 from src.projects.exceptions.services_exceptions import ProjectNotFoundError, NoPermissionForProjectError
-from src.users.exceptions import UserDoesNotHavePermissionError
+from src.users.exceptions.http_exceptions import DontHavePermissionHTTPException
+from src.users.exceptions.services_exceptions import DontHavePermissionError
 
 router = APIRouter(
     tags=['Plugins'],
@@ -42,11 +43,8 @@ async def create_plugin(
             user_id=user_id,
             plugin_data=plugin_data,
         )
-    except UserDoesNotHavePermissionError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+    except DontHavePermissionError:
+        raise DontHavePermissionHTTPException
 
     return plugin
 
@@ -93,11 +91,8 @@ async def delete_plugin(
             user_id=user_id,
             plugin_id=plugin_id,
         )
-    except UserDoesNotHavePermissionError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+    except DontHavePermissionError:
+        raise DontHavePermissionHTTPException
 
 
 @router.post('/projects/{project_id}/plugins', status_code=status.HTTP_201_CREATED)

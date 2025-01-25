@@ -34,7 +34,6 @@ async def create_dialogue(
             project_id=project_id,
             dialogue_data=dialogue_data,
         )
-
     except ProjectNotFoundError:
         raise ProjectNotFoundHTTPException
 
