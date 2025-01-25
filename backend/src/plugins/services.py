@@ -1,5 +1,5 @@
 from src.plugins.dependencies.repositories_dependencies import PluginRepositoryDI
-from src.plugins.exceptions import PluginNotFoundError, PluginAlreadyInProjectError, PluginIsNotInProjectError
+from src.plugins.exceptions.services_exceptions import PluginNotFoundError, PluginAlreadyInProjectError, PluginIsNotInProjectError
 from src.plugins.schemas import PluginReadSchema, PluginCreateSchema
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
 from src.projects.schemas import ProjectReadSchema

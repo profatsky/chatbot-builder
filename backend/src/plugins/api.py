@@ -4,7 +4,16 @@ from fastapi import APIRouter, Query, status, HTTPException, Body
 
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.plugins.dependencies.services_dependencies import PluginServiceDI
-from src.plugins.exceptions import PluginNotFoundError, PluginAlreadyInProjectError, PluginIsNotInProjectError
+from src.plugins.exceptions.http_exceptions import (
+    PluginNotFoundHTTPException,
+    PluginAlreadyInProjectHTTPException,
+    PluginIsNotInProjectHTTPException,
+)
+from src.plugins.exceptions.services_exceptions import (
+    PluginNotFoundError,
+    PluginAlreadyInProjectError,
+    PluginIsNotInProjectError,
+)
 from src.plugins.schemas import PluginReadSchema, PluginCreateSchema
 from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
 from src.projects.exceptions.services_exceptions import ProjectNotFoundError, NoPermissionForProjectError
@@ -65,10 +74,8 @@ async def get_plugin(
     try:
         plugin = await plugin_service.get_plugin(plugin_id)
     except PluginNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='The specified plugin does not exist',
-        )
+        raise PluginNotFoundHTTPException
+
     return plugin
 
 
@@ -109,26 +116,18 @@ async def add_plugin_to_project(
             project_id=project_id,
             plugin_id=plugin_id,
         )
+
     except ProjectNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='The specified project does not exist',
-        )
+        raise ProjectNotFoundHTTPException
+
     except NoPermissionForProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Dont have permission',
-        )
+        raise NoPermissionForProjectHTTPException
+
     except PluginAlreadyInProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='The specified plugin is already in the project',
-        )
+        raise PluginAlreadyInProjectHTTPException
+
     except PluginNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='The specified plugin does not exits',
-        )
+        raise PluginNotFoundHTTPException
 
 
 @router.delete('/projects/{project_id}/plugins/{plugin_id}', status_code=status.HTTP_204_NO_CONTENT)
@@ -155,7 +154,4 @@ async def remove_plugin_from_project(
         raise NoPermissionForProjectHTTPException
 
     except PluginIsNotInProjectError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='The specified plugin is not in the project'
-        )
+        raise PluginIsNotInProjectHTTPException
