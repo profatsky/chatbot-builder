@@ -1,11 +1,20 @@
 from typing import Annotated
 
 from async_fastapi_jwt_auth import AuthJWT
-from fastapi import APIRouter, status, HTTPException, UploadFile
+from fastapi import APIRouter, status, UploadFile
 from fastapi.params import Depends
 
 from src.blocks.dependencies.services_dependencies import BlockServiceDI
-from src.blocks.exceptions import RepeatingBlockSequenceNumberError, BlockNotFoundError, InvalidBlockTypeError
+from src.blocks.exceptions.http_exceptions import (
+    RepeatingBlockSequenceNumberHTTPException,
+    BlockNotFoundHTTPException,
+    InvalidBlockTypeHTTPException,
+)
+from src.blocks.exceptions.services_exceptions import (
+    RepeatingBlockSequenceNumberError,
+    BlockNotFoundError,
+    InvalidBlockTypeError,
+)
 from src.core.auth import auth_dep
 from src.blocks.schemas import UnionBlockCreateSchema, UnionBlockReadSchema, UnionBlockUpdateSchema
 from src.dialogues.exceptions.http_exceptions import DialogueNotFoundHTTPException
@@ -51,10 +60,8 @@ async def create_block(
         raise DialogueNotFoundHTTPException
 
     except RepeatingBlockSequenceNumberError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Repeating sequence numbers for blocks in the dialogue',
-        )
+        raise RepeatingBlockSequenceNumberHTTPException
+
     return block
 
 
@@ -116,15 +123,11 @@ async def update_block(
         raise DialogueNotFoundHTTPException
 
     except BlockNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Block does not exits',
-        )
+        raise BlockNotFoundHTTPException
+
     except RepeatingBlockSequenceNumberError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Repeating sequence numbers for blocks in the dialogue',
-        )
+        raise RepeatingBlockSequenceNumberHTTPException
+
     return block
 
 
@@ -158,15 +161,11 @@ async def upload_image_for_image_block(
         raise DialogueNotFoundHTTPException
 
     except BlockNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Block does not exits',
-        )
+        raise BlockNotFoundHTTPException
+
     except InvalidBlockTypeError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='Invalid block type'
-        )
+        raise InvalidBlockTypeHTTPException
+
     return block
 
 
@@ -198,8 +197,6 @@ async def delete_block(
         raise DialogueNotFoundHTTPException
 
     except BlockNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='Block does not exits',
-        )
+        raise BlockNotFoundHTTPException
+
     return {'detail': 'Block was successfully deleted'}

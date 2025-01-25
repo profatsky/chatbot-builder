@@ -11,7 +11,7 @@ from src.blocks.schemas import (
     UnionBlockUpdateSchema,
     ImageBlockReadSchema,
 )
-from src.blocks.exceptions import BlockNotFoundError, InvalidBlockTypeError
+from src.blocks.exceptions.services_exceptions import BlockNotFoundError, InvalidBlockTypeError
 
 
 class BlockService:
