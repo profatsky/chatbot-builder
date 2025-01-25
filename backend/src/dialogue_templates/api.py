@@ -1,10 +1,11 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Query, status, HTTPException, Body
+from fastapi import APIRouter, Query, status, Body
 
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.dialogue_templates.dependencies.services_dependencies import DialogueTemplateServiceDI
-from src.dialogue_templates.exceptions import DialogueTemplateNotFoundError
+from src.dialogue_templates.exceptions.http_exceptions import DialogueTemplateNotFoundHTTPException
+from src.dialogue_templates.exceptions.services_exceptions import DialogueTemplateNotFoundError
 from src.dialogue_templates.schemas import DialogueTemplateReadSchema
 from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
 from src.projects.exceptions.services_exceptions import ProjectNotFoundError, NoPermissionForProjectError
@@ -37,10 +38,8 @@ async def get_dialogue_template(
     try:
         dialogue_template = await dialogue_template_service.get_template(template_id)
     except DialogueTemplateNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='The specified dialogue template does not exist'
-        )
+        raise DialogueTemplateNotFoundHTTPException
+
     return dialogue_template
 
 
@@ -67,7 +66,4 @@ async def add_dialogue_template_to_project(
         raise NoPermissionForProjectHTTPException
 
     except DialogueTemplateNotFoundError:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail='The specified dialogue template does not exists',
-        )
+        raise DialogueTemplateNotFoundHTTPException

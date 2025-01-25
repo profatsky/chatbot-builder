@@ -1,5 +1,5 @@
 from src.dialogue_templates.dependencies.repositories_dependencies import DialogueTemplateRepositoryDI
-from src.dialogue_templates.exceptions import DialogueTemplateNotFoundError
+from src.dialogue_templates.exceptions.services_exceptions import DialogueTemplateNotFoundError
 from src.dialogue_templates.schemas import DialogueTemplateReadSchema
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
 
