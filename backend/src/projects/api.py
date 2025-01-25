@@ -1,8 +1,12 @@
-from fastapi import APIRouter, status, HTTPException
+from fastapi import APIRouter, status
 
 from src.auth.dependencies.jwt_dependencies import AuthJWTDI
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
-from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
+from src.projects.exceptions.http_exceptions import (
+    ProjectNotFoundHTTPException,
+    NoPermissionForProjectHTTPException,
+    ProjectsLimitExceededHTTPException,
+)
 from src.projects.exceptions.services_exceptions import (
     ProjectsLimitExceededError,
     ProjectNotFoundError,
@@ -35,10 +39,8 @@ async def create_project(
             project_data=project_data,
         )
     except ProjectsLimitExceededError:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail='You have the maximum number of projects',
-        )
+        raise ProjectsLimitExceededHTTPException
+
     return project
 
 

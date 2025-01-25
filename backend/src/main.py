@@ -31,7 +31,7 @@ app.add_middleware(
 def authjwt_exception_handler(request: Request, exc: AuthJWTException):
     return JSONResponse(
         status_code=exc.status_code,
-        content={'detail': exc.message}
+        content={'detail': exc.message},
     )
 
 
@@ -43,5 +43,5 @@ async def startup():
 if __name__ == '__main__':
     uvicorn.run(
         'main:app',
-        use_colors=True
+        use_colors=True,
     )
