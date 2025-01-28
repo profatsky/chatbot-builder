@@ -3,9 +3,11 @@ import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 
+from src.auth.schemas import AuthCredentialsSchema
 from src.core import settings
 from src.core.db import Base, get_async_session, get_postgres_dsn
 from src.main import app
+from src.users.repositories import UserRepository
 
 SQLALCHEMY_DATABASE_URL = get_postgres_dsn(
     user=settings.DB_USER,
@@ -23,6 +25,13 @@ async_session_maker = async_sessionmaker(
 )
 
 
+def pytest_collection_modifyitems(items):
+    pytest_asyncio_tests = (item for item in items if pytest_asyncio.is_async_test(item))
+    session_scope_marker = pytest.mark.asyncio(loop_scope='session')
+    for async_test in pytest_asyncio_tests:
+        async_test.add_marker(session_scope_marker, append=False)
+
+
 @pytest_asyncio.fixture(scope='session')
 async def session():
     async with async_engine.begin() as conn:
@@ -34,7 +43,7 @@ async def session():
 
 
 @pytest_asyncio.fixture(scope='session')
-async def client(session):
+async def client(session) -> AsyncClient:
     async def override_get_session():
         try:
             yield session
@@ -49,8 +58,17 @@ async def client(session):
         yield cli
 
 
-def pytest_collection_modifyitems(items):
-    pytest_asyncio_tests = (item for item in items if pytest_asyncio.is_async_test(item))
-    session_scope_marker = pytest.mark.asyncio(loop_scope='session')
-    for async_test in pytest_asyncio_tests:
-        async_test.add_marker(session_scope_marker, append=False)
+@pytest_asyncio.fixture(scope='session')
+async def user_repository(session) -> UserRepository:
+    return UserRepository(session)
+
+
+@pytest_asyncio.fixture(scope='session')
+async def test_user(user_repository: UserRepository):
+    credentials = AuthCredentialsSchema(
+        email='test@test.com',
+        password='password',
+    )
+    user = await user_repository.create_user(credentials)
+    yield user
+    await user_repository.delete_user(user.user_id)

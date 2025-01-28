@@ -9,6 +9,7 @@ from src.auth.dependencies.services_dependencies import AuthServiceDI
 from src.auth.schemas import AuthCredentialsSchema, Password
 from src.core import settings
 from src.users.dependencies.services_dependencies import UserServiceDI
+from src.users.exceptions.http_exceptions import UserAlreadyExistsHTTPException
 from src.users.exceptions.services_exceptions import (
     UserAlreadyExistsError,
     UserNotFoundError,
@@ -27,13 +28,10 @@ async def register(
     try:
         user = await user_service.create_user(credentials)
     except UserAlreadyExistsError:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail='Пользователь с таким email уже зарегистрирован!'
-        )
+        raise UserAlreadyExistsHTTPException
 
     await auth_service.set_auth_tokens(user.user_id)
-    return {'detail': 'Регистрация прошла успешно!'}
+    return {'detail': 'Registration was successful'}
 
 
 # Нужно отправлять csrf_access_token в заголовке X-CSRF-Token

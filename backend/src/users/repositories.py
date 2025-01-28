@@ -2,7 +2,7 @@ from typing import Optional
 
 from passlib.hash import bcrypt
 from pydantic import EmailStr
-from sqlalchemy import select, func
+from sqlalchemy import select, func, delete
 from sqlalchemy.exc import IntegrityError
 
 from src.auth.schemas import AuthCredentialsSchema, Password
@@ -156,3 +156,12 @@ class UserRepository:
             **user.__dict__,
             project_count=project_count
         )
+
+    async def delete_user(self, user_id: int):
+        await self._session.execute(
+            delete(UserModel)
+            .where(
+                UserModel.user_id == user_id,
+            )
+        )
+        await self._session.commit()
