@@ -13,8 +13,9 @@ class PluginReadSchema(BaseModel):
     handlers_file_path: str
     db_funcs_file_path: str
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        'from_attributes': True,
+    }
 
 
 class PluginCreateSchema(BaseModel):

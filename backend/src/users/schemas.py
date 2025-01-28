@@ -10,8 +10,9 @@ class UserReadSchema(BaseModel):
     is_verified: bool
     is_superuser: bool
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        'from_attributes': True,
+    }
 
 
 class UserWithStatsReadSchema(UserReadSchema):

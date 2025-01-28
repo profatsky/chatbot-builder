@@ -18,8 +18,9 @@ class ProjectReadSchema(BaseModel):
     dialogues: list[DialogueReadSchema] = Field(default_factory=list)
     plugins: list[PluginReadSchema] = Field(default_factory=list)
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        'from_attributes': True,
+    }
 
 
 class ProjectToGenerateCodeReadSchema(ProjectReadSchema):

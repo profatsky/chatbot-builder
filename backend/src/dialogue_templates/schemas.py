@@ -11,5 +11,6 @@ class DialogueTemplateReadSchema(BaseModel):
     image_path: str
     created_at: datetime.datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        'from_attributes': True,
+    }

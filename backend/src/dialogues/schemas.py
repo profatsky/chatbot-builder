@@ -16,8 +16,9 @@ class DialogueReadSchema(BaseModel):
     trigger: 'TriggerReadSchema'
     created_at: datetime.datetime
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        'from_attributes': True,
+    }
 
 
 class TriggerCreateSchema(BaseModel):
@@ -34,8 +35,9 @@ class TriggerReadSchema(BaseModel):
     event_type: TriggerEventType
     value: str = Field(max_length=64)
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        'from_attributes': True,
+    }
 
 
 class DialogueWithBlocksReadSchema(DialogueReadSchema):

@@ -9,8 +9,9 @@ class BlockReadSchema(BaseModel):
     block_id: int
     sequence_number: int = Field(ge=1)
 
-    class Config:
-        from_attributes = True
+    model_config = {
+        'from_attributes': True,
+    }
 
 
 class BlockCreateSchema(BaseModel):
