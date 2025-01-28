@@ -259,11 +259,11 @@ async def login(
     except InvalidCredentialsError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Неверные данные для входа!'
+            detail='Invalid credentials',
         )
 
     await auth_service.set_auth_tokens(user.user_id)
-    return {'detail': 'Авторизация прошла успешно!'}
+    return {'detail': 'Authorization was successful'}
 
 
 # Нужно отправлять csrf_refresh_token в заголовке X-CSRF-Token
