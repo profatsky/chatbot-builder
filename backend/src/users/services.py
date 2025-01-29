@@ -1,6 +1,6 @@
 from pydantic import EmailStr
 
-from src.auth.schemas import AuthCredentialsSchema, Password
+from src.auth.schemas import AuthCredentialsSchema
 from src.users.dependencies.repositories_dependencies import UserRepositoryDI
 from src.users.exceptions.services_exceptions import UserAlreadyExistsError, UserNotFoundError, InvalidCredentialsError
 from src.users.schemas import UserReadSchema, UserWithStatsReadSchema
@@ -37,46 +37,11 @@ class UserService:
             raise InvalidCredentialsError
         return user
 
-    async def set_verified_status_for_user(
-            self,
-            user_id: int,
-    ) -> UserReadSchema:
-        user = await self._user_repository.set_verified_status_for_user(user_id)
-        if user is None:
-            raise UserNotFoundError
-        return user
-
-    async def change_user_email_and_set_unverified_status(
-            self,
-            user_id: int,
-            new_email: EmailStr,
-    ) -> UserReadSchema:
-        user = await self._user_repository.change_user_email_and_set_unverified_status(
-            user_id=user_id,
-            new_email=new_email,
-        )
-        if not user:
-            raise UserNotFoundError
-        return user
-
     async def get_user_by_id(
             self,
             user_id: int,
     ) -> UserReadSchema:
         user = await self._user_repository.get_user_by_id(user_id)
-        if user is None:
-            raise UserNotFoundError
-        return user
-
-    async def change_user_password(
-            self,
-            user_id: int,
-            new_password: Password,
-    ) -> UserReadSchema:
-        user = await self._user_repository.change_user_password(
-            user_id=user_id,
-            new_password=new_password
-        )
         if user is None:
             raise UserNotFoundError
         return user

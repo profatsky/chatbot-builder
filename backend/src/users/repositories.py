@@ -94,48 +94,6 @@ class UserRepository:
         user = user.scalar()
         return user
 
-    async def set_verified_status_for_user(
-            self,
-            user_id: int,
-    ) -> Optional[UserReadSchema]:
-        user = await self._get_user_by_id(user_id)
-        if user is None:
-            return
-
-        user.is_verified = True
-        await self._session.commit()
-
-        return UserReadSchema.model_validate(user)
-
-    async def change_user_email_and_set_unverified_status(
-            self,
-            user_id: int,
-            new_email: EmailStr,
-    ) -> Optional[UserReadSchema]:
-        user = await self._get_user_by_id(user_id)
-        if user is None:
-            return
-
-        user.email = new_email
-        user.is_verified = False
-        await self._session.commit()
-
-        return UserReadSchema.model_validate(user)
-
-    async def change_user_password(
-            self,
-            user_id: int,
-            new_password: Password,
-    ) -> Optional[UserReadSchema]:
-        user = await self._get_user_by_id(user_id)
-        if user is None:
-            return
-
-        user.hashed_password = self._hash_password(new_password)
-        await self._session.commit()
-
-        return UserReadSchema.model_validate(user)
-
     async def get_user_with_stats(
             self,
             user_id: int,

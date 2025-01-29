@@ -15,7 +15,6 @@ class UserModel(Base):
     hashed_password: Mapped[str] = mapped_column(String(256))
 
     is_superuser: Mapped[bool] = mapped_column(default=False)
-    is_verified: Mapped[bool] = mapped_column(default=False)
 
     registered_at: Mapped[datetime.datetime] = mapped_column(
         DateTime(timezone=True),
