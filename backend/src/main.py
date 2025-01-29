@@ -1,3 +1,5 @@
+from contextlib import asynccontextmanager
+
 import uvicorn as uvicorn
 from async_fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi import FastAPI
@@ -10,7 +12,14 @@ from src.core import settings
 from src.core.router import get_app_router
 from src.db_seeds.orm import seed_database
 
-app = FastAPI(title='Chatbot Builder')
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    await seed_database()
+    yield
+
+
+app = FastAPI(title='Chatbot Builder', lifespan=lifespan)
 app.mount('/api/media', StaticFiles(directory='src/media'), name='media')
 app.include_router(get_app_router())
 
@@ -33,11 +42,6 @@ def authjwt_exception_handler(request: Request, exc: AuthJWTException):
         status_code=exc.status_code,
         content={'detail': exc.message},
     )
-
-
-@app.on_event('startup')
-async def startup():
-    await seed_database()
 
 
 if __name__ == '__main__':
