@@ -1,5 +1,6 @@
 import pytest
 import pytest_asyncio
+from asgi_lifespan import LifespanManager
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 
@@ -8,6 +9,7 @@ from src.core import settings
 from src.core.db import Base, get_async_session, get_postgres_dsn
 from src.main import app
 from src.users.repositories import UserRepository
+from src.users.schemas import UserReadSchema
 
 SQLALCHEMY_DATABASE_URL = get_postgres_dsn(
     user=settings.DB_USER,
@@ -21,8 +23,13 @@ async_engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
 async_session_maker = async_sessionmaker(
     expire_on_commit=False,
     bind=async_engine,
-    class_=AsyncSession
+    class_=AsyncSession,
 )
+
+TEST_USER_CREDENTIALS = {
+    'email': 'test@test.com',
+    'password': 'password',
+}
 
 
 def pytest_collection_modifyitems(items):
@@ -51,11 +58,14 @@ async def client(session) -> AsyncClient:
             await session.close()
 
     app.dependency_overrides[get_async_session] = override_get_session
-    async with AsyncClient(
-            transport=ASGITransport(app=app),
-            base_url='http://127.0.0.1:8000/api',
-    ) as cli:
-        yield cli
+    async with LifespanManager(app) as manager:
+        async with AsyncClient(
+                transport=ASGITransport(
+                    app=manager.app
+                ),
+                base_url='http://127.0.0.1:8000/api',
+        ) as cli:
+            yield cli
 
 
 @pytest_asyncio.fixture(scope='session')
@@ -65,10 +75,17 @@ async def user_repository(session) -> UserRepository:
 
 @pytest_asyncio.fixture(scope='session')
 async def test_user(user_repository: UserRepository):
-    credentials = AuthCredentialsSchema(
-        email='test@test.com',
-        password='password',
-    )
+    credentials = AuthCredentialsSchema.model_validate(TEST_USER_CREDENTIALS)
     user = await user_repository.create_user(credentials)
     yield user
     await user_repository.delete_user(user.user_id)
+
+
+@pytest_asyncio.fixture(scope='function', loop_scope='session')
+async def authorized_client(client: AsyncClient, test_user: UserReadSchema) -> AsyncClient:
+    response = await client.post('/login', json=TEST_USER_CREDENTIALS)
+
+    access_token = response.json()['access_token']
+    client.headers['Authorization'] = access_token
+    yield client
+    client.headers.pop('Authorization')
