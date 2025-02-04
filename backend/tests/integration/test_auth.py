@@ -13,12 +13,10 @@ class TestRegisterAPI:
         }
         response = await client.post('/register', json=payload)
         assert response.status_code == 201
-        assert response.json() == {'detail': 'Registration was successful'}
 
-        set_cookie_header = response.headers.get('set-cookie')
-        assert set_cookie_header
-        assert 'access_token_cookie' in set_cookie_header
-        assert 'refresh_token_cookie' in set_cookie_header
+        response_json = response.json()
+        assert response_json.get('detail') == 'Registration was successful'
+        assert response_json.get('access_token') is not None
 
     @pytest.mark.asyncio
     async def test_register_existing_user(self, client: AsyncClient, test_user: UserReadSchema):
@@ -27,7 +25,6 @@ class TestRegisterAPI:
             'password': 'password',
         }
         response = await client.post('/register', json=payload)
-
         assert response.status_code == 409
         assert response.json() == {'detail': 'User with this email address is already registered'}
 
@@ -76,12 +73,10 @@ class TestLoginAPI:
         }
         response = await client.post('/login', json=payload)
         assert response.status_code == 200
-        assert response.json() == {'detail': 'Authorization was successful'}
 
-        set_cookie_header = response.headers.get('set-cookie')
-        assert set_cookie_header
-        assert 'access_token_cookie' in set_cookie_header
-        assert 'refresh_token_cookie' in set_cookie_header
+        response_json = response.json()
+        assert response_json.get('detail') == 'Authorization was successful'
+        assert response_json.get('access_token') is not None
 
     @pytest.mark.asyncio
     async def test_login_with_invalid_email(self, client: AsyncClient):
@@ -90,7 +85,6 @@ class TestLoginAPI:
             'password': 'password',
         }
         response = await client.post('/login', json=payload)
-
         assert response.status_code == 401
         assert response.json() == {'detail': 'Invalid credentials'}
 
@@ -101,7 +95,6 @@ class TestLoginAPI:
             'password': 'invalid_password',
         }
         response = await client.post('/login', json=payload)
-
         assert response.status_code == 401
         assert response.json() == {'detail': 'Invalid credentials'}
 
