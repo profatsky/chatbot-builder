@@ -1,10 +1,10 @@
 from contextlib import asynccontextmanager
 
 import uvicorn as uvicorn
-from async_fastapi_jwt_auth.exceptions import AuthJWTException
-from fastapi import FastAPI
+from authx import AuthX
+from authx.exceptions import JWTDecodeError, MissingTokenError
+from fastapi import FastAPI, HTTPException, status
 from fastapi.requests import Request
-from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -15,8 +15,12 @@ from src.db_seeds.orm import seed_database
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    auth_security = AuthX(config=settings.auth_config)
+    auth_security.handle_errors(app)
+
     await seed_database()
-    yield
+
+    yield {'auth_security': auth_security}
 
 
 app = FastAPI(title='Chatbot Builder', lifespan=lifespan)
@@ -36,11 +40,19 @@ app.add_middleware(
 )
 
 
-@app.exception_handler(AuthJWTException)
-def authjwt_exception_handler(request: Request, exc: AuthJWTException):
-    return JSONResponse(
-        status_code=exc.status_code,
-        content={'detail': exc.message},
+@app.exception_handler(JWTDecodeError)
+async def jwt_decode_exception_handler(request: Request, exc: JWTDecodeError):
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=exc.args[0],
+    )
+
+
+@app.exception_handler(MissingTokenError)
+async def missing_access_token_exception_handler(request: Request, exc: MissingTokenError):
+    raise HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail=exc.args[0],
     )
 
 

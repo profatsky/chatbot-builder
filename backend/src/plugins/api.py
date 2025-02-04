@@ -1,8 +1,8 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Query, status, Body
+from fastapi import APIRouter, Query, status, Body, Depends
 
-from src.auth.dependencies.jwt_dependencies import AuthJWTDI
+from src.auth.dependencies.auth_dependencies import UserIDFromAccessTokenDI, access_token_required
 from src.plugins.dependencies.services_dependencies import PluginServiceDI
 from src.plugins.exceptions.http_exceptions import (
     PluginNotFoundHTTPException,
@@ -22,9 +22,11 @@ from src.users.exceptions.services_exceptions import DontHavePermissionError
 
 router = APIRouter(
     tags=['Plugins'],
+    dependencies=[Depends(access_token_required)],
 )
 
 
+# TODO: admin privileges require
 @router.post(
     '/plugins',
     response_model=PluginReadSchema,
@@ -32,12 +34,9 @@ router = APIRouter(
 )
 async def create_plugin(
         plugin_data: PluginCreateSchema,
-        auth_jwt: AuthJWTDI,
         plugin_service: PluginServiceDI,
+        user_id: UserIDFromAccessTokenDI,
 ):
-    await auth_jwt.jwt_required()
-    user_id = await auth_jwt.get_jwt_subject()
-
     try:
         plugin = await plugin_service.check_access_and_create_plugin(
             user_id=user_id,
@@ -49,26 +48,26 @@ async def create_plugin(
     return plugin
 
 
-@router.get('/plugins', response_model=list[PluginReadSchema])
+@router.get(
+    '/plugins',
+    response_model=list[PluginReadSchema],
+)
 async def get_plugins(
-        auth_jwt: AuthJWTDI,
         plugin_service: PluginServiceDI,
         page: Annotated[int, Query(ge=1)] = 1,
 ):
-    await auth_jwt.jwt_required()
-
     plugins = await plugin_service.get_plugins(page)
     return plugins
 
 
-@router.get('/plugins/{plugin_id}', response_model=PluginReadSchema)
+@router.get(
+    '/plugins/{plugin_id}',
+    response_model=PluginReadSchema,
+)
 async def get_plugin(
         plugin_id: int,
-        auth_jwt: AuthJWTDI,
         plugin_service: PluginServiceDI,
 ):
-    await auth_jwt.jwt_required()
-
     try:
         plugin = await plugin_service.get_plugin(plugin_id)
     except PluginNotFoundError:
@@ -77,15 +76,16 @@ async def get_plugin(
     return plugin
 
 
-@router.delete('/plugins/{plugin_id}', status_code=status.HTTP_204_NO_CONTENT)
+# TODO: admin privileges require
+@router.delete(
+    '/plugins/{plugin_id}',
+    status_code=status.HTTP_204_NO_CONTENT,
+)
 async def delete_plugin(
         plugin_id: int,
-        auth_jwt: AuthJWTDI,
         plugin_service: PluginServiceDI,
+        user_id: UserIDFromAccessTokenDI,
 ):
-    await auth_jwt.jwt_required()
-    user_id = await auth_jwt.get_jwt_subject()
-
     try:
         await plugin_service.check_access_and_delete_plugin(
             user_id=user_id,
@@ -95,16 +95,16 @@ async def delete_plugin(
         raise DontHavePermissionHTTPException
 
 
-@router.post('/projects/{project_id}/plugins', status_code=status.HTTP_201_CREATED)
+@router.post(
+    '/projects/{project_id}/plugins',
+    status_code=status.HTTP_201_CREATED,
+)
 async def add_plugin_to_project(
         project_id: int,
         plugin_id: Annotated[int, Body(embed=True)],
-        auth_jwt: AuthJWTDI,
         plugin_service: PluginServiceDI,
+        user_id: UserIDFromAccessTokenDI,
 ):
-    await auth_jwt.jwt_required()
-    user_id = await auth_jwt.get_jwt_subject()
-
     try:
         await plugin_service.check_access_and_add_plugin_to_project(
             user_id=user_id,
@@ -125,16 +125,16 @@ async def add_plugin_to_project(
         raise PluginNotFoundHTTPException
 
 
-@router.delete('/projects/{project_id}/plugins/{plugin_id}', status_code=status.HTTP_204_NO_CONTENT)
+@router.delete(
+    '/projects/{project_id}/plugins/{plugin_id}',
+    status_code=status.HTTP_204_NO_CONTENT,
+)
 async def remove_plugin_from_project(
         project_id: int,
         plugin_id: int,
-        auth_jwt: AuthJWTDI,
         plugin_service: PluginServiceDI,
+        user_id: UserIDFromAccessTokenDI,
 ):
-    await auth_jwt.jwt_required()
-    user_id = await auth_jwt.get_jwt_subject()
-
     try:
         await plugin_service.check_access_and_remove_plugin_from_project(
             user_id=user_id,

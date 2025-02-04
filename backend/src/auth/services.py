@@ -1,25 +1,27 @@
-from src.auth.dependencies.jwt_dependencies import AuthJWTDI
+from src.auth.dependencies.auth_dependencies import AuthSecurityDI
+from src.auth.schemas import AuthCredentialsSchema
+from src.users.dependencies.services_dependencies import UserServiceDI
 
 
 class AuthService:
-    def __init__(self, auth_jwt: AuthJWTDI):
-        self._auth_jwt = auth_jwt
+    def __init__(
+            self,
+            auth_security: AuthSecurityDI,
+            user_service: UserServiceDI,
+    ):
+        self._auth_security = auth_security
+        self._user_service = user_service
 
-    async def set_auth_tokens(self, user_id: int):
-        access_token = await self._auth_jwt.create_access_token(subject=user_id)
-        refresh_token = await self._auth_jwt.create_refresh_token(subject=user_id)
+    async def register(self, credentials: AuthCredentialsSchema) -> str:
+        user = await self._user_service.create_user(credentials)
+        access_token = self._create_access_token(user.user_id)
+        return access_token
 
-        await self._auth_jwt.set_access_cookies(access_token)
-        await self._auth_jwt.set_refresh_cookies(refresh_token)
+    async def login(self, credentials: AuthCredentialsSchema) -> str:
+        user = await self._user_service.get_user_by_credentials(credentials)
+        access_token = self._create_access_token(user.user_id)
+        return access_token
 
-    async def refresh_access_token(self):
-        await self._auth_jwt.jwt_refresh_token_required()
-
-        user_id = await self._auth_jwt.get_jwt_subject()
-        new_access_token = await self._auth_jwt.create_access_token(subject=user_id)
-
-        await self._auth_jwt.set_access_cookies(new_access_token)
-
-    async def unset_auth_tokens(self):
-        await self._auth_jwt.jwt_required()
-        await self._auth_jwt.unset_jwt_cookies()
+    def _create_access_token(self, user_id: int) -> str:
+        access_token = self._auth_security.create_access_token(uid=str(user_id))
+        return access_token
