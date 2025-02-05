@@ -2,6 +2,7 @@ import pytest
 import pytest_asyncio
 from asgi_lifespan import LifespanManager
 from httpx import AsyncClient, ASGITransport
+from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sessionmaker
 
 from src.auth.schemas import AuthCredentialsSchema
@@ -10,8 +11,10 @@ from src.core.db import Base, get_async_session, get_postgres_dsn
 from src.enums import KeyboardType
 from src.main import app
 from src.projects.repositories import ProjectRepository
-from src.projects.schemas import ProjectCreateSchema
+from src.projects.schemas import ProjectCreateSchema, ProjectReadSchema
 from src.users.repositories import UserRepository
+from src.users.schemas import UserReadSchema
+from tests.factories.projects import ProjectCreateSchemaFactory
 
 SQLALCHEMY_DATABASE_URL = get_postgres_dsn(
     user=settings.DB_USER,
@@ -46,6 +49,17 @@ async def session():
         yield session
 
 
+@pytest_asyncio.fixture(scope='function', loop_scope='session', autouse=True)
+async def cleanup_tables(session):
+    yield
+    async with session.begin():
+        for table in reversed(Base.metadata.sorted_tables):
+            await session.execute(
+                text(f'TRUNCATE TABLE {table.name} RESTART IDENTITY CASCADE')
+            )
+        await session.commit()
+
+
 @pytest_asyncio.fixture(scope='session')
 async def client(session) -> AsyncClient:
     async def override_get_session():
@@ -78,8 +92,11 @@ async def test_user_credentials(session) -> AuthCredentialsSchema:
     )
 
 
-@pytest_asyncio.fixture(scope='session')
-async def test_user(user_repository: UserRepository, test_user_credentials: AuthCredentialsSchema):
+@pytest_asyncio.fixture(scope='function', loop_scope='session')
+async def test_user(
+        user_repository: UserRepository,
+        test_user_credentials: AuthCredentialsSchema
+) -> UserReadSchema:
     user = await user_repository.create_user(test_user_credentials)
     yield user
     await user_repository.delete_user(user.user_id)
@@ -87,6 +104,7 @@ async def test_user(user_repository: UserRepository, test_user_credentials: Auth
 
 @pytest_asyncio.fixture(scope='function', loop_scope='session')
 async def authorized_client(
+        test_user: UserReadSchema,
         client: AsyncClient,
         test_user_credentials: AuthCredentialsSchema,
 ) -> AsyncClient:
@@ -101,12 +119,3 @@ async def authorized_client(
 @pytest_asyncio.fixture(scope='session')
 async def project_repository(session) -> ProjectRepository:
     return ProjectRepository(session)
-
-
-@pytest_asyncio.fixture(scope='session')
-async def project_data_for_create() -> ProjectCreateSchema:
-    return ProjectCreateSchema(
-        name='Test project',
-        start_message='Test start message',
-        start_keyboard_type=KeyboardType.REPLY_KEYBOARD.value,
-    )
