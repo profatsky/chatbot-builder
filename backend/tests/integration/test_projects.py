@@ -9,7 +9,7 @@ from tests.utils.projects import assert_project_response
 
 class TestProjectsApi:
     @pytest.mark.asyncio
-    async def test_successful_create_project(self, test_user: UserReadSchema, authorized_client: AsyncClient):
+    async def test_create_project_success(self, test_user: UserReadSchema, authorized_client: AsyncClient):
         project_data = ProjectCreateSchemaFactory()
 
         response = await authorized_client.post(
@@ -47,7 +47,7 @@ class TestProjectsApi:
         assert response.json() == {'detail': 'Projects limit exceeded'}
 
     @pytest.mark.asyncio
-    async def test_get_projects_successful(
+    async def test_get_projects_success(
             self,
             test_user: UserReadSchema,
             authorized_client: AsyncClient,

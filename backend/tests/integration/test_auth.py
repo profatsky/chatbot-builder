@@ -7,7 +7,7 @@ from src.users.schemas import UserReadSchema
 
 class TestRegisterAPI:
     @pytest.mark.asyncio
-    async def test_successful_register(self, client: AsyncClient):
+    async def test_register_success(self, client: AsyncClient):
         payload = {
             'email': 'email@email.com',
             'password': 'password',
@@ -43,7 +43,7 @@ class TestRegisterAPI:
         assert error_location == ['body', 'email']
 
     @pytest.mark.asyncio
-    async def test_registration_with_invalid_password_format(self, client: AsyncClient):
+    async def test_register_with_invalid_password_format(self, client: AsyncClient):
         payload = {
             'email': 'email@email.com',
             'password': '123',
@@ -68,7 +68,7 @@ class TestRegisterAPI:
 
 class TestLoginAPI:
     @pytest.mark.asyncio
-    async def test_successful_login(
+    async def test_login_success(
             self,
             client: AsyncClient,
             test_user: UserReadSchema,
