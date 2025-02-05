@@ -7,7 +7,10 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from src.auth.schemas import AuthCredentialsSchema
 from src.core import settings
 from src.core.db import Base, get_async_session, get_postgres_dsn
+from src.enums import KeyboardType
 from src.main import app
+from src.projects.repositories import ProjectRepository
+from src.projects.schemas import ProjectCreateSchema
 from src.users.repositories import UserRepository
 from src.users.schemas import UserReadSchema
 
@@ -89,3 +92,17 @@ async def authorized_client(client: AsyncClient, test_user: UserReadSchema) -> A
     client.headers['Authorization'] = access_token
     yield client
     client.headers.pop('Authorization')
+
+
+@pytest_asyncio.fixture(scope='session')
+async def project_repository(session) -> ProjectRepository:
+    return ProjectRepository(session)
+
+
+@pytest_asyncio.fixture(scope='session')
+async def project_data_for_create() -> ProjectCreateSchema:
+    return ProjectCreateSchema(
+        name='Test project',
+        start_message='Test start message',
+        start_keyboard_type=KeyboardType.REPLY_KEYBOARD.value,
+    )

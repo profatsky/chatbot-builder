@@ -21,5 +21,5 @@ class ProjectsLimitExceededHTTPException(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='You have the maximum number of projects',
+            detail='Projects limit exceeded',
         )

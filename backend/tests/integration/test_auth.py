@@ -14,9 +14,9 @@ class TestRegisterAPI:
         response = await client.post('/register', json=payload)
         assert response.status_code == 201
 
-        response_json = response.json()
-        assert response_json.get('detail') == 'Registration was successful'
-        assert response_json.get('access_token') is not None
+        response_data = response.json()
+        assert response_data.get('detail') == 'Registration was successful'
+        assert response_data.get('access_token') is not None
 
     @pytest.mark.asyncio
     async def test_register_existing_user(self, client: AsyncClient, test_user: UserReadSchema):
@@ -74,9 +74,9 @@ class TestLoginAPI:
         response = await client.post('/login', json=payload)
         assert response.status_code == 200
 
-        response_json = response.json()
-        assert response_json.get('detail') == 'Authorization was successful'
-        assert response_json.get('access_token') is not None
+        response_data = response.json()
+        assert response_data.get('detail') == 'Authorization was successful'
+        assert response_data.get('access_token') is not None
 
     @pytest.mark.asyncio
     async def test_login_with_invalid_email(self, client: AsyncClient):
