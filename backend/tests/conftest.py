@@ -8,10 +8,9 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from src.auth.schemas import AuthCredentialsSchema
 from src.core import settings
 from src.core.db import Base, get_async_session, get_postgres_dsn
-from src.enums import KeyboardType
 from src.main import app
 from src.projects.repositories import ProjectRepository
-from src.projects.schemas import ProjectCreateSchema, ProjectReadSchema
+from src.projects.schemas import ProjectReadSchema
 from src.users.repositories import UserRepository
 from src.users.schemas import UserReadSchema
 from tests.factories.projects import ProjectCreateSchemaFactory
@@ -119,3 +118,21 @@ async def authorized_client(
 @pytest_asyncio.fixture(scope='session')
 async def project_repository(session) -> ProjectRepository:
     return ProjectRepository(session)
+
+
+@pytest_asyncio.fixture(scope='function', loop_scope='session')
+async def created_projects(
+        test_user: UserReadSchema,
+        project_repository: ProjectRepository,
+        request,
+) -> list[ProjectReadSchema]:
+    num_projects = getattr(request, 'param', 1)
+
+    projects = []
+    for _ in range(num_projects):
+        project = await project_repository.create_project(
+            user_id=test_user.user_id,
+            project_data=ProjectCreateSchemaFactory(),
+        )
+        projects.append(project)
+    return projects
