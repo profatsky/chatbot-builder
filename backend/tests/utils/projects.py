@@ -1,0 +1,10 @@
+from src.projects.schemas import ProjectCreateSchema
+
+
+def assert_project_response(response_data: dict, expected_data: ProjectCreateSchema, user_id: int):
+    assert 'project_id' in response_data
+    assert 'created_at' in response_data
+    assert response_data['name'] == expected_data.name
+    assert response_data['user_id'] == user_id
+    assert response_data['start_message'] == expected_data.start_message
+    assert response_data['start_keyboard_type'] == expected_data.start_keyboard_type.value
