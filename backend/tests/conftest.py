@@ -101,10 +101,28 @@ async def test_user(
     await user_repository.delete_user(user.user_id)
 
 
+@pytest_asyncio.fixture(scope='session')
+async def another_user_credentials(session) -> AuthCredentialsSchema:
+    return AuthCredentialsSchema(
+        email='another@test.com',
+        password='password',
+    )
+
+
 @pytest_asyncio.fixture(scope='function', loop_scope='session')
-async def authorized_client(
-        test_user: UserReadSchema,
+async def another_user(
+        user_repository: UserRepository,
+        another_user_credentials: AuthCredentialsSchema
+) -> UserReadSchema:
+    user = await user_repository.create_user(another_user_credentials)
+    yield user
+    await user_repository.delete_user(user.user_id)
+
+
+@pytest_asyncio.fixture(scope='function', loop_scope='session')
+async def authorized_test_client(
         client: AsyncClient,
+        test_user: UserReadSchema,
         test_user_credentials: AuthCredentialsSchema,
 ) -> AsyncClient:
     response = await client.post('/login', json=test_user_credentials.model_dump())
@@ -115,9 +133,36 @@ async def authorized_client(
     client.headers.pop('Authorization')
 
 
+@pytest_asyncio.fixture(scope='function', loop_scope='session')
+async def authorized_another_client(
+        client: AsyncClient,
+        another_user: UserReadSchema,
+        another_user_credentials: AuthCredentialsSchema,
+) -> AsyncClient:
+    response = await client.post('/login', json=another_user_credentials.model_dump())
+
+    access_token = response.json()['access_token']
+    client.headers['Authorization'] = access_token
+    yield client
+    client.headers.pop('Authorization')
+
+
 @pytest_asyncio.fixture(scope='session')
 async def project_repository(session) -> ProjectRepository:
     return ProjectRepository(session)
+
+
+@pytest_asyncio.fixture(scope='function', loop_scope='session')
+async def test_project(
+        test_user: UserReadSchema,
+        project_repository: ProjectRepository,
+) -> ProjectReadSchema:
+    project = await project_repository.create_project(
+        user_id=test_user.user_id,
+        project_data=ProjectCreateSchemaFactory(),
+    )
+    yield project
+    await project_repository.delete_project(project.project_id)
 
 
 @pytest_asyncio.fixture(scope='function', loop_scope='session')
