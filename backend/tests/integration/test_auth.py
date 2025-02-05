@@ -1,6 +1,7 @@
 import pytest
 from httpx import AsyncClient
 
+from src.auth.schemas import AuthCredentialsSchema
 from src.users.schemas import UserReadSchema
 
 
@@ -15,16 +16,17 @@ class TestRegisterAPI:
         assert response.status_code == 201
 
         response_data = response.json()
-        assert response_data.get('detail') == 'Registration was successful'
-        assert response_data.get('access_token') is not None
+        assert response_data['detail'] == 'Registration was successful'
+        assert 'access_token' in response_data
 
     @pytest.mark.asyncio
-    async def test_register_existing_user(self, client: AsyncClient, test_user: UserReadSchema):
-        payload = {
-            'email': test_user.email,
-            'password': 'password',
-        }
-        response = await client.post('/register', json=payload)
+    async def test_register_existing_user(
+            self,
+            client: AsyncClient,
+            test_user: UserReadSchema,
+            test_user_credentials: AuthCredentialsSchema,
+    ):
+        response = await client.post('/register', json=test_user_credentials.model_dump())
         assert response.status_code == 409
         assert response.json() == {'detail': 'User with this email address is already registered'}
 
@@ -66,17 +68,18 @@ class TestRegisterAPI:
 
 class TestLoginAPI:
     @pytest.mark.asyncio
-    async def test_successful_login(self, client: AsyncClient, test_user: UserReadSchema):
-        payload = {
-            'email': test_user.email,
-            'password': 'password',
-        }
-        response = await client.post('/login', json=payload)
+    async def test_successful_login(
+            self,
+            client: AsyncClient,
+            test_user: UserReadSchema,
+            test_user_credentials: AuthCredentialsSchema,
+    ):
+        response = await client.post('/login', json=test_user_credentials.model_dump())
         assert response.status_code == 200
 
         response_data = response.json()
-        assert response_data.get('detail') == 'Authorization was successful'
-        assert response_data.get('access_token') is not None
+        assert response_data['detail'] == 'Authorization was successful'
+        assert 'access_token' in response_data
 
     @pytest.mark.asyncio
     async def test_login_with_invalid_email(self, client: AsyncClient):

@@ -12,7 +12,6 @@ from src.main import app
 from src.projects.repositories import ProjectRepository
 from src.projects.schemas import ProjectCreateSchema
 from src.users.repositories import UserRepository
-from src.users.schemas import UserReadSchema
 
 SQLALCHEMY_DATABASE_URL = get_postgres_dsn(
     user=settings.DB_USER,
@@ -28,11 +27,6 @@ async_session_maker = async_sessionmaker(
     bind=async_engine,
     class_=AsyncSession,
 )
-
-TEST_USER_CREDENTIALS = {
-    'email': 'test@test.com',
-    'password': 'password',
-}
 
 
 def pytest_collection_modifyitems(items):
@@ -77,16 +71,26 @@ async def user_repository(session) -> UserRepository:
 
 
 @pytest_asyncio.fixture(scope='session')
-async def test_user(user_repository: UserRepository):
-    credentials = AuthCredentialsSchema.model_validate(TEST_USER_CREDENTIALS)
-    user = await user_repository.create_user(credentials)
+async def test_user_credentials(session) -> AuthCredentialsSchema:
+    return AuthCredentialsSchema(
+        email='test@test.com',
+        password='password',
+    )
+
+
+@pytest_asyncio.fixture(scope='session')
+async def test_user(user_repository: UserRepository, test_user_credentials: AuthCredentialsSchema):
+    user = await user_repository.create_user(test_user_credentials)
     yield user
     await user_repository.delete_user(user.user_id)
 
 
 @pytest_asyncio.fixture(scope='function', loop_scope='session')
-async def authorized_client(client: AsyncClient, test_user: UserReadSchema) -> AsyncClient:
-    response = await client.post('/login', json=TEST_USER_CREDENTIALS)
+async def authorized_client(
+        client: AsyncClient,
+        test_user_credentials: AuthCredentialsSchema,
+) -> AsyncClient:
+    response = await client.post('/login', json=test_user_credentials.model_dump())
 
     access_token = response.json()['access_token']
     client.headers['Authorization'] = access_token
