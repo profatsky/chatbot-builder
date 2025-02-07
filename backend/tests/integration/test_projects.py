@@ -10,7 +10,11 @@ from tests.utils.projects import assert_project_response
 
 class TestProjectsApi:
     @pytest.mark.asyncio
-    async def test_create_project_success(self, test_user: UserReadSchema, authorized_test_client: AsyncClient):
+    async def test_create_project_success(
+            self,
+            test_user: UserReadSchema,
+            authorized_test_client: AsyncClient,
+    ):
         project_data = ProjectCreateSchemaFactory()
 
         response = await authorized_test_client.post(
@@ -110,10 +114,7 @@ class TestProjectsApi:
         assert test_project == project_after_update
 
     @pytest.mark.asyncio
-    async def test_update_project_not_found(
-            self,
-            authorized_test_client: AsyncClient,
-    ):
+    async def test_update_project_not_found(self, authorized_test_client: AsyncClient):
         update_data = ProjectUpdateSchemaFactory()
         response = await authorized_test_client.put(
             '/projects/999999',
@@ -151,10 +152,7 @@ class TestProjectsApi:
         assert response.json() == {'detail': 'No permission for this project'}
 
     @pytest.mark.asyncio
-    async def test_delete_project_not_found(
-            self,
-            authorized_test_client: AsyncClient,
-    ):
+    async def test_delete_project_not_found(self, authorized_test_client: AsyncClient):
         response = await authorized_test_client.delete(
             '/projects/999999',
         )

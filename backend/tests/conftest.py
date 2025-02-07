@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession, async_sess
 from src.auth.schemas import AuthCredentialsSchema
 from src.core import settings
 from src.core.db import Base, get_async_session, get_postgres_dsn
+from src.dialogues.repositories import DialogueRepository
 from src.main import app
 from src.projects.repositories import ProjectRepository
 from src.projects.schemas import ProjectReadSchema
@@ -181,3 +182,8 @@ async def created_projects(
         )
         projects.append(project)
     return projects
+
+
+@pytest_asyncio.fixture(scope='session')
+async def dialogue_repository(session) -> DialogueRepository:
+    return DialogueRepository(session)

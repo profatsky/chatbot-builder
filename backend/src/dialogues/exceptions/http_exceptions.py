@@ -5,7 +5,7 @@ class DialoguesLimitExceededHTTPException(HTTPException):
     def __init__(self):
         super().__init__(
             status_code=status.HTTP_403_FORBIDDEN,
-            detail='The specified project has the maximum number of dialogues',
+            detail='Dialogues limit exceeded',
         )
 
 
