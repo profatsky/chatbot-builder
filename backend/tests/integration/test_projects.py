@@ -122,3 +122,41 @@ class TestProjectsApi:
 
         assert response.status_code == 404
         assert response.json() == {'detail': 'Project does not exist'}
+
+    @pytest.mark.asyncio
+    async def test_delete_project_success(
+            self,
+            authorized_test_client: AsyncClient,
+            test_project: ProjectReadSchema,
+            project_repository: ProjectRepository,
+    ):
+        response = await authorized_test_client.delete(
+            f'/projects/{test_project.project_id}',
+        )
+        assert response.status_code == 204
+
+        project = await project_repository.get_project(test_project.project_id)
+        assert project is None
+
+    @pytest.mark.asyncio
+    async def test_delete_project_no_permission(
+            self,
+            authorized_another_client: AsyncClient,
+            test_project: ProjectReadSchema,
+    ):
+        response = await authorized_another_client.delete(
+            f'/projects/{test_project.project_id}',
+        )
+        assert response.status_code == 403
+        assert response.json() == {'detail': 'No permission for this project'}
+
+    @pytest.mark.asyncio
+    async def test_delete_project_not_found(
+            self,
+            authorized_test_client: AsyncClient,
+    ):
+        response = await authorized_test_client.delete(
+            '/projects/999999',
+        )
+        assert response.status_code == 404
+        assert response.json() == {'detail': 'Project does not exist'}
