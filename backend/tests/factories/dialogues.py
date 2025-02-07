@@ -1,7 +1,7 @@
 import factory
 from faker import Faker
 
-from src.dialogues.schemas import DialogueCreateSchema, TriggerCreateSchema
+from src.dialogues.schemas import DialogueCreateSchema, TriggerCreateSchema, TriggerUpdateSchema
 from src.enums import TriggerEventType
 
 fake = Faker()
@@ -20,3 +20,7 @@ class DialogueCreateSchemaFactory(factory.Factory):
         model = DialogueCreateSchema
 
     trigger = TriggerCreateSchemaFactory()
+
+
+class TriggerUpdateSchemaFactory(TriggerCreateSchemaFactory):
+    pass

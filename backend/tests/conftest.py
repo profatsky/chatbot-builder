@@ -9,11 +9,13 @@ from src.auth.schemas import AuthCredentialsSchema
 from src.core import settings
 from src.core.db import Base, get_async_session, get_postgres_dsn
 from src.dialogues.repositories import DialogueRepository
+from src.dialogues.schemas import DialogueReadSchema
 from src.main import app
 from src.projects.repositories import ProjectRepository
 from src.projects.schemas import ProjectReadSchema
 from src.users.repositories import UserRepository
 from src.users.schemas import UserReadSchema
+from tests.factories.dialogues import DialogueCreateSchemaFactory
 from tests.factories.projects import ProjectCreateSchemaFactory
 
 SQLALCHEMY_DATABASE_URL = get_postgres_dsn(
@@ -187,3 +189,17 @@ async def created_projects(
 @pytest_asyncio.fixture(scope='session')
 async def dialogue_repository(session) -> DialogueRepository:
     return DialogueRepository(session)
+
+
+@pytest_asyncio.fixture(scope='function', loop_scope='session')
+async def test_dialogue(
+    test_project: ProjectReadSchema,
+    dialogue_repository: DialogueRepository,
+) -> DialogueReadSchema:
+    dialogue = DialogueCreateSchemaFactory()
+    dialogue = await dialogue_repository.create_dialogue(
+        project_id=test_project.project_id,
+        dialogue_data=dialogue,
+    )
+    yield dialogue
+    await dialogue_repository.delete_dialogue(dialogue.dialogue_id)

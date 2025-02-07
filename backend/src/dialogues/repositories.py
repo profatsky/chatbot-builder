@@ -44,10 +44,7 @@ class DialogueRepository:
         await self._session.commit()
         return DialogueReadSchema.model_validate(dialogue)
 
-    async def _get_dialogue(
-            self,
-            dialogue_id: int,
-    ) -> Optional[DialogueModel]:
+    async def _get_dialogue(self, dialogue_id: int) -> Optional[DialogueModel]:
         dialogue = await self._session.execute(
             select(DialogueModel)
             .options(
@@ -58,10 +55,13 @@ class DialogueRepository:
         dialogue = dialogue.scalar()
         return dialogue
 
-    async def delete_dialogue(
-            self,
-            dialogue_id: int,
-    ):
+    async def get_dialogue(self, dialogue_id: int) -> Optional[DialogueReadSchema]:
+        dialogue = await self._get_dialogue(dialogue_id)
+        if dialogue is None:
+            return
+        return DialogueReadSchema.model_validate(dialogue)
+
+    async def delete_dialogue(self, dialogue_id: int):
         await self._session.execute(
             delete(DialogueModel)
             .where(DialogueModel.dialogue_id == dialogue_id)
