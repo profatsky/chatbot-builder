@@ -1,3 +1,5 @@
+import random
+
 import pytest
 import pytest_asyncio
 from asgi_lifespan import LifespanManager
@@ -172,6 +174,7 @@ async def test_project(
 async def created_projects(
         test_user: UserReadSchema,
         project_repository: ProjectRepository,
+        dialogue_repository: DialogueRepository,
         request,
 ) -> list[ProjectReadSchema]:
     num_projects = getattr(request, 'param', 1)
@@ -182,7 +185,15 @@ async def created_projects(
             user_id=test_user.user_id,
             project_data=ProjectCreateSchemaFactory(),
         )
+        for _ in range(random.randint(0, 10)):
+            await dialogue_repository.create_dialogue(
+                project_id=project.project_id,
+                dialogue_data=DialogueCreateSchemaFactory(),
+            )
+
+        project = await project_repository.get_project(project.project_id)
         projects.append(project)
+
     return projects
 
 

@@ -12,3 +12,8 @@ def assert_project_response(
     assert response_data['user_id'] == user_id
     assert response_data['start_message'] == expected_data.start_message
     assert response_data['start_keyboard_type'] == expected_data.start_keyboard_type.value
+    if not isinstance(expected_data, ProjectCreateSchema):
+        assert response_data['dialogues'] == [
+            dialogue.model_dump(mode='json') for dialogue
+            in expected_data.dialogues
+        ]
