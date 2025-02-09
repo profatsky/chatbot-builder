@@ -63,7 +63,7 @@ async def add_plugin_to_project(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        await plugin_service.check_access_and_add_plugin_to_project(
+        await plugin_service.add_plugin_to_project(
             user_id=user_id,
             project_id=project_id,
             plugin_id=plugin_id,
@@ -93,7 +93,7 @@ async def remove_plugin_from_project(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        await plugin_service.check_access_and_remove_plugin_from_project(
+        await plugin_service.remove_plugin_from_project(
             user_id=user_id,
             project_id=project_id,
             plugin_id=plugin_id,

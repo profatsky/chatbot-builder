@@ -23,31 +23,20 @@ class PluginService:
         self._user_service = user_service
         self._project_service = project_service
 
-    async def get_plugins(
-            self,
-            page: int,
-    ) -> list[PluginReadSchema]:
+    async def get_plugins(self, page: int) -> list[PluginReadSchema]:
         plugins = await self._plugin_repository.get_plugins(
             offset=(page - 1) * PLUGINS_PER_PAGE,
             limit=PLUGINS_PER_PAGE,
         )
         return plugins
 
-    async def get_plugin(
-            self,
-            plugin_id: int,
-    ) -> PluginReadSchema:
+    async def get_plugin(self, plugin_id: int) -> PluginReadSchema:
         plugin = await self._plugin_repository.get_plugin(plugin_id)
         if plugin is None:
             raise PluginNotFoundError
         return plugin
 
-    async def check_access_and_add_plugin_to_project(
-            self,
-            user_id: int,
-            project_id: int,
-            plugin_id: int,
-    ) -> PluginReadSchema:
+    async def add_plugin_to_project(self, user_id: int, project_id: int, plugin_id: int) -> PluginReadSchema:
         project = await self._project_service.get_project(
             user_id=user_id,
             project_id=project_id,
@@ -65,12 +54,7 @@ class PluginService:
         )
         return plugin
 
-    async def check_access_and_remove_plugin_from_project(
-            self,
-            user_id: int,
-            project_id: int,
-            plugin_id: int,
-    ):
+    async def remove_plugin_from_project(self, user_id: int, project_id: int, plugin_id: int):
         project = await self._project_service.get_project(
             user_id=user_id,
             project_id=project_id,
@@ -84,10 +68,6 @@ class PluginService:
             plugin_id=plugin_id,
         )
 
-    def _project_contain_plugin_with_specified_id(
-            self,
-            project: ProjectReadSchema,
-            plugin_id: int
-    ) -> bool:
+    def _project_contain_plugin_with_specified_id(self, project: ProjectReadSchema, plugin_id: int) -> bool:
         project_plugins_ids = [plugin.plugin_id for plugin in project.plugins]
         return plugin_id in project_plugins_ids

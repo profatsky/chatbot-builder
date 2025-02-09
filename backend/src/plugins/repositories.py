@@ -11,11 +11,7 @@ class PluginRepository:
     def __init__(self, session: AsyncSessionDI):
         self._session = session
 
-    async def get_plugins(
-            self,
-            offset: int,
-            limit: int,
-    ) -> list[PluginReadSchema]:
+    async def get_plugins(self, offset: int, limit: int) -> list[PluginReadSchema]:
         plugins = await self._session.execute(
             select(PluginModel)
             .order_by(PluginModel.created_at)
@@ -25,10 +21,7 @@ class PluginRepository:
         plugins = plugins.scalars().all()
         return [PluginReadSchema.model_validate(plugin) for plugin in plugins]
 
-    async def get_plugin(
-            self,
-            plugin_id: int,
-    ) -> Optional[PluginReadSchema]:
+    async def get_plugin(self, plugin_id: int) -> Optional[PluginReadSchema]:
         plugin = await self._session.execute(
             select(PluginModel)
             .where(PluginModel.plugin_id == plugin_id)
@@ -36,22 +29,14 @@ class PluginRepository:
         plugin = plugin.scalar()
         return plugin
 
-    async def add_plugin_to_project(
-            self,
-            project_id: int,
-            plugin_id: int,
-    ):
+    async def add_plugin_to_project(self, project_id: int, plugin_id: int):
         await self._session.execute(
             insert(projects_plugins)
             .values(project_id=project_id, plugin_id=plugin_id)
         )
         await self._session.commit()
 
-    async def remove_plugin_from_project(
-            self,
-            project_id: int,
-            plugin_id: int,
-    ):
+    async def remove_plugin_from_project(self, project_id: int, plugin_id: int):
         await self._session.execute(
             delete(projects_plugins)
             .where(
