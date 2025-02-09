@@ -175,7 +175,7 @@ async def delete_block(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        await block_service.check_access_and_delete_block(
+        await block_service.delete_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
