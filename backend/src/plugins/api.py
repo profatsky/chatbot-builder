@@ -14,38 +14,14 @@ from src.plugins.exceptions.services_exceptions import (
     PluginAlreadyInProjectError,
     PluginIsNotInProjectError,
 )
-from src.plugins.schemas import PluginReadSchema, PluginCreateSchema
+from src.plugins.schemas import PluginReadSchema
 from src.projects.exceptions.http_exceptions import ProjectNotFoundHTTPException, NoPermissionForProjectHTTPException
 from src.projects.exceptions.services_exceptions import ProjectNotFoundError, NoPermissionForProjectError
-from src.users.exceptions.http_exceptions import DontHavePermissionHTTPException
-from src.users.exceptions.services_exceptions import DontHavePermissionError
 
 router = APIRouter(
     tags=['Plugins'],
     dependencies=[Depends(access_token_required)],
 )
-
-
-# TODO: admin privileges require
-@router.post(
-    '/plugins',
-    response_model=PluginReadSchema,
-    status_code=status.HTTP_201_CREATED,
-)
-async def create_plugin(
-        plugin_data: PluginCreateSchema,
-        plugin_service: PluginServiceDI,
-        user_id: UserIDFromAccessTokenDI,
-):
-    try:
-        plugin = await plugin_service.check_access_and_create_plugin(
-            user_id=user_id,
-            plugin_data=plugin_data,
-        )
-    except DontHavePermissionError:
-        raise DontHavePermissionHTTPException
-
-    return plugin
 
 
 @router.get(
@@ -74,25 +50,6 @@ async def get_plugin(
         raise PluginNotFoundHTTPException
 
     return plugin
-
-
-# TODO: admin privileges require
-@router.delete(
-    '/plugins/{plugin_id}',
-    status_code=status.HTTP_204_NO_CONTENT,
-)
-async def delete_plugin(
-        plugin_id: int,
-        plugin_service: PluginServiceDI,
-        user_id: UserIDFromAccessTokenDI,
-):
-    try:
-        await plugin_service.check_access_and_delete_plugin(
-            user_id=user_id,
-            plugin_id=plugin_id,
-        )
-    except DontHavePermissionError:
-        raise DontHavePermissionHTTPException
 
 
 @router.post(

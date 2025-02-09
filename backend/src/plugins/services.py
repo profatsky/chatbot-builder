@@ -1,10 +1,13 @@
 from src.plugins.dependencies.repositories_dependencies import PluginRepositoryDI
-from src.plugins.exceptions.services_exceptions import PluginNotFoundError, PluginAlreadyInProjectError, PluginIsNotInProjectError
-from src.plugins.schemas import PluginReadSchema, PluginCreateSchema
+from src.plugins.exceptions.services_exceptions import (
+    PluginNotFoundError,
+    PluginAlreadyInProjectError,
+    PluginIsNotInProjectError,
+)
+from src.plugins.schemas import PluginReadSchema
 from src.projects.dependencies.services_dependencies import ProjectServiceDI
 from src.projects.schemas import ProjectReadSchema
 from src.users.dependencies.services_dependencies import UserServiceDI
-from src.users.exceptions.services_exceptions import DontHavePermissionError
 
 PLUGINS_PER_PAGE = 9
 
@@ -38,28 +41,6 @@ class PluginService:
         if plugin is None:
             raise PluginNotFoundError
         return plugin
-
-    async def check_access_and_create_plugin(
-            self,
-            user_id: int,
-            plugin_data: PluginCreateSchema,
-    ) -> PluginReadSchema:
-        user = await self._user_service.get_user_by_id(user_id)
-        if user is None or not user.is_superuser:
-            raise DontHavePermissionError
-
-        plugin = await self._plugin_repository.create_plugin(plugin_data)
-        return plugin
-
-    async def check_access_and_delete_plugin(
-            self,
-            user_id: int,
-            plugin_id: int,
-    ):
-        user = await self._user_service.get_user_by_id(user_id)
-        if user is None or not user.is_superuser:
-            raise DontHavePermissionError
-        await self._plugin_repository.delete_plugin(plugin_id)
 
     async def check_access_and_add_plugin_to_project(
             self,

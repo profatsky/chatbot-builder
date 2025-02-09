@@ -4,7 +4,7 @@ from sqlalchemy import select, insert, delete
 
 from src.core.dependencies.db_dependencies import AsyncSessionDI
 from src.plugins.models import PluginModel, projects_plugins
-from src.plugins.schemas import PluginReadSchema, PluginCreateSchema
+from src.plugins.schemas import PluginReadSchema
 
 
 class PluginRepository:
@@ -35,22 +35,6 @@ class PluginRepository:
         )
         plugin = plugin.scalar()
         return plugin
-
-    async def create_plugin(
-            self,
-            plugin_data: PluginCreateSchema,
-    ) -> PluginReadSchema:
-        plugin = PluginModel(**plugin_data.model_dump())
-        self._session.add(plugin)
-        await self._session.commit()
-        return PluginReadSchema.model_validate(plugin)
-
-    async def delete_plugin(self, plugin_id: int):
-        await self._session.execute(
-            delete(PluginModel)
-            .where(PluginModel.plugin_id == plugin_id)
-        )
-        await self._session.commit()
 
     async def add_plugin_to_project(
             self,
