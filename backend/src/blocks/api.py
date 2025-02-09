@@ -192,5 +192,3 @@ async def delete_block(
 
     except BlockNotFoundError:
         raise BlockNotFoundHTTPException
-
-    return {'detail': 'Block was successfully deleted'}

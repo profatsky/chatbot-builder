@@ -98,5 +98,3 @@ async def delete_project(
 
     except NoPermissionForProjectError:
         raise NoPermissionForProjectHTTPException
-
-    return {'detail': 'Project was successfully deleted'}

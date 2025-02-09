@@ -98,5 +98,3 @@ async def delete_dialogue(
 
     except DialogueNotFoundError:
         raise DialogueNotFoundHTTPException
-
-    return {'detail': 'Dialogue was successfully deleted'}
