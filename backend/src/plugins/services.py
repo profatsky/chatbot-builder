@@ -48,7 +48,7 @@ class PluginService:
             project_id: int,
             plugin_id: int,
     ) -> PluginReadSchema:
-        project = await self._project_service.check_access_and_get_project(
+        project = await self._project_service.get_project(
             user_id=user_id,
             project_id=project_id,
         )
@@ -71,7 +71,7 @@ class PluginService:
             project_id: int,
             plugin_id: int,
     ):
-        project = await self._project_service.check_access_and_get_project(
+        project = await self._project_service.get_project(
             user_id=user_id,
             project_id=project_id,
         )

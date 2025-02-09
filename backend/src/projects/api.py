@@ -65,7 +65,7 @@ async def update_project(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        project = await project_service.check_access_and_update_project(
+        project = await project_service.update_project(
             user_id=user_id,
             project_id=project_id,
             project_data=project_data,

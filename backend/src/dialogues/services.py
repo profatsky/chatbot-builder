@@ -26,7 +26,7 @@ class DialogueService:
             project_id: int,
             dialogue_data: DialogueCreateSchema,
     ) -> DialogueReadSchema:
-        project = await self._project_service.check_access_and_get_project(
+        project = await self._project_service.get_project(
             user_id=user_id,
             project_id=project_id,
         )
@@ -46,7 +46,7 @@ class DialogueService:
             dialogue_id: int,
             trigger: TriggerUpdateSchema,
     ) -> DialogueReadSchema:
-        _ = await self._project_service.check_access_and_get_project(
+        _ = await self._project_service.get_project(
             user_id=user_id,
             project_id=project_id,
         )
@@ -66,7 +66,7 @@ class DialogueService:
             project_id: int,
             dialogue_id: int,
     ) -> DialogueReadSchema:
-        project = await self._project_service.check_access_and_get_project(
+        project = await self._project_service.get_project(
             user_id=user_id,
             project_id=project_id,
         )

@@ -41,7 +41,7 @@ class DialogueTemplateService:
             project_id: int,
             template_id: int,
     ):
-        _ = await self._project_service.check_access_and_get_project(
+        _ = await self._project_service.get_project(
             user_id=user_id,
             project_id=project_id,
         )

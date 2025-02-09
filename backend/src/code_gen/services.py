@@ -40,7 +40,7 @@ class CodeGenService:
             user_id: int,
             project_id: int,
     ) -> io.BytesIO:
-        project = await self._project_service.check_access_and_get_project_to_generate_code(
+        project = await self._project_service.get_project_to_generate_code(
             user_id=user_id,
             project_id=project_id,
         )
