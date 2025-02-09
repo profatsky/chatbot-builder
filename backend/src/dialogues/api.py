@@ -27,7 +27,7 @@ async def create_dialogue(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        dialogue = await dialogue_service.check_access_and_create_dialogue(
+        dialogue = await dialogue_service.create_dialogue(
             user_id=user_id,
             project_id=project_id,
             dialogue_data=dialogue_data,
@@ -56,7 +56,7 @@ async def update_dialogue_trigger(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        dialogue = await dialogue_service.check_access_and_update_dialogue_trigger(
+        dialogue = await dialogue_service.update_dialogue_trigger(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -85,7 +85,7 @@ async def delete_dialogue(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        await dialogue_service.check_access_and_delete_dialogue(
+        await dialogue_service.delete_dialogue(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,

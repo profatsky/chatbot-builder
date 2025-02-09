@@ -20,7 +20,7 @@ class DialogueService:
         self._dialogue_repository = dialogue_repository
         self._project_service = project_service
 
-    async def check_access_and_create_dialogue(
+    async def create_dialogue(
             self,
             user_id: int,
             project_id: int,
@@ -39,7 +39,7 @@ class DialogueService:
         )
         return dialogue
 
-    async def check_access_and_update_dialogue_trigger(
+    async def update_dialogue_trigger(
             self,
             user_id: int,
             project_id: int,
@@ -60,7 +60,7 @@ class DialogueService:
 
         return dialogue
 
-    async def check_access_and_get_dialogue(
+    async def get_dialogue(
             self,
             user_id: int,
             project_id: int,
@@ -82,13 +82,13 @@ class DialogueService:
 
         return dialogue_with_specified_id
 
-    async def check_access_and_delete_dialogue(
+    async def delete_dialogue(
             self,
             user_id: int,
             project_id: int,
             dialogue_id: int,
     ):
-        _ = await self.check_access_and_get_dialogue(
+        _ = await self.get_dialogue(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,

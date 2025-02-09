@@ -30,7 +30,7 @@ class BlockService:
             dialogue_id: int,
             block_data: UnionBlockCreateSchema,
     ) -> UnionBlockReadSchema:
-        _ = await self._dialogue_service.check_access_and_get_dialogue(
+        _ = await self._dialogue_service.get_dialogue(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -47,7 +47,7 @@ class BlockService:
             project_id: int,
             dialogue_id: int,
     ) -> list[UnionBlockReadSchema]:
-        _ = await self._dialogue_service.check_access_and_get_dialogue(
+        _ = await self._dialogue_service.get_dialogue(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,

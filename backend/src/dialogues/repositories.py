@@ -5,11 +5,7 @@ from sqlalchemy.orm import joinedload
 
 from src.core.dependencies.db_dependencies import AsyncSessionDI
 from src.dialogues.models import TriggerModel, DialogueModel
-from src.dialogues.schemas import (
-    DialogueCreateSchema,
-    DialogueReadSchema,
-    TriggerUpdateSchema,
-)
+from src.dialogues.schemas import DialogueCreateSchema, DialogueReadSchema, TriggerUpdateSchema
 
 
 class DialogueRepository:
@@ -35,7 +31,7 @@ class DialogueRepository:
             dialogue_id: int,
             trigger: TriggerUpdateSchema,
     ) -> Optional[DialogueReadSchema]:
-        dialogue = await self._get_dialogue(dialogue_id)
+        dialogue = await self._get_dialogue_model_instance(dialogue_id)
         if dialogue is None:
             return
 
@@ -44,7 +40,7 @@ class DialogueRepository:
         await self._session.commit()
         return DialogueReadSchema.model_validate(dialogue)
 
-    async def _get_dialogue(self, dialogue_id: int) -> Optional[DialogueModel]:
+    async def _get_dialogue_model_instance(self, dialogue_id: int) -> Optional[DialogueModel]:
         dialogue = await self._session.execute(
             select(DialogueModel)
             .options(
@@ -56,7 +52,7 @@ class DialogueRepository:
         return dialogue
 
     async def get_dialogue(self, dialogue_id: int) -> Optional[DialogueReadSchema]:
-        dialogue = await self._get_dialogue(dialogue_id)
+        dialogue = await self._get_dialogue_model_instance(dialogue_id)
         if dialogue is None:
             return
         return DialogueReadSchema.model_validate(dialogue)
