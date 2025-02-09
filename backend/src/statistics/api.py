@@ -14,16 +14,13 @@ router = APIRouter(
 
 
 # TODO: admin privileges require
-@router.get(
-    '',
-    response_model=StatisticSchema,
-)
+@router.get('', response_model=StatisticSchema)
 async def get_statistic(
         statistic_service: StatisticServiceDI,
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        statistics = await statistic_service.check_access_and_get_statistic(user_id)
+        statistics = await statistic_service.get_statistic(user_id)
     except DontHavePermissionError:
         raise DontHavePermissionHTTPException
 
