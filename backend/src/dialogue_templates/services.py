@@ -35,7 +35,7 @@ class DialogueTemplateService:
 
         return template
 
-    async def check_access_and_create_dialogue_from_template(
+    async def create_dialogue_from_template(
             self,
             user_id: int,
             project_id: int,

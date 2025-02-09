@@ -55,7 +55,7 @@ async def add_dialogue_template_to_project(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        await dialogue_template_service.check_access_and_create_dialogue_from_template(
+        await dialogue_template_service.create_dialogue_from_template(
             user_id=user_id,
             project_id=project_id,
             template_id=template_id,
