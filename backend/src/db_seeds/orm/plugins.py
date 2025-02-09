@@ -28,7 +28,7 @@ async def _create_plugin(plugin: PluginCreateSchema):
                 description=plugin.description,
                 image_path=plugin.image_path,
                 handlers_file_path=plugin.handlers_file_path,
-                db_funcs_file_path=plugin.db_funcs_file_path
+                db_funcs_file_path=plugin.db_funcs_file_path,
             )
 
             session.add(plugin)
@@ -51,7 +51,7 @@ async def create_statistics_plugin():
         description=description,
         image_path='plugins/statistic.png',
         handlers_file_path='bot_templates/project_structure/handlers/statistic.py.j2',
-        db_funcs_file_path='bot_templates/project_structure/db/statistic.py.j2'
+        db_funcs_file_path='bot_templates/project_structure/db/statistic.py.j2',
     )
 
     await _create_plugin(plugin)
@@ -85,7 +85,7 @@ async def create_catalog_plugin():
         description=description,
         image_path='plugins/catalog.png',
         handlers_file_path='bot_templates/project_structure/handlers/catalog.py.j2',
-        db_funcs_file_path='bot_templates/project_structure/db/catalog.py.j2'
+        db_funcs_file_path='bot_templates/project_structure/db/catalog.py.j2',
     )
 
     await _create_plugin(plugin)
@@ -115,7 +115,7 @@ async def create_support_plugin():
         description=description,
         image_path='plugins/support.png',
         handlers_file_path='bot_templates/project_structure/handlers/support.py.j2',
-        db_funcs_file_path='bot_templates/project_structure/db/support.py.j2'
+        db_funcs_file_path='bot_templates/project_structure/db/support.py.j2',
     )
 
     await _create_plugin(plugin)

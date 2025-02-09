@@ -22,7 +22,7 @@ def get_postgres_dsn(
         password=password,
         host=host,
         port=port,
-        database=database
+        database=database,
     )
 
 

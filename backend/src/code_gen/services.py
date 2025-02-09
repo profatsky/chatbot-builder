@@ -312,7 +312,7 @@ class CodeGenService:
                             aiohttp_session_method=aiohttp_session_method.value,
                             url=block.url,
                             headers=block.headers,
-                            body=block.body
+                            body=block.body,
                         )
                     )
 
