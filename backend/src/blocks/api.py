@@ -38,7 +38,7 @@ async def create_block(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        block = await block_service.check_access_and_create_block(
+        block = await block_service.create_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -70,7 +70,7 @@ async def get_blocks(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        blocks = await block_service.check_access_and_get_blocks(
+        blocks = await block_service.get_blocks(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -100,7 +100,7 @@ async def update_block(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        block = await block_service.check_access_and_update_block(
+        block = await block_service.update_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -138,7 +138,7 @@ async def upload_image_for_image_block(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        block = await block_service.check_access_and_upload_image_for_image_block(
+        block = await block_service.upload_image_for_image_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,

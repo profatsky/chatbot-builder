@@ -23,7 +23,7 @@ class BlockService:
         self._block_repository = block_repository
         self._dialogue_service = dialogue_service
 
-    async def check_access_and_create_block(
+    async def create_block(
             self,
             user_id: int,
             project_id: int,
@@ -41,7 +41,7 @@ class BlockService:
         )
         return block
 
-    async def check_access_and_get_blocks(
+    async def get_blocks(
             self,
             user_id: int,
             project_id: int,
@@ -57,7 +57,7 @@ class BlockService:
         blocks.sort(key=lambda x: x.sequence_number)
         return blocks
 
-    async def check_access_and_upload_image_for_image_block(
+    async def upload_image_for_image_block(
             self,
             user_id: int,
             project_id: int,
@@ -65,7 +65,7 @@ class BlockService:
             block_id: int,
             image: UploadFile,
     ) -> ImageBlockReadSchema:
-        block_read = await self._check_access_and_get_block(
+        block_read = await self.get_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -94,7 +94,7 @@ class BlockService:
         # TODO: use os.path.join
         block_update.image_path = image_path.replace('src/media/', '')
 
-        block = await self.check_access_and_update_block(
+        block = await self.update_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -103,7 +103,7 @@ class BlockService:
         )
         return block
 
-    async def check_access_and_update_block(
+    async def update_block(
             self,
             user_id: int,
             project_id: int,
@@ -111,7 +111,7 @@ class BlockService:
             block_id: int,
             block_data: UnionBlockUpdateSchema,
     ) -> UnionBlockReadSchema:
-        _ = await self._check_access_and_get_block(
+        _ = await self.get_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -124,14 +124,14 @@ class BlockService:
         )
         return block
 
-    async def check_access_and_delete_block(
+    async def delete_block(
             self,
             user_id: int,
             project_id: int,
             dialogue_id: int,
             block_id: int,
     ) -> UnionBlockReadSchema:
-        block = await self._check_access_and_get_block(
+        block = await self.get_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -147,14 +147,15 @@ class BlockService:
             block_id=block_id,
         )
 
-    async def _check_access_and_get_block(
+    # TODO: refactor, use repo method
+    async def get_block(
             self,
             user_id: int,
             project_id: int,
             dialogue_id: int,
             block_id: int,
     ) -> UnionBlockReadSchema:
-        blocks = await self.check_access_and_get_blocks(
+        blocks = await self.get_blocks(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,

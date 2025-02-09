@@ -28,17 +28,11 @@ class BlockRepository:
 
         return utils.validate_block_from_db(block)
 
-    async def get_blocks(
-            self,
-            dialogue_id: int,
-    ) -> list[UnionBlockReadSchema]:
+    async def get_blocks(self, dialogue_id: int) -> list[UnionBlockReadSchema]:
         blocks = await self._get_blocks(dialogue_id)
         return [utils.validate_block_from_db(block) for block in blocks]
 
-    async def _get_blocks(
-            self,
-            dialogue_id: int,
-    ) -> list[utils.UnionBlockModel]:
+    async def _get_blocks(self, dialogue_id: int) -> list[utils.UnionBlockModel]:
         blocks = await self._session.execute(
             select(BlockModel)
             .options(
@@ -50,10 +44,7 @@ class BlockRepository:
         blocks = blocks.unique().scalars().all()
         return blocks
 
-    async def _get_block(
-            self,
-            block_id: int,
-    ) -> Optional[utils.UnionBlockModel]:
+    async def _get_block_model_instance(self, block_id: int) -> Optional[utils.UnionBlockModel]:
         block = await self._session.execute(
             select(BlockModel)
             .where(BlockModel.block_id == block_id)
@@ -67,7 +58,7 @@ class BlockRepository:
             block_id: int,
             block_data: UnionBlockUpdateSchema,
     ) -> Optional[UnionBlockReadSchema]:
-        block = await self._get_block(block_id)
+        block = await self._get_block_model_instance(block_id)
 
         for key, value in block_data.model_dump().items():
             setattr(block, key, value)
@@ -77,10 +68,7 @@ class BlockRepository:
 
         return utils.validate_block_from_db(block)
 
-    async def _update_blocks_sequence_numbers_without_commit(
-            self,
-            dialogue_id: int,
-    ) -> Optional[UnionBlockReadSchema]:
+    async def _update_blocks_sequence_numbers_without_commit(self, dialogue_id: int) -> Optional[UnionBlockReadSchema]:
         blocks = await self._get_blocks(dialogue_id)
         counter = 1
         for block in sorted(blocks, key=lambda x: x.sequence_number):
@@ -89,11 +77,7 @@ class BlockRepository:
 
         return [utils.validate_block_from_db(block) for block in blocks]
 
-    async def delete_block(
-            self,
-            dialogue_id: int,
-            block_id: int,
-    ) -> Optional[UnionBlockReadSchema]:
+    async def delete_block(self, dialogue_id: int, block_id: int) -> Optional[UnionBlockReadSchema]:
         await self._session.execute(
             delete(BlockModel)
             .where(BlockModel.block_id == block_id)
