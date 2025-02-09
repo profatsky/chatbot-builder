@@ -40,15 +40,12 @@ class UserRepository:
             self,
             email: EmailStr,
     ) -> Optional[UserReadSchema]:
-        user = await self._get_user_by_email(email)
+        user = await self._get_user_model_instance_by_email(email)
         if user is None:
             return
         return UserReadSchema.model_validate(user)
 
-    async def _get_user_by_email(
-            self,
-            email: EmailStr,
-    ) -> Optional[UserModel]:
+    async def _get_user_model_instance_by_email(self, email: EmailStr) -> Optional[UserModel]:
         user = await self._session.execute(
             select(UserModel)
             .where(
@@ -58,11 +55,8 @@ class UserRepository:
         user = user.scalar()
         return user
 
-    async def get_user_by_credentials(
-            self,
-            credentials: AuthCredentialsSchema,
-    ) -> Optional[UserReadSchema]:
-        user = await self._get_user_by_email(credentials.email)
+    async def get_user_by_credentials(self, credentials: AuthCredentialsSchema) -> Optional[UserReadSchema]:
+        user = await self._get_user_model_instance_by_email(credentials.email)
         if user is None or not self._verify_password(credentials.password, user.hashed_password):
             return
         return UserReadSchema.model_validate(user)
@@ -78,15 +72,12 @@ class UserRepository:
             self,
             user_id: int,
     ) -> Optional[UserReadSchema]:
-        user = await self._get_user_by_id(user_id)
+        user = await self._get_user_model_instance_by_id(user_id)
         if user is None:
             return
         return UserReadSchema.model_validate(user)
 
-    async def _get_user_by_id(
-            self,
-            user_id: int,
-    ) -> Optional[UserModel]:
+    async def _get_user_model_instance_by_id(self, user_id: int) -> Optional[UserModel]:
         user = await self._session.execute(
             select(UserModel)
             .where(UserModel.user_id == user_id)
@@ -94,10 +85,7 @@ class UserRepository:
         user = user.scalar()
         return user
 
-    async def get_user_with_stats(
-            self,
-            user_id: int,
-    ) -> Optional[UserWithStatsReadSchema]:
+    async def get_user_with_stats(self, user_id: int) -> Optional[UserWithStatsReadSchema]:
         query = (
             self._session.sync_session.query(
                 UserModel,
