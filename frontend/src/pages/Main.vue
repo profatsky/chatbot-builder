@@ -5,7 +5,6 @@ import HeaderNavigation from '@/components/Main/HeaderNavigation.vue';
 import RegisterForm from '@/components/Main/RegisterForm.vue';
 import LoginForm from '@/components/Main/LoginForm.vue';
 import SimpleFooter from '@/components/SimpleFooter.vue';
-import { refreshTokens } from '@/api/auth';
 import '@/style.css';
 
 const router = useRouter();
@@ -14,8 +13,8 @@ const showRegisterForm = ref(false);
 const showLoginForm = ref(false);
 
 const openRegisterFormHandler = async () => {
-  const { response, error } = await refreshTokens();
-  if (error.value === null && response.value.status == 200) {
+  const token = localStorage.getItem('access_token');
+  if (token) {
     router.push({ path: '/profile' })
   }
   else {
@@ -28,8 +27,8 @@ const closeRegisterFormHandler = () => {
 };
 
 const openLoginFormHandler = async () => {
-  const { response, error } = await refreshTokens();
-  if (error.value === null && response.value.status == 200) {
+  const token = localStorage.getItem('access_token');
+  if (token) {
     router.push({ path: '/profile' })
   }
   else {
@@ -100,7 +99,7 @@ const openLoginFormFromRegisterFormHandler = () => {
             <div class="step__number">01</div>
             <h4 class="step__title">Регистрация</h4>
             <p class="step__description">
-              Все, что вам понадобиться - электронная почта
+              Все, что вам понадобится - электронная почта
             </p>
           </div>
           <div class="step">

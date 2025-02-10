@@ -1,12 +1,22 @@
 import axios from 'axios';
-import { refreshTokens } from '@/api/auth.js';
 import router from '@/router/router.js';
-
-axios.defaults.withCredentials = true;
 
 const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
 });
+
+apiClient.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('access_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
 
 apiClient.interceptors.response.use(
   response => {
@@ -14,21 +24,20 @@ apiClient.interceptors.response.use(
   },
   async error => {
     const originalRequest = error.config;
-
     if (error.response) {
       if (error.response.status === 401) {
+        localStorage.removeItem('access_token');
         router.push('/');
       } else if (error.response.status === 404) {
-        router.push('/not-found')
+        router.push('/not-found');
       } else if (error.response.status === 422 && 
         error.response.data.detail === "Signature has expired") {
-        await refreshTokens();
-        return axios(originalRequest);
+        localStorage.removeItem('access_token');
+        router.push('/');
       }
     } else {
       router.push('/');
     }
-
     return Promise.reject(error);
   }
 );
