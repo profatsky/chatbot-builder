@@ -41,3 +41,55 @@ No-code конструктор чат-ботов для Telegram с функци
 Конструктор позволяет скачать код разработанного чат-бота в виде ZIP-архива. В генерируемом коде чат-ботов используется
 библиотека [aiogram](https://github.com/aiogram/aiogram). Для запуска чат-бота необходимо установить Python и нужные 
 библиотеки из файла requirements.txt, который будет находиться в скачанном ZIP-архиве.
+
+## ⚙️ Как запустить?
+### Бекенд
+Перейти в директорию `backend`
+
+Настроить виртуальное окружения и установить зависимости:
+```commandline
+python -m venv venv
+
+venv\Scripts\activate.bat - для Windows
+
+source venv/bin/activate - для Unix
+
+python -m pip install -r requirements.txt
+```
+
+Переименовать файл .env.example в .env и указать в нем необходимые данные:
+```
+CLIENT_APP_URL = http://localhost:5173
+
+DB_HOST = 
+DB_PORT = 
+DB_NAME = 
+DB_USER = 
+DB_PASS = 
+TEST_DB_NAME = 
+
+JWT_SECRET = 
+```
+
+Запустить:
+```commandline
+uvicorn src.main:app
+```
+
+### Фронтенд
+Перейти в директорию `frontend`
+
+Установить необходимые зависимости:
+```commandline
+npm install
+```
+
+Переименовать файл .env.example в .env.local и указать в нем необходимые данные:
+```commandline
+VITE_API_URL=http://127.0.0.1:8000/api
+```
+
+Запустить:
+```commandline
+npm run dev
+```
