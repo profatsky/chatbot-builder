@@ -24,11 +24,10 @@ class PluginService:
         self._project_service = project_service
 
     async def get_plugins(self, page: int) -> list[PluginReadSchema]:
-        plugins = await self._plugin_repository.get_plugins(
+        return await self._plugin_repository.get_plugins(
             offset=(page - 1) * PLUGINS_PER_PAGE,
             limit=PLUGINS_PER_PAGE,
         )
-        return plugins
 
     async def get_plugin(self, plugin_id: int) -> PluginReadSchema:
         plugin = await self._plugin_repository.get_plugin(plugin_id)
@@ -48,11 +47,10 @@ class PluginService:
         _ = await self.get_plugin(plugin_id)
 
         # TODO add a limit on the number of plugins in a project
-        plugin = await self._plugin_repository.add_plugin_to_project(
+        return await self._plugin_repository.add_plugin_to_project(
             project_id=project_id,
             plugin_id=plugin_id,
         )
-        return plugin
 
     async def remove_plugin_from_project(self, user_id: int, project_id: int, plugin_id: int):
         project = await self._project_service.get_project(

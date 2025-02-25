@@ -14,14 +14,11 @@ class AuthService:
 
     async def register(self, credentials: AuthCredentialsSchema) -> str:
         user = await self._user_service.create_user(credentials)
-        access_token = self._create_access_token(user.user_id)
-        return access_token
+        return self._create_access_token(user.user_id)
 
     async def login(self, credentials: AuthCredentialsSchema) -> str:
         user = await self._user_service.get_user_by_credentials(credentials)
-        access_token = self._create_access_token(user.user_id)
-        return access_token
+        return self._create_access_token(user.user_id)
 
     def _create_access_token(self, user_id: int) -> str:
-        access_token = self._auth_security.create_access_token(uid=str(user_id))
-        return access_token
+        return self._auth_security.create_access_token(uid=str(user_id))

@@ -33,11 +33,10 @@ class DialogueService:
         if len(project.dialogues) >= 10:
             raise DialoguesLimitExceededError
 
-        dialogue = await self._dialogue_repository.create_dialogue(
+        return await self._dialogue_repository.create_dialogue(
             project_id=project_id,
             dialogue_data=dialogue_data,
         )
-        return dialogue
 
     async def update_dialogue_trigger(
             self,

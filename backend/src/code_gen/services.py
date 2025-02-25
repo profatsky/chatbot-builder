@@ -401,5 +401,4 @@ class CodeGenService:
             trim_blocks=True,
             lstrip_blocks=True,
         )
-        template = env.from_string(template_str)
-        return template
+        return env.from_string(template_str)

@@ -32,14 +32,12 @@ async def create_project(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        project = await project_service.create_project(
+        return await project_service.create_project(
             user_id=user_id,
             project_data=project_data,
         )
     except ProjectsLimitExceededError:
         raise ProjectsLimitExceededHTTPException
-
-    return project
 
 
 @router.get(
@@ -50,8 +48,7 @@ async def get_projects(
         project_service: ProjectServiceDI,
         user_id: UserIDFromAccessTokenDI,
 ):
-    projects = await project_service.get_projects(user_id)
-    return projects
+    return await project_service.get_projects(user_id)
 
 
 @router.put(
@@ -65,7 +62,7 @@ async def update_project(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        project = await project_service.update_project(
+        return await project_service.update_project(
             user_id=user_id,
             project_id=project_id,
             project_data=project_data,
@@ -75,8 +72,6 @@ async def update_project(
 
     except NoPermissionForProjectError:
         raise NoPermissionForProjectHTTPException
-
-    return project
 
 
 @router.delete(

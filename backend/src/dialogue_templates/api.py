@@ -24,8 +24,7 @@ async def get_dialogue_templates(
         dialogue_template_service: DialogueTemplateServiceDI,
         page: Annotated[int, Query(ge=1)] = 1,
 ):
-    templates = await dialogue_template_service.get_templates(page)
-    return templates
+    return await dialogue_template_service.get_templates(page)
 
 
 @router.get(
@@ -37,11 +36,9 @@ async def get_dialogue_template(
         dialogue_template_service: DialogueTemplateServiceDI,
 ):
     try:
-        dialogue_template = await dialogue_template_service.get_template(template_id)
+        return await dialogue_template_service.get_template(template_id)
     except DialogueTemplateNotFoundError:
         raise DialogueTemplateNotFoundHTTPException
-
-    return dialogue_template
 
 
 @router.post(

@@ -38,7 +38,7 @@ async def create_block(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        block = await block_service.create_block(
+        return await block_service.create_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -56,8 +56,6 @@ async def create_block(
     except RepeatingBlockSequenceNumberError:
         raise RepeatingBlockSequenceNumberHTTPException
 
-    return block
-
 
 @router.get(
     '',
@@ -70,7 +68,7 @@ async def get_blocks(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        blocks = await block_service.get_blocks(
+        return await block_service.get_blocks(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -83,8 +81,6 @@ async def get_blocks(
 
     except DialogueNotFoundError:
         raise DialogueNotFoundHTTPException
-
-    return blocks
 
 
 @router.put(
@@ -100,7 +96,7 @@ async def update_block(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        block = await block_service.update_block(
+        return await block_service.update_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -122,8 +118,6 @@ async def update_block(
     except RepeatingBlockSequenceNumberError:
         raise RepeatingBlockSequenceNumberHTTPException
 
-    return block
-
 
 @router.post(
     '/{block_id}/upload-image',
@@ -138,7 +132,7 @@ async def upload_image_for_image_block(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        block = await block_service.upload_image_for_image_block(
+        return await block_service.upload_image_for_image_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -159,8 +153,6 @@ async def upload_image_for_image_block(
 
     except InvalidBlockTypeError:
         raise InvalidBlockTypeHTTPException
-
-    return block
 
 
 @router.delete(

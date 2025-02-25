@@ -48,8 +48,7 @@ class DialogueRepository:
             )
             .where(DialogueModel.dialogue_id == dialogue_id)
         )
-        dialogue = dialogue.scalar()
-        return dialogue
+        return dialogue.scalar()
 
     async def get_dialogue(self, dialogue_id: int) -> Optional[DialogueReadSchema]:
         dialogue = await self._get_dialogue_model_instance(dialogue_id)

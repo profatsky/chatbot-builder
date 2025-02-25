@@ -32,8 +32,7 @@ async def get_plugins(
         plugin_service: PluginServiceDI,
         page: Annotated[int, Query(ge=1)] = 1,
 ):
-    plugins = await plugin_service.get_plugins(page)
-    return plugins
+    return await plugin_service.get_plugins(page)
 
 
 @router.get(
@@ -45,11 +44,9 @@ async def get_plugin(
         plugin_service: PluginServiceDI,
 ):
     try:
-        plugin = await plugin_service.get_plugin(plugin_id)
+        return await plugin_service.get_plugin(plugin_id)
     except PluginNotFoundError:
         raise PluginNotFoundHTTPException
-
-    return plugin
 
 
 @router.post(

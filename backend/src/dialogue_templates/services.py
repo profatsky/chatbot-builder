@@ -19,11 +19,10 @@ class DialogueTemplateService:
             self,
             page: int,
     ) -> list[DialogueTemplateReadSchema]:
-        templates = await self._dialogue_template_repository.get_templates(
+        return await self._dialogue_template_repository.get_templates(
             offset=(page - 1) * DIALOGUE_TEMPLATES_PER_PAGE,
             limit=DIALOGUE_TEMPLATES_PER_PAGE,
         )
-        return templates
 
     async def get_template(
             self,
@@ -32,7 +31,6 @@ class DialogueTemplateService:
         template = await self._dialogue_template_repository.get_template(template_id)
         if template is None:
             raise DialogueTemplateNotFoundError
-
         return template
 
     async def create_dialogue_from_template(

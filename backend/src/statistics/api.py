@@ -20,8 +20,6 @@ async def get_statistic(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        statistics = await statistic_service.get_statistic(user_id)
+        return await statistic_service.get_statistic(user_id)
     except DontHavePermissionError:
         raise DontHavePermissionHTTPException
-
-    return statistics

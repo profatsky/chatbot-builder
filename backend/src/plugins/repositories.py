@@ -26,8 +26,7 @@ class PluginRepository:
             select(PluginModel)
             .where(PluginModel.plugin_id == plugin_id)
         )
-        plugin = plugin.scalar()
-        return plugin
+        return plugin.scalar()
 
     async def add_plugin_to_project(self, project_id: int, plugin_id: int):
         await self._session.execute(

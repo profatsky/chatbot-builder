@@ -52,8 +52,7 @@ class UserRepository:
                 UserModel.email == email,
             )
         )
-        user = user.scalar()
-        return user
+        return user.scalar()
 
     async def get_user_by_credentials(self, credentials: AuthCredentialsSchema) -> Optional[UserReadSchema]:
         user = await self._get_user_model_instance_by_email(credentials.email)
@@ -82,8 +81,7 @@ class UserRepository:
             select(UserModel)
             .where(UserModel.user_id == user_id)
         )
-        user = user.scalar()
-        return user
+        return user.scalar()
 
     async def get_user_with_stats(self, user_id: int) -> Optional[UserWithStatsReadSchema]:
         query = (

@@ -27,7 +27,7 @@ async def create_dialogue(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        dialogue = await dialogue_service.create_dialogue(
+        return await dialogue_service.create_dialogue(
             user_id=user_id,
             project_id=project_id,
             dialogue_data=dialogue_data,
@@ -40,8 +40,6 @@ async def create_dialogue(
 
     except DialoguesLimitExceededError:
         raise DialoguesLimitExceededHTTPException
-
-    return dialogue
 
 
 @router.put(
@@ -56,7 +54,7 @@ async def update_dialogue_trigger(
         user_id: UserIDFromAccessTokenDI,
 ):
     try:
-        dialogue = await dialogue_service.update_dialogue_trigger(
+        return await dialogue_service.update_dialogue_trigger(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
@@ -70,8 +68,6 @@ async def update_dialogue_trigger(
 
     except DialogueNotFoundError:
         raise DialogueNotFoundHTTPException
-
-    return dialogue
 
 
 @router.delete(

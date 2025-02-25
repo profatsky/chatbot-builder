@@ -41,16 +41,14 @@ class BlockRepository:
             .where(BlockModel.dialogue_id == dialogue_id)
             .order_by(BlockModel.sequence_number)
         )
-        blocks = blocks.unique().scalars().all()
-        return blocks
+        return blocks.unique().scalars().all()
 
     async def _get_block_model_instance(self, block_id: int) -> Optional[utils.UnionBlockModel]:
         block = await self._session.execute(
             select(BlockModel)
             .where(BlockModel.block_id == block_id)
         )
-        block = block.scalar()
-        return block
+        return block.scalar()
 
     async def update_block(
             self,

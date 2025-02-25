@@ -35,11 +35,10 @@ class BlockService:
             project_id=project_id,
             dialogue_id=dialogue_id,
         )
-        block = await self._block_repository.create_block(
+        return await self._block_repository.create_block(
             dialogue_id=dialogue_id,
             block_data=block_data,
         )
-        return block
 
     async def get_blocks(
             self,
@@ -94,14 +93,13 @@ class BlockService:
         # TODO: use os.path.join
         block_update.image_path = image_path.replace('src/media/', '')
 
-        block = await self.update_block(
+        return await self.update_block(
             user_id=user_id,
             project_id=project_id,
             dialogue_id=dialogue_id,
             block_id=block_id,
             block_data=block_update,
         )
-        return block
 
     async def update_block(
             self,
@@ -117,12 +115,11 @@ class BlockService:
             dialogue_id=dialogue_id,
             block_id=block_id,
         )
-        block = await self._block_repository.update_block(
+        return await self._block_repository.update_block(
             dialogue_id=dialogue_id,
             block_id=block_id,
             block_data=block_data,
         )
-        return block
 
     async def delete_block(
             self,

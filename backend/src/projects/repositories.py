@@ -19,16 +19,11 @@ class ProjectRepository:
     def __init__(self, session: AsyncSessionDI):
         self._session = session
 
-    async def create_project(
-            self,
-            user_id: int,
-            project_data: ProjectCreateSchema,
-    ) -> ProjectReadSchema:
+    async def create_project(self, user_id: int, project_data: ProjectCreateSchema) -> ProjectReadSchema:
         project = ProjectModel(**project_data.model_dump(), user_id=user_id)
         self._session.add(project)
         await self._session.commit()
-        project = await self.get_project(project.project_id)
-        return project
+        return await self.get_project(project.project_id)
 
     async def get_projects(self, user_id: int) -> list[ProjectReadSchema]:
         projects = await self._session.execute(
@@ -49,10 +44,7 @@ class ProjectRepository:
             return
         return ProjectReadSchema.model_validate(project)
 
-    async def get_project_to_generate_code(
-            self,
-            project_id: int,
-    ) -> Optional[ProjectToGenerateCodeReadSchema]:
+    async def get_project_to_generate_code(self, project_id: int) -> Optional[ProjectToGenerateCodeReadSchema]:
         project = await self._session.execute(
             select(ProjectModel)
             .options(
@@ -96,16 +88,12 @@ class ProjectRepository:
         await self._session.commit()
 
     async def count_projects(self, user_id: int) -> int:
-        project_count = await self._session.scalar(
+        return await self._session.scalar(
             select(func.count()).select_from(ProjectModel)
             .where(ProjectModel.user_id == user_id)
         )
-        return project_count
 
-    async def _get_project_model_instance(
-            self,
-            project_id: int,
-    ) -> Optional[ProjectModel]:
+    async def _get_project_model_instance(self, project_id: int) -> Optional[ProjectModel]:
         project = await self._session.execute(
             select(ProjectModel)
             .options(
@@ -115,5 +103,4 @@ class ProjectRepository:
             )
             .where(ProjectModel.project_id == project_id)
         )
-        project = project.scalar()
-        return project
+        return project.scalar()

@@ -25,15 +25,13 @@ class ProjectService:
         if project_count >= 5:
             raise ProjectsLimitExceededError
 
-        project = await self._project_repository.create_project(
+        return await self._project_repository.create_project(
             user_id=user_id,
             project_data=project_data,
         )
-        return project
 
     async def get_projects(self, user_id: int) -> list[ProjectReadSchema]:
-        projects = await self._project_repository.get_projects(user_id)
-        return projects
+        return await self._project_repository.get_projects(user_id)
 
     async def get_project_to_generate_code(
             self,
@@ -69,11 +67,10 @@ class ProjectService:
             user_id=user_id,
             project_id=project_id,
         )
-        project = await self._project_repository.update_project(
+        return await self._project_repository.update_project(
             project_id=project_id,
             project_data=project_data,
         )
-        return project
 
     async def delete_project(self, user_id: int, project_id: int):
         _ = await self.get_project(
