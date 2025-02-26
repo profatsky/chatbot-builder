@@ -28,12 +28,12 @@ class ProjectToGenerateCodeReadSchema(ProjectReadSchema):
 
 
 class ProjectCreateSchema(BaseModel):
-    name: str
+    name: str = Field(max_length=256)
     start_message: str = Field(max_length=4098)
     start_keyboard_type: KeyboardType
 
 
 class ProjectUpdateSchema(BaseModel):
-    name: str
+    name: str = Field(max_length=256)
     start_message: str = Field(max_length=4098)
     start_keyboard_type: KeyboardType
