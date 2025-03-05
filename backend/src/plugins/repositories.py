@@ -18,15 +18,20 @@ class PluginRepository:
             .offset(offset)
             .limit(limit)
         )
-        plugins = plugins.scalars().all()
-        return [PluginReadSchema.model_validate(plugin) for plugin in plugins]
+        return [
+            PluginReadSchema.model_validate(plugin)
+            for plugin in plugins.scalars().all()
+        ]
 
     async def get_plugin(self, plugin_id: int) -> Optional[PluginReadSchema]:
         plugin = await self._session.execute(
             select(PluginModel)
             .where(PluginModel.plugin_id == plugin_id)
         )
-        return plugin.scalar()
+        plugin = plugin.scalar()
+        if plugin is None:
+            return
+        return PluginReadSchema.model_validate(plugin)
 
     async def add_plugin_to_project(self, project_id: int, plugin_id: int):
         await self._session.execute(
