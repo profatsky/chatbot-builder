@@ -69,7 +69,7 @@ const handleDownloadCodeEvent = async (projectId) => {
   const { response, error } = await getCode(projectId);
 
   if (error.value) {
-    toast.error('Что-то пошло не так...');
+    toast.error('Для генерации необходимо наличие хотя-бы одного диалога');
   } else {
     const url = window.URL.createObjectURL(new Blob([response.value.data]));
     const link = document.createElement('a');
