@@ -93,8 +93,10 @@ class UserRepository:
             .where(UserModel.user_id == user_id)
             .group_by(UserModel.user_id)
         )
-        result = await self._session.execute(query)
-        user, project_count = result.first()
+        result = (await self._session.execute(query)).first()
+        if result is None:
+            return
+        user, project_count = result
 
         return UserWithStatsReadSchema(
             **user.__dict__,
