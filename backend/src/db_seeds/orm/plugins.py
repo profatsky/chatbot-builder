@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 from sqlalchemy import select
 
@@ -45,13 +46,17 @@ async def create_statistics_plugin():
         </p>
     '''
 
+    image_path = os.path.join('plugins', 'statistic.png')
+    handlers_file_path = os.path.join('code_gen', 'bot_templates', 'project_structure', 'handlers', 'statistic.py.j2')
+    db_funcs_file_path = os.path.join('code_gen', 'bot_templates', 'project_structure', 'db', 'statistic.py.j2')
+
     plugin = PluginCreateSchema(
         name='Статистика',
         summary='Предоставляет статистику по пользователям чат-бота',
         description=description,
-        image_path='plugins/statistic.png',
-        handlers_file_path='bot_templates/project_structure/handlers/statistic.py.j2',
-        db_funcs_file_path='bot_templates/project_structure/db/statistic.py.j2',
+        image_path=image_path,
+        handlers_file_path=handlers_file_path,
+        db_funcs_file_path=db_funcs_file_path,
     )
 
     await _create_plugin(plugin)
@@ -79,13 +84,17 @@ async def create_catalog_plugin():
         </p>
     '''
 
+    image_path = os.path.join('plugins', 'catalog.png')
+    handlers_file_path = os.path.join('code_gen', 'bot_templates', 'project_structure', 'handlers', 'catalog.py.j2')
+    db_funcs_file_path = os.path.join('code_gen', 'bot_templates', 'project_structure', 'db', 'catalog.py.j2')
+
     plugin = PluginCreateSchema(
         name='Каталог',
         summary='Готовое решение для продажи товаров и услуг',
         description=description,
-        image_path='plugins/catalog.png',
-        handlers_file_path='bot_templates/project_structure/handlers/catalog.py.j2',
-        db_funcs_file_path='bot_templates/project_structure/db/catalog.py.j2',
+        image_path=image_path,
+        handlers_file_path=handlers_file_path,
+        db_funcs_file_path=db_funcs_file_path,
     )
 
     await _create_plugin(plugin)
@@ -109,13 +118,17 @@ async def create_support_plugin():
         </p>
     '''
 
+    image_path = os.path.join('plugins', 'support.png')
+    handlers_file_path = os.path.join('code_gen', 'bot_templates', 'project_structure', 'handlers', 'support.py.j2')
+    db_funcs_file_path = os.path.join('code_gen', 'bot_templates', 'project_structure', 'db', 'support.py.j2')
+
     plugin = PluginCreateSchema(
         name='Тех. поддержка',
         summary='Готовый функционал для технической поддержки',
         description=description,
-        image_path='plugins/support.png',
-        handlers_file_path='bot_templates/project_structure/handlers/support.py.j2',
-        db_funcs_file_path='bot_templates/project_structure/db/support.py.j2',
+        image_path=image_path,
+        handlers_file_path=handlers_file_path,
+        db_funcs_file_path=db_funcs_file_path,
     )
 
     await _create_plugin(plugin)
