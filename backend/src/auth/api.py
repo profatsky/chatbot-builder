@@ -1,9 +1,11 @@
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, status
 
 from src.auth.dependencies.services_dependencies import AuthServiceDI
+from src.auth.exceptions.http_exception import InvalidCredentialsHTTPException
 from src.auth.schemas import AuthCredentialsSchema
 from src.users.exceptions.http_exceptions import UserAlreadyExistsHTTPException
-from src.users.exceptions.services_exceptions import UserAlreadyExistsError, InvalidCredentialsError
+from src.users.exceptions.services_exceptions import UserAlreadyExistsError
+from src.auth.exceptions.services_exceptions import InvalidCredentialsError
 
 router = APIRouter(tags=['Auth'])
 
@@ -32,10 +34,7 @@ async def login(
     try:
         access_token = await auth_service.login(credentials)
     except InvalidCredentialsError:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Invalid credentials',
-        )
+        raise InvalidCredentialsHTTPException
 
     return {
         'detail': 'Authorization was successful',
