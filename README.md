@@ -101,3 +101,6 @@ VITE_API_URL=http://127.0.0.1:8000/api
 ```commandline
 npm run dev
 ```
+
+## ❓Остались вопросы?
+Свяжитесь со мной в [Telegram](https://t.me/profatsky) или [ВКонтакте](https://vk.com/profatsky)
